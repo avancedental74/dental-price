@@ -955,11 +955,11 @@
     "productName": "Adhesivo monocomponente",
     "presentation": "Frasco",
     "quantity": 6,
-    "unit": "g",
+    "unit": "ml",
     "packCount": 1,
     "manufacturerReference": "4242",
     "category": "Adhesivos",
-    "normalizedName": "adper scotchbond 1xt adhesivo monocomponente frasco 6 g",
+    "normalizedName": "adper scotchbond 1xt adhesivo monocomponente frasco 6 ml",
     "active": true
   }
 ]
