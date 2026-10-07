@@ -21,7 +21,7 @@ import { LiveSearchStatus, type LiveSearchState } from "../components/LiveSearch
 import { BasketPanel, type BasketUiItem } from "../components/BasketPanel";
 import { optimizeBasket } from "../domain/basket";
 import { loadPublicData, type PublicData } from "../services/public-data";
-import { fetchLivePrices, searchLiveCatalog, type LiveSearchGroup } from "../services/live-prices";
+import { searchLiveCatalog, type LiveSearchGroup } from "../services/live-prices";
 import { loadManualHistory, loadManualOffers, saveManualHistory, saveManualOffers } from "../services/manual-offers";
 
 export function App(){
@@ -96,17 +96,10 @@ export function App(){
   };
 
   const runSeededLiveSearch=async(product:CanonicalProduct)=>{
-    setSelected(product);setLiveOffers([]);setLiveGroups([]);setLiveSessionId(null);setLiveErrors([]);setLiveCompletedAt(undefined);setLiveState("loading");
-    try{
-      const result=await fetchLivePrices(product.id);
-      setLiveOffers(result.offers);setLiveSessionId(result.sessionId);setLiveErrors(result.errors);setLiveCompletedAt(result.completedAt);
-      setLiveState(result.offers.length===0?"failed":result.errors.length?"partial":"success");
-    }catch(e){
-      const message=e instanceof Error?e.message:"LIVE_API_ERROR";
-      setLiveState(message==="LIVE_API_NOT_CONFIGURED"?"unavailable":"failed");
-      setLiveErrors(message==="LIVE_API_NOT_CONFIGURED"?[]:[{supplierId:"live-api",message}]);
-    }
+    const lookup=product.manufacturerReference??product.family;
+    await runFederatedSearch(lookup,product);
   };
+
 
   const comparison=useMemo(()=>selected?compareSupplierOffers(selected,liveOffers,quantity,{requiredLiveSessionId:liveSessionId??"__NO_LIVE_SESSION__"}):null,[selected,liveOffers,quantity,liveSessionId]);
 
