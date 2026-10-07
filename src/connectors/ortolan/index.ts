@@ -19,9 +19,9 @@ export async function fetchOrtolanProduct(productUrl:string,fetchImpl:typeof fet
  for(const text of rows){
    const ref=text.match(/^([A-Za-z0-9.,_-]{3,40})\s+/)?.[1]||body.match(/COD:\s*([A-Za-z0-9.,_-]+)/i)?.[1];
    const mfg=text.match(/Ref\. fabricante\s*:?\s*([A-Za-z0-9._/-]+)/i)?.[1];
-   const manufacturerReference=mfg||ref;
+   const manufacturerReference=mfg;
    const prices=[...text.matchAll(/(\d{1,5}(?:[.,]\d{2})?)\s*€/g)].map(m=>euro(m[1])).filter((v):v is number=>typeof v==="number"&&v>0);
-   if(!manufacturerReference||!prices.length)continue;
+   if(!prices.length)continue;
    const regularPrice=prices.length>1?Math.max(...prices.slice(0,3)):prices[0],salePrice=Math.min(...prices.slice(0,3));
    const known=knowledgeForReference(manufacturerReference),mx=metrics(text);
    const shade=text.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?)\b/i)?.[1]?.replace(",",".").toUpperCase();
