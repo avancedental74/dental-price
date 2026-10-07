@@ -117,3 +117,26 @@ jobs:
             }
           }
           NODE
+      - name: Probe protected supplier catalog APIs
+        run: |
+          node --input-type=module <<'NODE'
+          async function probe(name,url,init={}){
+            try{
+              const r=await fetch(url,{redirect:"follow",headers:{"user-agent":"Mozilla/5.0","accept":"application/json,text/plain,*/*",...(init.headers||{})},...init});
+              const text=await r.text();
+              console.log("\n### API",name,"HTTP",r.status,"URL",r.url,"CT",r.headers.get("content-type"),"LEN",text.length);
+              console.log(text.slice(0,7000));
+            }catch(e){console.log("\n### API",name,"ERROR",e.message);}
+          }
+          const gqlQuery=JSON.stringify({query:`query { products(search: "Scotchbond Universal Plus", pageSize: 5) { total_count items { name sku url_key price_range { minimum_price { final_price { value currency } regular_price { value currency } } } stock_status } } }`});
+          await probe("proclinic-graphql","https://www.proclinic.es/tienda/graphql",{method:"POST",headers:{"content-type":"application/json"},body:gqlQuery});
+          await probe("proclinic-rest-search","https://www.proclinic.es/tienda/rest/V1/products?searchCriteria[pageSize]=5&searchCriteria[filter_groups][0][filters][0][field]=name&searchCriteria[filter_groups][0][filters][0][value]=%25Scotchbond%25&searchCriteria[filter_groups][0][filters][0][condition_type]=like");
+          await probe("broker-graphql","https://www.brokerdental.es/graphql",{method:"POST",headers:{"content-type":"application/json"},body:gqlQuery});
+          await probe("broker-rest-search","https://www.brokerdental.es/rest/V1/products?searchCriteria[pageSize]=5&searchCriteria[filter_groups][0][filters][0][field]=name&searchCriteria[filter_groups][0][filters][0][value]=%25Scotchbond%25&searchCriteria[filter_groups][0][filters][0][condition_type]=like");
+          for(const url of [
+            "https://dentaliberica.com/api/products?output_format=JSON&display=full&filter[name]=%25Filtek%25",
+            "https://dentaliberica.com/es/module/iqitsearch/searchiqit?ajax=true&query=Filtek",
+            "https://dentaliberica.com/module/iqitsearch/searchiqit?ajax=true&query=Filtek",
+            "https://dentaliberica.com/index.php?controller=search&s=Filtek&ajax=1"
+          ]) await probe("dentaliberica-api",url);
+          NODE
