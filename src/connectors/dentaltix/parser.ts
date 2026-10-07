@@ -89,6 +89,9 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
   if (salePrice == null && allPrices.length) salePrice = allPrices[0];
   const recommended = bodyText.match(/Precio recomendado\s*(\d{1,4}(?:[.,]\d{2})?)\s*€/i);
   const regularPrice = recommended ? parseEuro(recommended[1]) : allPrices.length >= 2 ? Math.max(...allPrices.slice(0, 6)) : undefined;
+  const vatMatch = bodyText.match(/(?:Price VAT included|Precio IVA incluido)\s*\(?\s*(\d{1,2})\s*%\s*\)?\s*€?\s*(\d{1,5}(?:[.,]\d{2})?)/i);
+  const vatRate = vatMatch ? Number(vatMatch[1]) : undefined;
+  const vatIncludedPrice = vatMatch ? parseEuro(vatMatch[2]) : undefined;
   const stockMatch = bodyText.match(/(Solo quedan[^.]+\.|En stock[^.]+\.|Entrega[^.]+\.|No disponible[^.]*\.?)/i)?.[1];
   return {
     title,
@@ -97,6 +100,8 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
     pageManufacturerReference,
     regularPrice,
     salePrice,
+    vatIncludedPrice,
+    vatRate,
     rawStockText: stockFromText(stockMatch),
     productUrl,
     variants: extractVariants($, productUrl)
