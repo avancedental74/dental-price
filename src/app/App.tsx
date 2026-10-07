@@ -53,9 +53,9 @@ export function App(){
   },[data,selected]);
 
   const comparison=useMemo(()=>selected?compareSupplierOffers(selected,candidates,quantity):null,[selected,candidates,quantity]);
-  const history=useMemo(()=>data&&selected?data.history.filter(h=>h.productId===selected.id&&h.requestedQuantity===quantity):[],[data,selected,quantity]);
-  const stats=useMemo(()=>calculateHistoryStats(history),[history]);
   const winner=comparison?.ranked[0];
+  const history=useMemo(()=>data&&selected&&winner?data.history.filter(h=>h.productId===selected.id&&h.requestedQuantity===quantity&&h.supplierId===winner.offer.supplierId):[],[data,selected,quantity,winner]);
+  const stats=useMemo(()=>calculateHistoryStats(history),[history]);
   const score=useMemo(()=>opportunityFromHistory(history,{
     isFresh:winner?getFreshnessStatus(winner.offer)==="fresh":false,
     inStock:Boolean(winner&&(winner.offer.stockStatus==="in_stock"||winner.offer.stockStatus==="low_stock")),
