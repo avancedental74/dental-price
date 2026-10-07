@@ -25,7 +25,10 @@ export function parseDvdProductHtml(html:string,productUrl:string):DvdProductRaw
    const sku=body.match(/REF\.\s*DVD\s*([A-Za-z0-9._/-]+)/i)?.[1];
    const gross=body.match(/(\d+(?:[.,]\d+)?)\s*€\s*IVA incl/i)?.[1];
    const net=body.match(/(\d+(?:[.,]\d+)?)\s*€\s*excl\.\s*Tax/i)?.[1];
-   if(ref) variants.push({title,supplierSku:sku,manufacturerReference:ref,netPrice:euro(net),grossPrice:euro(gross),stockText:body,productUrl});
+   const localStock=clean($(".productView__stock,.form-field--stock").first().text())
+     || body.match(/\b\d+\s+en stock\b|Disponible para compra|Sin stock|No disponible|Agotado/i)?.[0];
+   if(ref) variants.push({title,supplierSku:sku,manufacturerReference:ref,netPrice:euro(net),grossPrice:euro(gross),stockText:localStock||undefined,productUrl});
  }
- return {title,manufacturer,variants,productUrl};
+ const promotionText=clean($(".promo-sku-tooltip-item").first().text()) || undefined;
+ return {title,manufacturer,variants,productUrl,promotionText};
 }
