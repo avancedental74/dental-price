@@ -61,7 +61,9 @@ export function optimizeBasket(items:BasketRequestItem[],maxCombinations=100000)
     for(const [supplierId,lines] of groups){
       const merchandiseGross=money(lines.reduce((n,x)=>n+x.lineGross,0));
       const netValues=lines.map(x=>x.lineNet);
-      const merchandiseNet=netValues.some(x=>x==null)?null:money(netValues.reduce((n,x)=>n+(x??0),0));
+      const merchandiseNet=netValues.some(x=>x==null)
+        ? null
+        : money(netValues.reduce<number>((sum,value)=>sum+(value as number),0));
       const shipping=supplierShipping(lines,merchandiseNet,merchandiseGross);
       if(!Number.isFinite(shipping)){invalid=true;break;}
       const supplierTotal=money(merchandiseGross+shipping);
