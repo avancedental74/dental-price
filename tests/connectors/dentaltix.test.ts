@@ -28,6 +28,30 @@ describe("Dentaltix connector", () => {
     expect(offers[0].shade).toBe("A1");
   });
 
+  it("parses selected modern Dentaltix SKU without contaminating references or double VAT", () => {
+    const html = `
+      <html><body>
+        <h1>Filtek Supreme XTE: Composite Restaurador Universal - Solventum</h1>
+        <p><span>Marca:</span><a>Solventum</a></p>
+        <p><span>Referencia:</span><strong>053M4910A3B</strong></p>
+        <p><span>Ref. Fabricante:</span><span>4910A3B</span></p>
+        <span>64,14 €</span><span>44,90 €</span>
+        <div>Precio IVA incluido (10%) €49,39</div>
+        <div>EN STOCK.</div>
+        <div data-testid="variation-cards-label">Tipo: <b>1 Jer. de 3 gr - Color: A3 Body</b></div>
+        <button data-variation-id="x"><span>A1 Body</span><span>1 Jer. de 3 gr</span><span>44,90 €</span></button>
+      </body></html>`;
+    const offers = normalizeDentaltix(parseDentaltixProductHtml(html, "https://www.dentaltix.com/es/demo?sku=053M4910A3B"));
+    const selected = offers.find(o => o.manufacturerReference === "4910A3B");
+    expect(selected).toBeDefined();
+    expect(selected?.supplierSku).toBe("053M4910A3B");
+    expect(selected?.salePrice).toBe(44.9);
+    expect(selected?.vatStatus).toBe("included");
+    expect(selected?.variant).toBe("Body");
+    expect(selected?.shade).toBe("A3");
+    expect(selected?.quantity).toBe(3);
+  });
+
   it("preserves glove variants as distinct references", () => {
     const raw = parseDentaltixProductHtml(gloves, "https://www.dentaltix.com/demo-gloves");
     expect(raw.variants).toHaveLength(3);
