@@ -27,7 +27,7 @@ export interface LiveCatalogSearchResponse {
 }
 
 function apiBase(){
-  const base=(import.meta.env.VITE_LIVE_API_URL as string|undefined)?.replace(//$/,"");
+  const base=(import.meta.env.VITE_LIVE_API_URL as string|undefined)?.replace(/\\/$/,"");
   if(!base) throw new Error("LIVE_API_NOT_CONFIGURED");
   return base;
 }
