@@ -6,7 +6,7 @@ export function MetricsPanel({metrics}:{metrics:PublicMetrics}){
     <div className="stats-grid">
       <span>Ofertas verificadas <b>{metrics.verifiedOffers}</b><small>Identidad y precio observados ahora</small></span>
       <span>Ofertas comprables <b>{metrics.purchasableOffers}</b><small>Stock + IVA + portes + dato válido</small></span>
-      <span>Productos comparables <b>{metrics.productsWithTwoOrMoreAutomaticSuppliers}</b><small>≥2 proveedores automáticos verificados</small></span>
+      <span>Productos comparables <b>{metrics.productsWithTwoOrMorePurchasableSuppliers}</b><small>≥2 proveedores comprables ahora</small></span>
       <span>Proveedores automáticos <b>{metrics.automaticSuppliers}</b><small>Fuentes que aportan precios actuales</small></span>
     </div>
   </section>;
