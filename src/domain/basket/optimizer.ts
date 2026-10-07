@@ -83,16 +83,21 @@ export function optimizeBasket(items:BasketRequestItem[],maxStates=250000):Baske
   const memo=new Map<string,number>();
 
   function stateKey(index:number,assignments:BasketAssignment[]):string{
-    const groups=new Map<string,{gross:number;net:number|null;count:number}>();
+    const groups=new Map<string,{gross:number;net:number|null;count:number;allFreeShipping:boolean;policies:Set<string>}>();
     for(const a of assignments){
-      const g=groups.get(a.supplierId)??{gross:0,net:0,count:0};
+      const g=groups.get(a.supplierId)??{gross:0,net:0,count:0,allFreeShipping:true,policies:new Set<string>()};
       g.gross+=a.lineGross;
       g.net=g.net==null||a.lineNet==null?null:g.net+a.lineNet;
       g.count++;
+      g.allFreeShipping = g.allFreeShipping && a.offer.promotion?.type==="free_shipping";
+      g.policies.add(JSON.stringify([
+        a.offer.shippingCost,a.offer.shippingCostVatIncluded,a.offer.shippingVatRate,
+        a.offer.freeShippingThreshold,a.offer.freeShippingThresholdBasis
+      ]));
       groups.set(a.supplierId,g);
     }
     return index+"|"+[...groups.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([id,g])=>[
-      id,cents(g.gross),g.net==null?"n":cents(g.net),g.count
+      id,cents(g.gross),g.net==null?"n":cents(g.net),g.count,g.allFreeShipping?"f":"p",[...g.policies].sort().join("~")
     ].join(":")).join(",");
   }
 
