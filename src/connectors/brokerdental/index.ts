@@ -3,7 +3,7 @@ import type { StockStatus, SupplierOffer } from "../../types/domain";
 import { normalizeName } from "../../domain/matching/normalization";
 import { knowledgeForReference } from "../../domain/catalog";
 const USER_AGENT="DentalPrice/0.2 (+https://github.com/avancedental74/dental-price; single-user price research)";
-function euro(v?:string){if(!v)return undefined;const n=Number(v.replace(/\s/g,"").replace(/€/g,"").replace(/\./g,"").replace(",",".").replace(/[^0-9.]/g,""));return Number.isFinite(n)?n:undefined;}
+function euro(v?:string){if(!v)return undefined;let s=v.replace(/\s/g,"").replace(/€/g,"").replace(/[^0-9,.-]/g,"");if(s.includes(","))s=s.replace(/\./g,"").replace(",",".");const n=Number(s);return Number.isFinite(n)?n:undefined;}
 function stock(text:string):StockStatus{if(/agotado|no disponible|sin stock/i.test(text))return"unavailable";if(/stock|entrega express|24h|disponible/i.test(text))return"in_stock";return"unknown";}
 function vatRateFrom(net?:number,gross?:number):number|undefined{if(!net||!gross||gross<net)return undefined;const raw=((gross/net)-1)*100;const allowed=[4,10,21];const nearest=allowed.reduce((a,b)=>Math.abs(b-raw)<Math.abs(a-raw)?b:a);return Math.abs(nearest-raw)<=0.4?nearest:undefined;}
 export async function fetchBrokerDentalProduct(productUrl:string,fetchImpl:typeof fetch=fetch):Promise<{offers:SupplierOffer[]}>{
