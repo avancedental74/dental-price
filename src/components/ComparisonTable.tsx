@@ -12,6 +12,7 @@ function eligibilityLabel(item:MatchedSupplierOffer):string{
   if(item.offer.stockStatus==="unknown") return "Stock no confirmado";
   if(getFreshnessStatus(item.offer)==="stale") return "Dato antiguo";
   if(item.match.status!=="EXACT") return item.match.status;
+  if(item.offer.sourceMode==="automatic" && (!item.offer.shippingPolicyObservedAt || (Date.now()-new Date(item.offer.shippingPolicyObservedAt).getTime())/86400000>30)) return "Portes sin revalidar";
   const warnings=item.pricing?.warnings ?? [];
   if(warnings.some(w=>w.includes("IVA"))) return "IVA no confirmado";
   if(warnings.some(w=>w.includes("Transporte"))) return "Portes no confirmados";
