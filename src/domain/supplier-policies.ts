@@ -21,6 +21,8 @@ export function applySupplierPolicy(offer:SupplierOffer,policy?:SupplierPolicy):
     shippingVatRate:policy.shippingVatRate,
     freeShippingThreshold:policy.freeShippingThreshold,
     freeShippingThresholdBasis:policy.freeShippingThresholdBasis,
+    shippingPolicyObservedAt:policy.observedAt,
+    shippingPolicySourceUrl:policy.sourceUrl,
     deliveryZone:policy.zone
   };
 }
