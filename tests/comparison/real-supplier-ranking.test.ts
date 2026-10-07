@@ -14,7 +14,7 @@ function offer(supplierId:string,price:number,shippingCost:number,threshold:numb
     presentation:"Jeringa",quantity:3,unit:"g",packCount:1,variant:"Body",shade:"A3",stockStatus:"in_stock",
     regularPrice:price,salePrice:price,vatStatus:"excluded",vatRate:10,currency:"EUR",
     shippingCost,shippingCostVatIncluded:false,shippingVatRate:21,freeShippingThreshold:threshold,freeShippingThresholdBasis:basis,
-    deliveryZone:"ES_PENINSULA",observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"
+    deliveryZone:"ES_PENINSULA",shippingPolicyObservedAt:new Date().toISOString(),shippingPolicySourceUrl:"https://example.com/policy",observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"
   };
 }
 
