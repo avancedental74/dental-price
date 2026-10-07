@@ -22,15 +22,13 @@ function findProduct(products:CanonicalProduct[],query:string):CanonicalProduct|
     if(exact) return exact;
   }
   const tokens=q.split(" ").filter(Boolean);
-  return [...products].map(product=>{
+  if(!tokens.length) return undefined;
+  const ranked=products.map(product=>{
     const hay=normalizeName([product.manufacturer,product.family,product.productName,product.variant??"",product.shade??"",product.presentation,product.manufacturerReference??""].join(" "));
     const hits=tokens.filter(t=>hay.includes(t)).length;
-    return {product,score:tokens.length?hits/tokens.length:0};
-  }).sort((a,b)=>b.score-a.score)[0]?.score ? [...products].map(product=>{
-    const hay=normalizeName([product.manufacturer,product.family,product.productName,product.variant??"",product.shade??"",product.presentation,product.manufacturerReference??""].join(" "));
-    const hits=tokens.filter(t=>hay.includes(t)).length;
-    return {product,score:tokens.length?hits/tokens.length:0};
-  }).sort((a,b)=>b.score-a.score)[0].product : undefined;
+    return {product,score:hits/tokens.length};
+  }).sort((a,b)=>b.score-a.score);
+  return ranked[0]?.score>=0.6 ? ranked[0].product : undefined;
 }
 
 export function App(){
