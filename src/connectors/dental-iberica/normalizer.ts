@@ -31,7 +31,9 @@ function metrics(value:string){
 }
 
 function shade(value:string):string|undefined{
-  return value.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?|UD)\b/i)?.[1]?.replace(",",".").toUpperCase();
+  const standalone=value.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?|UD)\b/i)?.[1];
+  const suffix=value.match(/(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?|UD)$/i)?.[1];
+  return (standalone ?? suffix)?.replace(",",".").toUpperCase();
 }
 
 function variant(value:string):string|undefined{
