@@ -1,6 +1,6 @@
 import type { MatchedSupplierOffer } from "../domain/comparison/types";
 
-const names:Record<string,string>={"dentaltix":"Dentaltix","proclinic":"Proclinic","dental-iberica":"Dental Ibérica"};
+const names:Record<string,string>={"dentaltix":"Dentaltix","dentalcost":"DentalCost","dvd-dental":"DVD Dental","proclinic":"Proclinic","dental-iberica":"Dental Ibérica"};
 
 export function WinnerCard({item}:{item:MatchedSupplierOffer}){
   const p=item.pricing;
