@@ -1,9 +1,7 @@
 import type { Promotion, SupplierOffer } from "../../types/domain";
 import type { PricingBreakdown, PricingContext } from "./types";
 
-function money(value:number):number {
-  return Math.round((value + Number.EPSILON) * 100) / 100;
-}
+function money(value:number):number { return Math.round((value + Number.EPSILON) * 100) / 100; }
 function unitPrice(offer:SupplierOffer):number { return offer.salePrice ?? offer.regularPrice; }
 
 function applyPromotion(unit:number,quantity:number,promotion?:Promotion){
