@@ -16,39 +16,30 @@ jobs:
           node-version: "22.13.1"
           cache: npm
       - run: npm ci
-      - name: Inspect supplier search forms
+      - name: Inspect real search responses
         run: |
           node --input-type=module <<'NODE'
           import * as cheerio from "cheerio";
-          const sites={
-            dentaltix:"https://www.dentaltix.com/es",
-            dentalcost:"https://www.dentalcost.es/",
-            dvd:"https://www.dvd-dental.com/",
-            proclinic:"https://www.proclinic.es/tienda/",
-            dentaliberica:"https://dentaliberica.com/",
-            dentalexpress:"https://dentalexpress.es/",
-            broker:"https://www.brokerdental.es/",
-            ortolan:"https://ortolan.es/es/"
+          const tests={
+            dentaltix:"https://www.dentaltix.com/es/search-results?q=4910A3B",
+            dentalcost:"https://www.dentalcost.es/buscar?s=4910A3B",
+            dvd:"https://www.dvd-dental.com/search.php?search_query=4910A3B",
+            dentalexpress:"https://dentalexpress.es/catalogsearch/result/?q=41294",
+            ortolan:"https://ortolan.es/es/busqueda?controller=search&s=Tetric%20EvoCeram"
           };
-          for(const [name,url] of Object.entries(sites)){
+          for(const [name,url] of Object.entries(tests)){
             console.log("\n### "+name+" "+url);
             try{
-              const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
-              console.log("HTTP",r.status,"final",r.url);
+              const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36","accept":"text/html,application/xhtml+xml"}});
               const html=await r.text();
+              console.log("HTTP",r.status,"final",r.url,"len",html.length);
               const $=cheerio.load(html);
-              const forms=[];
-              $("form").each((_,el)=>{
-                const inputs=$(el).find("input").toArray().map(i=>({
-                  name:$(i).attr("name"),id:$(i).attr("id"),type:$(i).attr("type"),placeholder:$(i).attr("placeholder"),value:$(i).attr("value")
-                }));
-                if(inputs.some(i=>/search|buscar|busca|query|keyword|producto|referencia|q\b/i.test([i.name,i.id,i.placeholder,i.type].filter(Boolean).join(" ")))){
-                  forms.push({action:$(el).attr("action"),method:$(el).attr("method"),inputs});
-                }
-              });
-              console.log(JSON.stringify(forms.slice(0,5),null,2));
-              const snippets=[...html.matchAll(/.{0,100}(?:search|buscar|busca|autocomplete|algolia).{0,180}/gi)].slice(0,12).map(m=>m[0].replace(/\s+/g," "));
+              const anchors=$("a[href]").toArray().map(el=>({href:$(el).attr("href"),text:$(el).text().replace(/\s+/g," ").trim()})).filter(x=>x.text||x.href);
+              console.log("MATCHING ANCHORS",JSON.stringify(anchors.filter(x=>/4910|filtek|41294|scotch|tetric|evoceram/i.test((x.text||"")+" "+(x.href||""))).slice(0,20),null,2));
+              const scripts=$("script").toArray().map(el=>$(el).text()).filter(Boolean);
+              const snippets=[...html.matchAll(/.{0,180}(?:4910A3B|41294|Tetric|EvoCeram|search-results|algolia|autocomplete|klevu|search_query|products).{0,300}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g," "));
               console.log("SNIPPETS",JSON.stringify(snippets,null,2));
+              console.log("SCRIPT COUNT",scripts.length);
             }catch(e){console.log("ERROR",e.message);}
           }
           NODE
