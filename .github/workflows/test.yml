@@ -15,8 +15,8 @@ jobs:
           node-version: "22.13.1"
           cache: npm
       - run: npm ci
-      - run: npm run lint
       - run: npm run typecheck
+      - run: npm run lint
       - run: npm test
       - run: npm run validate:data
       - run: npm run build
