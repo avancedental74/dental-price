@@ -1,0 +1,19 @@
+[
+  {
+    "id": "demo-filtek-supreme-xte-a3-body-3g",
+    "manufacturer": "Solventum",
+    "brand": "Filtek",
+    "family": "Filtek Supreme XTE",
+    "productName": "Composite universal",
+    "variant": "Body",
+    "shade": "A3",
+    "presentation": "Jeringa",
+    "quantity": 3,
+    "unit": "g",
+    "packCount": 1,
+    "manufacturerReference": "DEMO-REF",
+    "category": "Composites",
+    "normalizedName": "filtek supreme xte a3 body 3 g jeringa",
+    "active": true
+  }
+]
