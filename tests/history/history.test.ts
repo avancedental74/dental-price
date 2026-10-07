@@ -58,7 +58,8 @@ describe("price history",()=>{
     const stats=calculateHistoryStats(history,now);
     expect(stats.currentPrice).toBe(50);
     expect(stats.average30d).not.toBeNull();
-    expect(stats.average90d).not.toBeNull();\n    expect(stats.coverageDaysTotal).toBeGreaterThan(0);
+    expect(stats.average90d).not.toBeNull();
+    expect(stats.coverageDaysTotal).toBeGreaterThan(0);
     expect(stats.min90d).toBe(35);
     expect(stats.max90d).toBe(50);
     expect(stats.historicalMin).toBe(30);
