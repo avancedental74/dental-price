@@ -31,6 +31,16 @@ const configs:Record<SearchSupplierId,{origin:string;home:string;templates:strin
 };
 
 const deniedParts=["/login","/registro","/cart","/carrito","/checkout","/contact","/contacto","/blog","/category","/categoria","/marca","/brand","javascript:","#"];
+const searchRouteParts=["/search-results","/search.php","/catalogsearch/result","/busqueda","/buscar","/search?","/search/","?s="];
+
+function isSearchOrNavigationUrl(url:string,base:string):boolean{
+  try{
+    const u=new URL(url),b=new URL(base);
+    if(u.toString()===b.toString())return true;
+    const pathQuery=(u.pathname+u.search).toLowerCase();
+    return searchRouteParts.some(part=>pathQuery.includes(part));
+  }catch{return true;}
+}
 
 function scoreLink(text:string,href:string,query:string):number{
   const q=normalizeName(query),hay=normalizeName(text+" "+href);
@@ -62,7 +72,7 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
     const raw=$(el).attr("href")??"";
     try{
       const url=new URL(raw,base).toString();
-      if(new URL(url).origin===new URL(origin).origin&&!deniedParts.some(x=>url.toLowerCase().includes(x)))productUrls.add(url);
+      if(new URL(url).origin===new URL(origin).origin&&!deniedParts.some(x=>url.toLowerCase().includes(x))&&!isSearchOrNavigationUrl(url,base))productUrls.add(url);
     }catch{ /* ignore invalid result link */ }
   });
   $("a[href]").each((_,el)=>{
@@ -72,7 +82,7 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
     let url:string;
     try{url=new URL(raw,base).toString();}catch{return;}
     if(new URL(url).origin!==new URL(origin).origin)return;
-    if(url===base||url.endsWith("/"))return;
+    if(url===base||url.endsWith("/")||isSearchOrNavigationUrl(url,base))return;
     const isProductResult=productUrls.has(url);
     const score=scoreLink(text,url,query)+(isProductResult?8:0);
     if(score<2)return;
