@@ -49,12 +49,25 @@ jobs:
           check() {
             name="$1"
             url="$2"
-            code=$(curl --silent --show-error --output "/tmp/$name.json" --write-out "%{http_code}" "$url" || true)
+            code=$(curl --max-time 25 --silent --show-error --output "/tmp/$name.json" --write-out "%{http_code}" "$url" || true)
             echo "=== $name HTTP $code ==="
             cat "/tmp/$name.json" || true
             echo
             if [ "$code" != "200" ]; then exit 1; fi
           }
           check health "https://dental-price-live.avance-dental74.workers.dev/health"
-          check search "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentaltix&sessionId=smoke-search"
-          node -e 'const fs=require("fs"); const h=JSON.parse(fs.readFileSync("/tmp/health.json")); const search=JSON.parse(fs.readFileSync("/tmp/search.json")); if(!h.ok||h.searchMode!=="dynamic-per-supplier"||search.sessionId!=="smoke-search"||!Array.isArray(search.offers)||search.offers.length<1) process.exit(1); console.log(JSON.stringify({health:h,search:{supplier:search.supplierId,offers:search.offers.length,error:search.error,source:search.discoveredFrom,refs:search.offers.map(o=>o.manufacturerReference)}},null,2));'
+          check dentaltix "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentaltix&sessionId=smoke-search"
+          check dentalcost "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentalcost&sessionId=smoke-search"
+          check dentalexpress "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=41294&supplier=dentalexpress&sessionId=smoke-search"
+          check ortolan "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=ortolan&sessionId=smoke-search"
+          check dvd "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Scotchbond%20Universal%20Plus&supplier=dvd-dental&sessionId=smoke-search"
+          node <<'NODE'
+          const fs=require("fs");
+          const h=JSON.parse(fs.readFileSync("/tmp/health.json"));
+          if(!h.ok||h.searchMode!=="dynamic-per-supplier") process.exit(1);
+          for(const name of ["dentaltix","dentalcost","dentalexpress","ortolan","dvd"]){
+            const x=JSON.parse(fs.readFileSync("/tmp/"+name+".json"));
+            console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
+            if(x.sessionId!=="smoke-search"||!Array.isArray(x.offers)||x.offers.length<1) process.exit(1);
+          }
+          NODE
