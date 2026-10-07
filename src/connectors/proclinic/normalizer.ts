@@ -19,7 +19,7 @@ function inferPresentation(value: string): string | undefined {
 }
 
 function inferMetrics(value: string) {
-  const pack=value.match(/(\d+)\s*(?:unidades|uds\.?|cápsulas|capsulas|carpules)/i);
+  const pack=value.match(/(\d+)\s*(?:unidades|uds\.?|cápsulas|capsulas|carpules|jeringas?)/i);
   const metric=value.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i);
   return {
     packCount:pack ? Number(pack[1]) : undefined,
