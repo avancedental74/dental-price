@@ -928,5 +928,17 @@
     "supplierId": "dentaltix",
     "url": "https://www.dentaltix.com/en/satelec/air-n-go-bicarbonate-air-polishing-devices-4x250g",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "scotchbond-universal-plus-41294",
+    "supplierId": "proclinic",
+    "url": "https://www.proclinic.es/tienda/scotchbond-universal-plus-bote",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "scotchbond-universal-plus-41294",
+    "supplierId": "dentalexpress",
+    "url": "https://dentalexpress.es/adhesivo-scotchbond-universal-plus-5ml-solventum-3m",
+    "acquisitionMode": "direct"
   }
 ]
