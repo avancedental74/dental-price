@@ -4,7 +4,7 @@ import { buildManualOffer, type ManualOfferInput, upsertManualOffer } from "../s
 
 const supplierNames:Record<ManualOfferInput["supplierId"],string>={"proclinic":"Proclinic","dental-iberica":"Dental Ibérica"};
 
-export function ManualOfferPanel({product,offers,onChange}:{product:CanonicalProduct|null;offers:SupplierOffer[];onChange:(offers:SupplierOffer[])=>void}){
+export function ManualOfferPanel({product,offers,onChange,onRecord}:{product:CanonicalProduct|null;offers:SupplierOffer[];onChange:(offers:SupplierOffer[])=>void;onRecord:(offer:SupplierOffer)=>void}){
   const [supplierId,setSupplierId]=useState<ManualOfferInput["supplierId"]>("proclinic");
   const [productUrl,setProductUrl]=useState("");
   const [manufacturerReference,setManufacturerReference]=useState("");
@@ -35,7 +35,8 @@ export function ManualOfferPanel({product,offers,onChange}:{product:CanonicalPro
         freeShippingThresholdBasis:"net"
       });
       onChange(upsertManualOffer(offers,next));
-      setMessage("Oferta manual guardada en este navegador.");
+      onRecord(next);
+      setMessage("Oferta manual e histórico guardados en este navegador.");
     }catch(error){setMessage(error instanceof Error?error.message:"No se pudo guardar la oferta");}
   };
 
