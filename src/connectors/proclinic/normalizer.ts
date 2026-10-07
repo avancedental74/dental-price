@@ -51,7 +51,7 @@ function vatInfo(net?: number, gross?: number): { status: VatStatus; rate?: numb
 }
 
 function createOffer(raw: ProclinicProductRaw, item?: ProclinicVariantRaw): SupplierOffer {
-  const source=item?.title ?? [raw.title,raw.contentText].filter(Boolean).join(" ");
+  const source=[raw.title,raw.contentText,item?.title].filter(Boolean).join(" ");
   const metrics=inferMetrics(source);
   const regular=item?.regularPrice ?? raw.regularPrice ?? item?.salePrice ?? raw.salePrice ?? 0;
   const sale=item?.salePrice ?? raw.salePrice;
