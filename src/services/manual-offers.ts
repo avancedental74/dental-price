@@ -1,11 +1,13 @@
 import type { CanonicalProduct, SupplierOffer, StockStatus, VatStatus } from "../types/domain";
 import { supplierOfferSchema } from "../domain/schemas";
+import { normalizeReference } from "../domain/matching/normalization";
 
 const STORAGE_KEY="dental-price:manual-offers:v1";
 
 export interface ManualOfferInput {
   supplierId:"proclinic"|"dental-iberica";
   productUrl:string;
+  manufacturerReference:string;
   price:number;
   vatStatus:VatStatus;
   vatRate?:number;
@@ -36,10 +38,14 @@ export function buildManualOffer(product:CanonicalProduct,input:ManualOfferInput
   if(!Number.isFinite(input.price)||input.price<=0) throw new Error("El precio debe ser mayor que cero");
   const url=new URL(input.productUrl);
   if(url.protocol!=="https:"&&url.protocol!=="http:") throw new Error("La URL debe ser http/https");
+  const hostname=url.hostname.toLowerCase().replace(/^www\./,"");
+  const allowed=input.supplierId==="proclinic" ? hostname==="proclinic.es" || hostname.endsWith(".proclinic.es") : hostname==="dentaliberica.com" || hostname.endsWith(".dentaliberica.com");
+  if(!allowed) throw new Error("La URL no pertenece al proveedor seleccionado");
+  if(normalizeReference(input.manufacturerReference)!==normalizeReference(product.manufacturerReference)) throw new Error("La referencia de fabricante no coincide con el producto seleccionado");
   const offer:SupplierOffer={
     supplierId:input.supplierId,
     manufacturer:product.manufacturer,
-    manufacturerReference:product.manufacturerReference,
+    manufacturerReference:input.manufacturerReference.trim(),
     rawName:[product.family,product.shade,product.variant,product.presentation].filter(Boolean).join(" "),
     normalizedName:product.normalizedName,
     productUrl:url.toString(),
