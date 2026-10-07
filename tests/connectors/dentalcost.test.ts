@@ -72,4 +72,18 @@ describe("DentalCost connector",()=>{
     expect(offer?.packCount).toBe(1);
     expect(offer?.shade).toBe("A3");
   });
+  it("normalizes Adper Scotchbond 1XT 4242 as a 6 g bottle",()=>{
+    const adper=`<html><body>
+      <h1>Adper Scotchbond 1XT Adhesivo Reposición 6ml. 3M Espe</h1>
+      <div>Solventum Precio sin IVA 127,24 € Precio con IVA (10%) 139,96 €</div>
+      <div>Adper Scotchbond 1XT Adhesivo Reposición 6g. 3M Espe
+      Ref: 02273M Ref fabricante: 4242 Disponibilidad: 44 artículo disponible 127,24 €</div>
+    </body></html>`;
+    const [offer]=normalizeDentalCost(parseDentalCostProductHtml(adper,"https://www.dentalcost.es/adhesivos/227-demo.html"));
+    expect(offer.manufacturerReference).toBe("4242");
+    expect(offer.presentation).toBe("Frasco");
+    expect(offer.quantity).toBe(6);
+    expect(offer.unit).toBe("g");
+    expect(offer.packCount).toBe(1);
+  });
 });
