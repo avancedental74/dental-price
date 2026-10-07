@@ -152,6 +152,23 @@ async function federatedSearch(query:string,sessionId:string){
   };
 }
 
+async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string){
+  const fetchImpl=withTimeout(8500);
+  const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,3);
+  if(!discovered.urls.length) return {offers:[] as SupplierOffer[],error:discovered.error??"Sin resultados",discoveredFrom:discovered.searchUrl};
+  const pages=await Promise.all(discovered.urls.map(async productUrl=>{
+    try{return await fetchSupplierUrl(supplierId,productUrl,fetchImpl);}
+    catch{return [] as SupplierOffer[];}
+  }));
+  const policy=policyList.find(p=>p.supplierId===supplierId);
+  const offers=pages.flat()
+    .filter(o=>relevantToQuery(o,query))
+    .map(o=>applySupplierPolicy(o,policy))
+    .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+    .filter(o=>supplierOfferSchema.safeParse(o).success);
+  return {offers,error:offers.length?null:"Sin coincidencias verificables",discoveredFrom:discovered.searchUrl};
+}
+
 export default {
   async fetch(request:Request,env:Env):Promise<Response>{
     const origin=request.headers.get("origin");
@@ -162,6 +179,21 @@ export default {
 
     const url=new URL(request.url);
     if(url.pathname==="/health") return Response.json({ok:true,at:new Date().toISOString(),suppliers,searchMode:"federated-live"},{headers});
+
+    if(url.pathname==="/search-supplier"){
+      const query=(url.searchParams.get("q")??"").trim();
+      const supplierId=(url.searchParams.get("supplier")??"") as SearchSupplierId;
+      const requestedAt=new Date().toISOString();
+      const sessionId=(url.searchParams.get("sessionId")??"").trim()||crypto.randomUUID();
+      if(query.length<2) return Response.json({error:"QUERY_TOO_SHORT"},{status:400,headers});
+      if(!suppliers.includes(supplierId)) return Response.json({error:"UNKNOWN_SUPPLIER"},{status:400,headers});
+      try{
+        const result=await searchOneSupplier(supplierId,query,sessionId);
+        return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error,discoveredFrom:result.discoveredFrom},{headers});
+      }catch(error){
+        return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:[],error:error instanceof Error?error.message:"SEARCH_ERROR"},{headers});
+      }
+    }
 
     if(url.pathname==="/search-live"){
       const query=(url.searchParams.get("q")??"").trim();
