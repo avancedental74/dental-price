@@ -946,5 +946,20 @@
     "category": "Composites",
     "normalizedName": "filtek z250 D3 jeringa 4 g",
     "active": true
+  },
+  {
+    "id": "adper-scotchbond-1xt-4242",
+    "manufacturer": "Solventum",
+    "brand": "Adper",
+    "family": "Adper Scotchbond 1XT",
+    "productName": "Adhesivo monocomponente",
+    "presentation": "Frasco",
+    "quantity": 6,
+    "unit": "g",
+    "packCount": 1,
+    "manufacturerReference": "4242",
+    "category": "Adhesivos",
+    "normalizedName": "adper scotchbond 1xt adhesivo monocomponente frasco 6 g",
+    "active": true
   }
 ]
