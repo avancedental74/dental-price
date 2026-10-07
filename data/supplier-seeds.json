@@ -556,5 +556,17 @@
     "supplierId": "dentalcost",
     "url": "https://www.dentalcost.es/composites-universales/265-filtek-z250-composite-universal-jeringa-reposicion-4g.html",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "adper-scotchbond-1xt-4242",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/adper-scotchbond-1-xt-kit-intro-adhesivos-1x6gr-obturacion?sku=053M4242",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "adper-scotchbond-1xt-4242",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/adhesivos/227-adper-scotchbond-1xt-adhesivo-reposicion-6ml.html",
+    "acquisitionMode": "direct"
   }
 ]
