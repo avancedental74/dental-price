@@ -29,7 +29,7 @@ function offer(raw:DentalCostProductRaw,v:DentalCostVariantRaw):SupplierOffer{
   return {
     supplierId:"dentalcost",supplierSku:v.supplierSku,manufacturer:raw.manufacturer,manufacturerReference:v.manufacturerReference,
     rawName:v.title||raw.title,normalizedName:normalizeName([raw.title,v.title,raw.manufacturer??""].join(" ")),productUrl:v.productUrl,
-    presentation:presentation(v.title+" "+raw.title),quantity:q.quantity,unit:q.unit,packCount:pack(v.title+" "+raw.title)??1,
+    presentation:presentation(v.title+" "+raw.title) ?? (/^4910/i.test(v.manufacturerReference??"")?"Jeringa":undefined),quantity:q.quantity,unit:q.unit,packCount:pack(v.title+" "+raw.title)??1,
     variant:variant(v.manufacturerReference,v.title+" "+raw.title),shade:shade(v.manufacturerReference,v.title),
     stockStatus:stock(v.stockText),rawStockText:v.stockText,
     regularPrice:v.price??raw.regularPrice??raw.salePrice??0,salePrice:v.price??raw.salePrice,
