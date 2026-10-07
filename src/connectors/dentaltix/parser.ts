@@ -15,6 +15,71 @@ function stockFromText(value?: string): string | undefined {
   return undefined;
 }
 
+function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVariantRaw[] {
+  const output:DentaltixVariantRaw[]=[];
+  const seen=new Set<string>();
+  const scripts=$('script[type="application/json"],script#__NUXT_DATA__').toArray();
+  for(const el of scripts){
+    const text=$(el).text().trim();
+    if(!text.startsWith("[")) continue;
+    try{
+      const payload=JSON.parse(text) as unknown[];
+      const resolve=(value:unknown):unknown=>{
+        if(typeof value==="number"&&Number.isInteger(value)&&value>=0&&value<payload.length) return payload[value];
+        return value;
+      };
+      const resolveNumber=(value:unknown):number|undefined=>{
+        const resolved=resolve(value);
+        return typeof resolved==="number"&&Number.isFinite(resolved)?resolved:undefined;
+      };
+      for(const entry of payload){
+        if(!entry||typeof entry!=="object"||Array.isArray(entry)) continue;
+        const obj=entry as Record<string,unknown>;
+        if(!("manRef" in obj)||!("sku" in obj)) continue;
+        const manufacturerReference=resolve(obj.manRef);
+        const supplierSku=resolve(obj.sku);
+        if(typeof manufacturerReference!=="string"||!manufacturerReference.trim()) continue;
+        const longName=resolve(obj.name);
+        const type=resolve(obj.type);
+        const title=[typeof longName==="string"?longName:undefined,typeof type==="string"?type:undefined].filter(Boolean).join(" - ");
+        if(!title) continue;
+        const priceResolved=resolve(obj.price);
+        let salePrice:number|undefined,regularPrice:number|undefined;
+        if(priceResolved&&typeof priceResolved==="object"&&!Array.isArray(priceResolved)){
+          const priceObj=priceResolved as Record<string,unknown>;
+          const sales=resolve(priceObj.sales);
+          const recommended=resolve(priceObj.recommended);
+          if(sales&&typeof sales==="object"&&!Array.isArray(sales)) salePrice=resolveNumber((sales as Record<string,unknown>).value);
+          if(recommended&&typeof recommended==="object"&&!Array.isArray(recommended)) regularPrice=resolveNumber((recommended as Record<string,unknown>).value);
+        }
+        const stockValue=resolve(obj.stock);
+        const delivery=resolve(obj.deliveryEstimate);
+        const rawStockText=[typeof stockValue==="string"?stockValue:undefined,typeof delivery==="string"?delivery:undefined].filter(Boolean).join(" ");
+        const sku=typeof supplierSku==="string"?supplierSku:undefined;
+        const key=manufacturerReference+"|"+(sku??"");
+        if(seen.has(key)) continue;
+        seen.add(key);
+        let variantUrl=productUrl;
+        if(sku){
+          try{const u=new URL(productUrl);u.searchParams.set("sku",sku);variantUrl=u.toString();}catch{ /* keep base URL */ }
+        }
+        output.push({
+          title,
+          supplierSku:sku,
+          manufacturerReference,
+          regularPrice,
+          salePrice,
+          rawStockText:rawStockText||undefined,
+          productUrl:variantUrl
+        });
+      }
+    }catch{
+      // optional Nuxt payload
+    }
+  }
+  return output;
+}
+
 function parseJsonLd($: cheerio.CheerioAPI): Record<string, unknown>[] {
   const output: Record<string, unknown>[] = [];
   $("script[type=\"application/ld+json\"]").each((_, el) => {
@@ -127,7 +192,8 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
   const stockMatch = bodyText.match(/(Solo quedan[^.]+\.|En stock[^.]+\.|Entrega[^.]+\.|No disponible[^.]*\.?)/i)?.[1];
   const promoIndex=bodyText.search(/(?:Oferta|Promoci[oó]n|Descuento|Compra|Envío gratis)/i);
   const promotionText=promoIndex>=0?bodyText.slice(promoIndex,promoIndex+600):undefined;
-  const parsedVariants = extractVariants($, productUrl);
+  const structuredVariants=nuxtVariants($,productUrl);
+  const parsedVariants = structuredVariants.length ? structuredVariants : extractVariants($, productUrl);
   if (pageManufacturerReference && !parsedVariants.some(v => v.manufacturerReference === pageManufacturerReference)) {
     const selectedType =
       $("[data-testid=\"variation-cards-label\"] b").first().text().replace(/\s+/g, " ").trim() ||
