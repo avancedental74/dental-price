@@ -4,7 +4,7 @@ Fecha: 2026-10-07
 
 ## Estado real
 
-La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **94 ofertas verificadas automáticamente**, con **84 ofertas comprables** en el último snapshot y **0 falsos EXACT** en validación.
+La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **94 ofertas verificadas automáticamente**, **84 ofertas comprables**, **24 promociones estructuradas**, **134 observaciones históricas** y **0 falsos EXACT** en validación.
 
 ## Cobertura automática actual
 
@@ -106,7 +106,7 @@ Si una fuente no puede verificarse automáticamente, Dental Price debe mostrar a
 4. Dentaltix y DentalCost deben ampliar progresivamente categorías y referencias, priorizando familias compartidas con referencia de fabricante idéntica. Filtek Universal Restorative ya aporta 9 referencias comparables entre ambos; `6555XW` permanece solo en Dentaltix mientras DentalCost no la publique. AIR-N-GO en DentalCost quedó fuera de la automatización porque esa ficha devuelve HTTP 404 desde GitHub Actions aunque sea visible públicamente.
 5. Opportunity Score necesita más días de histórico real para ser estadísticamente útil.
 6. Precios negociados, facturas e inventario interno están fuera del V1 público.
-7. El Basket Optimizer V1 ya está implementado; falta validarlo con cestas reales más grandes y ampliar cobertura de proveedores/productos.
+7. El Basket Optimizer V1 usa búsqueda podada y memoizada, cobra portes una sola vez por proveedor y tiene una regresión de 18 líneas × 3 proveedores. Mantiene un límite de seguridad de estados para cestas patológicas y devuelve un error explícito antes de aproximar o inventar una solución.
 
 ## Seguridad de dependencias
 
@@ -126,5 +126,18 @@ Si una fuente no puede verificarse automáticamente, Dental Price debe mostrar a
 - Registry central de referencias elimina reglas duplicadas de producto en conectores.
 - Búsqueda ambigua ya no selecciona silenciosamente el primer resultado.
 - Promociones visibles se estructuran; promociones cruzadas a otro producto quedan informativas.
-- Basket Optimizer V1 cobra portes una sola vez por proveedor y aplica los umbrales de forma conservadora.
+- Basket Optimizer V1 cobra portes una sola vez por proveedor, aplica los umbrales de forma conservadora y usa poda + memoización para evitar explosión cartesiana.
 - La validación incluye el fixture manual y regresiones sobre todo el catálogo canónico para referencia propia y referencia contradictoria.
+
+
+### Políticas de transporte
+
+- Dentaltix, DentalCost y DVD Dental tienen las condiciones de portes fuera de los conectores en `data/supplier-policies.json`.
+- `Refresh supplier policies` verifica semanalmente las páginas públicas de condiciones y solo renueva `observedAt` si coste, umbral y base neta/bruta siguen siendo compatibles con la política almacenada.
+- Si una política automática supera 30 días sin poder revalidarse, sus ofertas dejan de ser elegibles para ranking aunque el precio del producto siga accesible.
+- Última verificación automática correcta: 07/10/2026.
+
+
+### Verificación manual
+
+El modo manual ya no presupone que los portes estén sin IVA ni que el umbral de envío gratis sea neto. El usuario debe indicar explícitamente ambas condiciones; si faltan datos económicos, la oferta puede conservarse como referencia pero no ganar el ranking.
