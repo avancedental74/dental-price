@@ -25,7 +25,7 @@ describe("DVD Dental connector",()=>{
     const html=`<html><body>
       <h2>SOLVENTUM</h2><h1>Adhesivo Scotchbond Universal Plus (5ml)</h1>
       <div>Contenido: Frasco de 5ml.</div>
-      <div>REF. FAB: 41294</div>
+      <div>REF. FAB: 41294</div><span class="promo-sku-tooltip-item">Compra 2 adhesivos Scotchbond Universal Plus y te regalamos 1 Filtek Easy Match Fluido</span>
       <div>631 en stock</div>
       <div>94,49€ IVA incl. (Incluido impuestos)</div>
       <div>85,90€ excl. Tax (Excluyendo impuestos)</div>
@@ -50,7 +50,7 @@ describe("DVD Dental connector",()=>{
       <div>87,84€ IVA incl. (Incluido impuestos)</div>
       <div>79,85€ excl. Tax (Excluyendo impuestos)</div>
       <div>REF. DVD 3138780</div>
-      <div>410 en stock</div>
+      <div class="productView__stock card-stock--inStock">700 en stock</div>
       <div>Contenido: Frasco de 5ml.</div>
       <div>REF. FAB: 41294</div>
     </body></html>`;
@@ -64,6 +64,8 @@ describe("DVD Dental connector",()=>{
     expect(offers[0].quantity).toBe(5);
     expect(offers[0].unit).toBe("ml");
     expect(offers[0].stockStatus).toBe("in_stock");
+    expect(offers[0].promotion?.type).toBe("other");
+    expect(offers[0].promotion?.description).toContain("Filtek Easy Match");
     expect(offers[0].regularPrice).toBe(79.85);
     expect(offers[0].vatRate).toBe(10);
   });
