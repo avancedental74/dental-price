@@ -19,9 +19,8 @@ export function parseDentalCostProductHtml(html:string,productUrl:string):Dental
   const vatRate=gross?Number(gross[1].replace(",",".")):undefined;
   const salePrice=net?euro(net[1]):undefined;
   const regularPrice=crossed?euro(crossed[2]):salePrice;
-  const promotionText=body.match(/(?:Oferta|Promoci[oó]n|Descuento|Compra|Envío gratis)[^.]{0,160}(?:\.|$)/i)?.[0]
-    ?? body.match(/\b\d+\s*\+\s*\d+\b[^.]{0,120}/i)?.[0]
-    ?? body.match(/-\d{1,2}\s*%[^.]{0,120}/i)?.[0];
+  const promoIndex=body.search(/(?:Oferta|Promoci[oó]n|Descuento|Compra|Envío gratis)/i);
+  const promotionText=promoIndex>=0?body.slice(promoIndex,promoIndex+600):undefined;
 
   const variants:DentalCostVariantRaw[]=[];
   const seen=new Set<string>();
