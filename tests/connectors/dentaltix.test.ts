@@ -53,9 +53,15 @@ describe("Dentaltix connector", () => {
     expect(selected?.quantity).toBe(3);
   });
 
-  it("preserves glove variants as distinct references", () => {
+  it("preserves glove variants as distinct references and normalizes box quantity safely", () => {
     const raw = parseDentaltixProductHtml(gloves, "https://www.dentaltix.com/demo-gloves");
     expect(raw.variants).toHaveLength(3);
     expect(raw.variants.map(v => v.manufacturerReference)).toEqual(["003642","003659","003666"]);
+    const offers=normalizeDentaltix(raw);
+    expect(offers[0].presentation).toBe("Caja");
+    expect(offers[0].quantity).toBe(100);
+    expect(offers[0].unit).toBe("ud");
+    expect(offers[0].packCount).toBe(1);
+    expect(offers[0].variant).toBe("XS");
   });
 });
