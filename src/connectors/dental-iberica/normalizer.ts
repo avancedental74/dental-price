@@ -52,7 +52,7 @@ function createOffer(raw:DentalIbericaProductRaw,item:DentalIbericaVariantRaw):S
   return {
     supplierId:"dental-iberica",supplierSku:item.supplierSku,manufacturerReference:item.manufacturerReference,
     rawName:item.title,normalizedName:normalizeName([raw.title,item.title,raw.manufacturer ?? ""].join(" ")),productUrl:item.productUrl,
-    presentation:presentation(source),quantity:m.quantity,unit:m.unit,packCount:m.packCount,variant:variant(item.title),shade:shade(item.title),
+    presentation:presentation(source),quantity:m.quantity,unit:m.unit,packCount:m.packCount,variant:variant(item.title),shade:shade([item.title,item.manufacturerReference ?? ""].join(" ")),
     stockStatus:stock(item.rawStockText),rawStockText:item.rawStockText,regularPrice:item.price ?? 0,
     vatStatus:"unknown",currency:"EUR",observedAt:new Date().toISOString(),sourceStatus:"normal"
   };
