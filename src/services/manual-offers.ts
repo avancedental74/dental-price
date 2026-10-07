@@ -7,7 +7,7 @@ const STORAGE_KEY="dental-price:manual-offers:v1";
 const HISTORY_KEY="dental-price:manual-history:v1";
 
 export interface ManualOfferInput {
-  supplierId:"proclinic"|"dental-iberica"|"dvd-dental"|"dentalexpress"|"brokerdental"|"ortodonland";
+  supplierId:"proclinic"|"dental-iberica"|"dvd-dental"|"dentalexpress"|"brokerdental"|"ortolan";
   productUrl:string;
   manufacturerReference:string;
   price:number;
@@ -29,32 +29,17 @@ export function loadManualOffers():SupplierOffer[]{
     return raw.flatMap(value=>{const parsed=supplierOfferSchema.safeParse(value);return parsed.success?[parsed.data]:[];});
   }catch{return [];}
 }
-
-export function loadManualHistory():PriceObservation[]{
-  if(typeof window==="undefined") return [];
-  try{
-    const raw=JSON.parse(window.localStorage.getItem(HISTORY_KEY)??"[]");
-    return Array.isArray(raw)?raw:[];
-  }catch{return [];}
-}
-
-export function saveManualHistory(history:PriceObservation[]):void{
-  if(typeof window==="undefined") return;
-  window.localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
-}
-
-export function saveManualOffers(offers:SupplierOffer[]):void{
-  if(typeof window==="undefined") return;
-  window.localStorage.setItem(STORAGE_KEY,JSON.stringify(offers));
-}
+export function loadManualHistory():PriceObservation[]{if(typeof window==="undefined") return [];try{const raw=JSON.parse(window.localStorage.getItem(HISTORY_KEY)??"[]");return Array.isArray(raw)?raw:[];}catch{return [];}}
+export function saveManualHistory(history:PriceObservation[]):void{if(typeof window!=="undefined") window.localStorage.setItem(HISTORY_KEY,JSON.stringify(history));}
+export function saveManualOffers(offers:SupplierOffer[]):void{if(typeof window!=="undefined") window.localStorage.setItem(STORAGE_KEY,JSON.stringify(offers));}
 
 function allowedHostname(supplierId:ManualOfferInput["supplierId"],hostname:string):boolean{
-  if(supplierId==="proclinic") return hostname==="proclinic.es" || hostname.endsWith(".proclinic.es");
-  if(supplierId==="dental-iberica") return hostname==="dentaliberica.com" || hostname.endsWith(".dentaliberica.com");
-  if(supplierId==="dvd-dental") return hostname==="dvd-dental.com" || hostname.endsWith(".dvd-dental.com");
-  if(supplierId==="dentalexpress") return hostname==="dentalexpress.es" || hostname.endsWith(".dentalexpress.es");
-  if(supplierId==="brokerdental") return hostname==="brokerdental.es" || hostname.endsWith(".brokerdental.es");
-  if(supplierId==="ortodonland") return true;
+  if(supplierId==="proclinic") return hostname==="proclinic.es"||hostname.endsWith(".proclinic.es");
+  if(supplierId==="dental-iberica") return hostname==="dentaliberica.com"||hostname.endsWith(".dentaliberica.com");
+  if(supplierId==="dvd-dental") return hostname==="dvd-dental.com"||hostname.endsWith(".dvd-dental.com");
+  if(supplierId==="dentalexpress") return hostname==="dentalexpress.es"||hostname.endsWith(".dentalexpress.es");
+  if(supplierId==="brokerdental") return hostname==="brokerdental.es"||hostname.endsWith(".brokerdental.es");
+  if(supplierId==="ortolan") return hostname==="ortolan.es"||hostname.endsWith(".ortolan.es");
   return false;
 }
 
@@ -67,36 +52,14 @@ export function buildManualOffer(product:CanonicalProduct,input:ManualOfferInput
   if(!allowedHostname(input.supplierId,hostname)) throw new Error("La URL no pertenece al proveedor seleccionado");
   if(normalizeReference(input.manufacturerReference)!==normalizeReference(product.manufacturerReference)) throw new Error("La referencia de fabricante no coincide con el producto seleccionado");
   const offer:SupplierOffer={
-    supplierId:input.supplierId,
-    manufacturer:product.manufacturer,
-    manufacturerReference:input.manufacturerReference.trim(),
-    rawName:[product.family,product.shade,product.variant,product.presentation].filter(Boolean).join(" "),
-    normalizedName:product.normalizedName,
-    productUrl:url.toString(),
-    presentation:product.presentation,
-    quantity:product.quantity,
-    unit:product.unit,
-    packCount:product.packCount,
-    variant:product.variant,
-    shade:product.shade,
-    stockStatus:input.stockStatus,
-    regularPrice:input.price,
-    vatStatus:input.vatStatus,
-    vatRate:input.vatRate,
-    currency:"EUR",
-    shippingCost:input.shippingCost,
-    shippingCostVatIncluded:input.shippingCostVatIncluded,
-    shippingVatRate:input.shippingVatRate,
-    freeShippingThreshold:input.freeShippingThreshold,
-    freeShippingThresholdBasis:input.freeShippingThresholdBasis,
-    deliveryZone:"ES_PENINSULA",
-    observedAt:new Date().toISOString(),
-    sourceStatus:"normal",
-    sourceMode:"manual"
+    supplierId:input.supplierId,manufacturer:product.manufacturer,manufacturerReference:input.manufacturerReference.trim(),
+    rawName:[product.family,product.shade,product.variant,product.presentation].filter(Boolean).join(" "),normalizedName:product.normalizedName,productUrl:url.toString(),
+    presentation:product.presentation,quantity:product.quantity,unit:product.unit,packCount:product.packCount,variant:product.variant,shade:product.shade,
+    stockStatus:input.stockStatus,regularPrice:input.price,vatStatus:input.vatStatus,vatRate:input.vatRate,currency:"EUR",
+    shippingCost:input.shippingCost,shippingCostVatIncluded:input.shippingCostVatIncluded,shippingVatRate:input.shippingVatRate,
+    freeShippingThreshold:input.freeShippingThreshold,freeShippingThresholdBasis:input.freeShippingThresholdBasis,deliveryZone:"ES_PENINSULA",
+    observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"manual"
   };
   return supplierOfferSchema.parse(offer);
 }
-
-export function upsertManualOffer(offers:SupplierOffer[],next:SupplierOffer):SupplierOffer[]{
-  return [...offers.filter(o=>!(o.supplierId===next.supplierId&&o.manufacturerReference===next.manufacturerReference)),next];
-}
+export function upsertManualOffer(offers:SupplierOffer[],next:SupplierOffer):SupplierOffer[]{return [...offers.filter(o=>!(o.supplierId===next.supplierId&&o.manufacturerReference===next.manufacturerReference)),next];}
