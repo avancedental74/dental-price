@@ -40,6 +40,16 @@ jobs:
               const snippets=[...html.matchAll(/.{0,180}(?:4910A3B|41294|Tetric|EvoCeram|search-results|algolia|autocomplete|klevu|search_query|products).{0,300}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g," "));
               console.log("SNIPPETS",JSON.stringify(snippets,null,2));
               console.log("SCRIPT COUNT",scripts.length);
+              if(name==="dentaltix"){
+                const refs=[...new Set(html.match(/(?:4910|4911)[A-Z0-9.-]*/gi)??[])];
+                console.log("DENTALTIX REFERENCE TOKENS",JSON.stringify(refs.slice(0,200),null,2));
+                for(const token of refs.slice(0,20)){
+                  const pos=html.toUpperCase().indexOf(token.toUpperCase());
+                  console.log("CTX",token,html.slice(Math.max(0,pos-500),pos+900).replace(/\s+/g," "));
+                }
+                const mv=html.indexOf('\"mainVar\"');
+                console.log("MAINVAR CONTEXT",mv>=0?html.slice(mv-300,mv+3500).replace(/\s+/g," "):"none");
+              }
             }catch(e){console.log("ERROR",e.message);}
           }
           NODE
