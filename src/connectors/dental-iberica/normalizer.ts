@@ -52,11 +52,11 @@ function createOffer(raw:DentalIbericaProductRaw,item:DentalIbericaVariantRaw):S
   const source=[raw.title,item.title,raw.contentText].filter(Boolean).join(" ");
   const m=metrics(source);
   return {
-    supplierId:"dental-iberica",supplierSku:item.supplierSku,manufacturerReference:item.manufacturerReference,
+    supplierId:"dental-iberica",supplierSku:item.supplierSku,manufacturer:raw.manufacturer,manufacturerReference:item.manufacturerReference,
     rawName:item.title,normalizedName:normalizeName([raw.title,item.title,raw.manufacturer ?? ""].join(" ")),productUrl:item.productUrl,
     presentation:presentation(source),quantity:m.quantity,unit:m.unit,packCount:m.packCount,variant:variant(item.title),shade:shade([item.title,item.manufacturerReference ?? ""].join(" ")),
     stockStatus:stock(item.rawStockText),rawStockText:item.rawStockText,regularPrice:item.price ?? 0,
-    vatStatus:"unknown",currency:"EUR",observedAt:new Date().toISOString(),sourceStatus:"normal"
+    vatStatus:"unknown",currency:"EUR",freeShippingThreshold:120,freeShippingThresholdBasis:"net",deliveryZone:"ES_PENINSULA",deliveryEstimate:"24-48 h si está en stock",observedAt:new Date().toISOString(),sourceStatus:"normal"
   };
 }
 
