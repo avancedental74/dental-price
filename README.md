@@ -4,25 +4,20 @@ Comparador de coste efectivo de suministros dentales para proveedores que venden
 
 ## Estado
 
-**MVP endurecido, desplegado y con comparación automática real entre proveedores.**
+**Buscador federado en vivo desplegado. El catálogo local ya no es requisito para buscar un producto.**
 
 Estado verificado el 07/10/2026:
 
-- **94 ofertas verificadas automáticamente** en el último refresh publicado.
-- **84 ofertas comprables ahora**: identidad, precio, IVA, portes, stock y frescura suficientes para competir.
-- **134 observaciones históricas** acumuladas y **24 promociones estructuradas** detectadas en el snapshot actual.
-- **34 productos** tienen al menos dos proveedores automáticos comprables.
-- **3 proveedores automáticos** aportan datos actuales: Dentaltix, DentalCost y DVD Dental (este último, por ahora, para `41294`).
-- **Dentaltix: 42 ofertas automáticas**: 13 Filtek Supreme XTE, 10 Filtek Universal Restorative, 7 Filtek Z250 jeringa, 4 RelyX Universal, 1 Scotchbond Universal Plus, 1 Adper Scotchbond 1XT, 4 tallas de guantes Santex y 2 referencias Peeso 28 mm.
-- **DentalCost: 51 ofertas automáticas**: 24 Filtek Supreme XTE, 9 Filtek Universal Restorative, 10 Filtek Z250 jeringa, 4 RelyX Universal, 1 Scotchbond Universal Plus, 1 Adper Scotchbond 1XT y 2 referencias Peeso 28 mm.
-- Para referencias compartidas, Dentaltix y DentalCost compiten con precio + IVA + portes + umbral de envío + stock. Ya existe comparación automática real en composites Filtek, endodoncia Peeso, cementos RelyX y adhesivos Scotchbond/Adper.
-- **DVD Dental**: automatización validada para Scotchbond Universal Plus `41294`; las variantes complejas siguen en verificación manual cuando la web no expone variante→SKU/precio de forma fiable.
-- **Proclinic y Dental Ibérica**: GitHub Actions recibe HTTP 405; se usa snapshot manual seguro.
-- Las ofertas manuales se guardan solo en `localStorage`, exigen dominio del proveedor + referencia de fabricante coincidente y conservan histórico local.
-- El modo manual permite indicar si los portes incluyen IVA y si el umbral de envío gratis se expresa en base neta o bruta; no se asume una semántica comercial por defecto.
-- CI completo y auditoría de dependencias con severidad `high` en verde.
-- Todas las peticiones a proveedores tienen timeout de 15 s; una web lenta no puede bloquear todo el refresh.
-- El parser de fichas simples de DentalCost ya recupera también disponibilidad; Adper 4242 y Scotchbond 41294 tienen stock confirmado y pueden competir en el ranking.
+- La búsqueda principal acepta **nombre o referencia libre** y consulta proveedores en el momento de la búsqueda.
+- El Worker no necesita que el producto exista en `data/products.json`: el catálogo local queda para histórico, pruebas y datos auxiliares.
+- Cada consulta usa un `sessionId`; solo ofertas obtenidas dentro de esa sesión pueden ganar.
+- **5 proveedores permiten búsqueda automática live**: Dentaltix, DentalCost, DVD Dental, Dental Express y Ortolan.
+- **3 proveedores están protegidos por AWS WAF/CAPTCHA** frente a peticiones de servidor: Proclinic, Dental Ibérica y Broker Dental. No se intenta eludir esa verificación; quedan identificados como proveedores que requieren navegación humana.
+- Prueba end-to-end confirmada sin depender del catálogo: búsqueda de `4910A3B` en Dentaltix → variante exacta `053M4910A3B` → Filtek Supreme XTE A3 Body 3 g → precio live 44,90 € en la ejecución de verificación.
+- DentalCost y Dental Express también devuelven referencias exactas en pruebas live; DVD usa su API pública Klevu y Ortolan sus datos estructurados de búsqueda para evitar cargas pesadas y falsos positivos.
+- El último smoke test del Worker consulta los cinco proveedores live y terminó correctamente.
+- El snapshot programado y su histórico continúan existiendo, pero **no sustituyen a una consulta live** ni pueden declarar el ganador de una búsqueda actual.
+- CI completo en verde para el frontend y las reglas de dominio.
 
 ## Objetivo
 
@@ -50,11 +45,14 @@ El estado real y las limitaciones verificadas están en `docs/HARDENING_STATUS.m
 
 ## Proveedores
 
-1. Dentaltix — automatización pública activa.
-2. DentalCost — automatización pública activa.
-3. DVD Dental — automatización parcial validada para fichas simples como `41294`; otras variantes permanecen manuales si no son demostrables.
-4. Proclinic — snapshot manual local mientras el acceso automatizado siga rechazado.
-5. Dental Ibérica — snapshot manual local mientras el acceso automatizado siga rechazado.
+1. Dentaltix — búsqueda live por nombre o referencia; variantes exactas recuperadas también desde el payload Nuxt.
+2. DentalCost — búsqueda live por nombre o referencia.
+3. DVD Dental — búsqueda live mediante su API pública Klevu; no se descarga la página de resultados completa.
+4. Dental Express — búsqueda live; referencia del fabricante y referencia interna separadas.
+5. Ortolan — búsqueda live usando resultados estructurados de su buscador.
+6. Proclinic — AWS WAF exige verificación humana a las peticiones de servidor.
+7. Dental Ibérica — AWS WAF exige verificación humana a las peticiones de servidor.
+8. Broker Dental — AWS WAF exige verificación humana a las peticiones de servidor.
 
 ## Funciones ya operativas
 
@@ -75,10 +73,14 @@ No se inventan equivalencias, IVA, portes, stock ni precios. Un dato incompleto 
 
 La comparación interactiva usa un backend serverless separado del snapshot programado.
 
-- Cada búsqueda genera un `sessionId` nuevo.
-- Solo ofertas obtenidas y verificadas dentro de ese mismo `sessionId` pueden ganar.
+- El usuario escribe cualquier nombre o referencia; no se selecciona primero un producto de una base precargada.
+- El navegador crea un `sessionId` y lanza consultas independientes a los proveedores live.
+- Cada proveedor descubre sus fichas en su propio buscador y extrae el precio actual de esa consulta.
+- Solo ofertas obtenidas y verificadas dentro del mismo `sessionId` pueden ganar.
+- Las referencias exactas tienen prioridad. Cuando un proveedor no expone referencia de fabricante, el resultado puede mostrarse y agruparse de forma conservadora por nombre + atributos, pero no se inventa una referencia para hacerlo ganador.
 - `current-prices.json` es snapshot/histórico y nunca sustituye a una consulta live.
-- Si el backend live no está configurado o falla, la aplicación muestra los snapshots como referencia pero no declara ganador.
-- Backend previsto: Cloudflare Workers en plan gratuito, reutilizando los mismos conectores y reglas de matching del repositorio.
+- Si el backend live no está configurado o falla, la aplicación no declara ganador con datos guardados.
+- Backend desplegado: Cloudflare Workers; frontend en GitHub Pages.
 - El frontend lee el endpoint desde `VITE_LIVE_API_URL`.
-- El despliegue del Worker usa `.github/workflows/deploy-live-api.yml` y requiere los secrets `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID`.
+- Los despliegues del Worker están serializados para evitar que una ejecución antigua sobrescriba una versión más nueva.
+- El smoke test de despliegue exige respuesta válida de Dentaltix, DentalCost, Dental Express, Ortolan y DVD antes de considerar correcto el despliegue.
