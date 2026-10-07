@@ -14,7 +14,7 @@
     "variant": "Body",
     "shade": "A1",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -26,8 +26,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:32.343Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:50:39.200Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -44,7 +45,7 @@
     "variant": "Enamel",
     "shade": "A1",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -56,8 +57,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:35.231Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:50:41.910Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -74,7 +76,7 @@
     "variant": "Body",
     "shade": "A2",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -86,8 +88,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:37.944Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:50:44.849Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -104,7 +107,7 @@
     "variant": "Enamel",
     "shade": "A2",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -116,8 +119,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:40.676Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:50:47.604Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -134,7 +138,7 @@
     "variant": "Body",
     "shade": "A3.5",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -146,8 +150,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:51.663Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:50:58.217Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -164,7 +169,7 @@
     "variant": "Body",
     "shade": "A3",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -176,8 +181,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:43.362Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:50:50.298Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -194,7 +200,7 @@
     "variant": "Dentin",
     "shade": "A3",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -206,8 +212,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:46.184Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:50:52.782Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -224,7 +231,7 @@
     "variant": "Enamel",
     "shade": "A3",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -236,8 +243,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:48.877Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:50:55.430Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -254,7 +262,7 @@
     "variant": "Body",
     "shade": "B2",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 9 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -266,8 +274,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:54.410Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:51:00.959Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -296,8 +305,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:57.243Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:51:03.628Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -314,7 +324,7 @@
     "variant": "Body",
     "shade": "C1",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 22 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 8 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -326,8 +336,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:37:59.878Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:51:06.423Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -344,7 +355,7 @@
     "variant": "Body",
     "shade": "C2",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 21 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 8 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -356,8 +367,9 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:38:02.534Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:51:09.126Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   },
   {
     "supplierId": "dentaltix",
@@ -374,7 +386,7 @@
     "variant": "Body",
     "shade": "C3",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 21 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 8 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
     "vatStatus": "excluded",
@@ -386,7 +398,8 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:38:05.225Z",
-    "sourceStatus": "normal"
+    "observedAt": "2026-10-07T10:51:11.840Z",
+    "sourceStatus": "normal",
+    "sourceMode": "automatic"
   }
 ]
