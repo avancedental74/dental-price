@@ -11,7 +11,7 @@ import { calculatePricing } from "../src/domain/pricing";
 import { appendObservation } from "../src/domain/history";
 import { supplierOfferSchema } from "../src/domain/schemas";
 
-type Seed={productId:string;supplierId:string;url:string};
+type Seed={productId:string;supplierId:string;url:string;acquisitionMode?:"direct"|"manual_verification"};
 type ConnectorStatus={supplierId:string;productId?:string;status:"green"|"amber"|"red";checkedAt:string;message:string};
 const readJson=async <T>(p:string):Promise<T>=>JSON.parse(await readFile(p,"utf8")) as T;
 const sleep=(ms:number)=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -30,7 +30,8 @@ async function fetchPage(seed:Seed):Promise<SupplierOffer[]>{
   throw new Error("Unsupported supplier "+seed.supplierId);
 }
 
-const uniquePages=[...new Map(seeds.map(s=>[s.supplierId+"|"+s.url,s])).entries()];
+const directSeeds=seeds.filter(s=>s.acquisitionMode!=="manual_verification");
+const uniquePages=[...new Map(directSeeds.map(s=>[s.supplierId+"|"+s.url,s])).entries()];
 const pageResults=new Map<string,SupplierOffer[]>();
 const pageErrors=new Map<string,string>();
 
@@ -47,11 +48,15 @@ for(const [key,seed] of uniquePages){
 for(const seed of seeds){
   const product=productMap.get(seed.productId);
   if(!product) continue;
-  const key=seed.supplierId+"|"+seed.url;
   const checkedAt=new Date().toISOString();
+  if(seed.acquisitionMode==="manual_verification"){
+    statuses.push({supplierId:seed.supplierId,productId:seed.productId,status:"amber",checkedAt,message:"Automatic public access is unavailable; manual verification is required"});
+    continue;
+  }
+  const key=seed.supplierId+"|"+seed.url;
   const pageError=pageErrors.get(key);
   if(pageError){
-    statuses.push({supplierId:seed.supplierId,productId:seed.productId,status:pageError.includes("HTTP 405")?"amber":"red",checkedAt,message:pageError.includes("HTTP 405")?"Automated access unavailable (HTTP 405); last verified data retained":pageError});
+    statuses.push({supplierId:seed.supplierId,productId:seed.productId,status:pageError.includes("HTTP 405")?"amber":"red",checkedAt,message:pageError.includes("HTTP 405")?"Automatic public access unavailable (HTTP 405)":pageError});
     continue;
   }
 
