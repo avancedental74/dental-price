@@ -1,25 +1,32 @@
-import type { CanonicalProduct, SupplierOffer } from "../../types/domain";
+import type { CanonicalProduct, FreshnessStatus, SupplierOffer } from "../../types/domain";
 import { matchOfferToProduct } from "../matching/matcher";
 import { calculatePricing } from "../pricing";
 import type { ComparisonResult, MatchedSupplierOffer } from "./types";
 
-function isFreshEnough(offer: SupplierOffer, now = new Date()): boolean {
+export function getFreshnessStatus(offer: SupplierOffer, now = new Date()): FreshnessStatus {
   const observed = new Date(offer.observedAt);
-  if (Number.isNaN(observed.getTime())) return false;
-  const ageMs = now.getTime() - observed.getTime();
-  return ageMs <= 72 * 60 * 60 * 1000;
+  if (Number.isNaN(observed.getTime())) return "stale";
+  const ageHours = (now.getTime() - observed.getTime()) / 3600000;
+  if (ageHours < 24) return "fresh";
+  if (ageHours <= 72) return "aging";
+  return "stale";
 }
 
 function hasIncompleteEconomicData(item: MatchedSupplierOffer): boolean {
-  return Boolean(item.pricing?.warnings.some(w => w === "IVA no confirmado" || w === "IVA excluido pero tasa desconocida" || w === "Transporte no confirmado"));
+  return Boolean(item.pricing?.warnings.some(w =>
+    w === "IVA no confirmado" ||
+    w === "IVA excluido pero tasa desconocida" ||
+    w === "Transporte no confirmado"
+  ));
 }
 
 function rankingEligible(item: MatchedSupplierOffer): boolean {
+  const stockEligible=item.offer.stockStatus==="in_stock" || item.offer.stockStatus==="low_stock";
   return (
     item.match.status === "EXACT" &&
-    item.offer.sourceStatus !== "quarantined" &&
-    item.offer.stockStatus !== "unavailable" &&
-    isFreshEnough(item.offer) &&
+    item.offer.sourceStatus === "normal" &&
+    stockEligible &&
+    getFreshnessStatus(item.offer) !== "stale" &&
     item.pricing !== null &&
     item.pricing.effectiveTotalCost > 0 &&
     !hasIncompleteEconomicData(item)
@@ -34,28 +41,20 @@ export function compareSupplierOffers(
   const matches = offers.map((offer): MatchedSupplierOffer => {
     const match = matchOfferToProduct(product, offer);
     let pricing = null;
-    try {
-      pricing = calculatePricing(offer, { requestedQuantity: quantity, includeVat: true });
-    } catch {
-      pricing = null;
-    }
+    try { pricing = calculatePricing(offer, { requestedQuantity: quantity, includeVat: true }); }
+    catch { pricing = null; }
     const item: MatchedSupplierOffer = { product, offer, match, pricing, eligibleForRanking: false };
     item.eligibleForRanking = rankingEligible(item);
     return item;
   });
 
-  const ranked = matches
-    .filter((item) => item.eligibleForRanking)
-    .sort((a, b) => {
-      const costDiff = (a.pricing?.effectiveTotalCost ?? Infinity) - (b.pricing?.effectiveTotalCost ?? Infinity);
-      if (costDiff !== 0) return costDiff;
-      const unitDiff = (a.pricing?.effectiveUnitCost ?? Infinity) - (b.pricing?.effectiveUnitCost ?? Infinity);
-      if (unitDiff !== 0) return unitDiff;
-      return new Date(b.offer.observedAt).getTime() - new Date(a.offer.observedAt).getTime();
-    });
+  const ranked = matches.filter(item=>item.eligibleForRanking).sort((a,b)=>{
+    const costDiff=(a.pricing?.effectiveTotalCost ?? Infinity)-(b.pricing?.effectiveTotalCost ?? Infinity);
+    if(costDiff!==0) return costDiff;
+    const unitDiff=(a.pricing?.effectiveUnitCost ?? Infinity)-(b.pricing?.effectiveUnitCost ?? Infinity);
+    if(unitDiff!==0) return unitDiff;
+    return new Date(b.offer.observedAt).getTime()-new Date(a.offer.observedAt).getTime();
+  });
 
-  return {
-    product, quantity, matches, ranked,
-    rejected: matches.filter((item) => !item.eligibleForRanking)
-  };
+  return {product,quantity,matches,ranked,rejected:matches.filter(item=>!item.eligibleForRanking)};
 }
