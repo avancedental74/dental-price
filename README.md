@@ -4,7 +4,12 @@ Comparador privado de precios de suministros dentales para proveedores que vende
 
 ## Estado
 
-Fase 1 — bootstrap del MVP.
+**MVP endurecido y desplegado en GitHub Pages.** El motor de matching, pricing, histórico, anomalías, score, validación y seguridad está operativo.
+
+- Dentaltix: 13 variantes Filtek Supreme XTE verificadas automáticamente.
+- Proclinic y Dental Ibérica: sus webs rechazan GitHub Actions; se usa verificación manual segura en el navegador.
+- Las ofertas manuales se guardan solo en `localStorage`, exigen URL del proveedor + referencia de fabricante coincidente y conservan histórico local.
+- CI completo y auditoría de dependencias con severidad `high` en verde.
 
 ## Objetivo
 
@@ -26,16 +31,16 @@ Infraestructura de pago: **ninguna prevista en V1**.
 
 ## Especificación
 
-La fuente de verdad del proyecto está en:
+La fuente de verdad del proyecto está en `docs/DENTAL_PRICE_MASTER_SPEC.md`.
 
-`docs/DENTAL_PRICE_MASTER_SPEC.md`
+El estado real y las limitaciones verificadas están en `docs/HARDENING_STATUS.md`.
 
 ## Proveedores MVP
 
-1. Dentaltix
-2. Proclinic
-3. Dental Ibérica
+1. Dentaltix — automatización pública parcial y validada.
+2. Proclinic — snapshot manual local mientras el acceso automatizado siga rechazado.
+3. Dental Ibérica — snapshot manual local mientras el acceso automatizado siga rechazado.
 
-## Orden de trabajo
+## Principio no negociable
 
-No comenzar conectores reales hasta que el modelo de dominio, schemas y tests base estén establecidos.
+No se inventan equivalencias, IVA, portes, stock ni precios. Un dato incompleto puede mostrarse, pero no ganar la comparación.
