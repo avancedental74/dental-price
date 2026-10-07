@@ -36,7 +36,7 @@ describe("real supplier ranking regression",()=>{
       offer("dentalcost",47.86,5.80,120,"gross")
     ],3);
     expect(result.ranked[0].offer.supplierId).toBe("dentaltix");
-    expect(result.ranked[0].pricing?.shippingTotal).toBe(0);
-    expect(result.ranked[1].pricing?.shippingTotal).toBe(0);
+    expect(result.ranked[0].pricing?.shippingCost).toBe(0);
+    expect(result.ranked[1].pricing?.shippingCost).toBe(0);
   });
 });
