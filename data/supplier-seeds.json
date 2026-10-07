@@ -628,5 +628,125 @@
     "supplierId": "dentalcost",
     "url": "https://www.dentalcost.es/varios-cementos-de-resina/8955-relyx-universal-cemento-de-resina-reposicion-jeringa-34g-3m.html",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a1",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=058107",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a1",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a2",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=058108",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a2",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a3",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=058109",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a3",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a3-5",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=058110",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a3-5",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a4",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=H008",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555a4",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555b1",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=H009",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555b1",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555b2",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=058111",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555b2",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555d3",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=H010",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555d3",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555xw",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=H011",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555xw",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555po",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/solventum/composite-universal-filtek-capsula-20x02-gr?sku=H012",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-universal-6555po",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
+    "acquisitionMode": "direct"
   }
 ]
