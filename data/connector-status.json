@@ -3,511 +3,665 @@
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a1b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.562Z",
+    "checkedAt": "2026-10-07T11:33:26.821Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a1e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.565Z",
+    "checkedAt": "2026-10-07T11:33:26.825Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a2b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.565Z",
+    "checkedAt": "2026-10-07T11:33:26.825Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a2e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.565Z",
+    "checkedAt": "2026-10-07T11:33:26.825Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.565Z",
+    "checkedAt": "2026-10-07T11:33:26.826Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3d",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.566Z",
+    "checkedAt": "2026-10-07T11:33:26.826Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.566Z",
+    "checkedAt": "2026-10-07T11:33:26.826Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3-5b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.566Z",
+    "checkedAt": "2026-10-07T11:33:26.826Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910b2b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.566Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910b2e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.566Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910c1b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910c2b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910c3b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910b2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "Automatic public access is unavailable; manual verification is required"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021a3",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "Automatic public access is unavailable; manual verification is required"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "air-n-go-f10251",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "Automatic public access is unavailable; manual verification is required"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "peeso-no2",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "Automatic public access is unavailable; manual verification is required"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a1b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.827Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a2b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a3b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.567Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a3-5b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a4b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910b1b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910b2b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910b3b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910c1b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910c2b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.828Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910c3b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.829Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910d2b",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.829Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a1d",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.829Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a2d",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.568Z",
+    "checkedAt": "2026-10-07T11:33:26.829Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a3d",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.829Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a4d",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.829Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910b3d",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.829Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910c4d",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.829Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a1e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a2e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910a3e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910b1e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910b2e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "filtek-xte-4910d2e",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.569Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a1d",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a2d",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a3d",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a4d",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910b3d",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910c4d",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a3-5b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a4b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910b1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910b2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910b3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910c1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910c2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910c3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910d2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a1e",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910a3e",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910b1e",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910b2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dvd-dental",
     "productId": "filtek-xte-4910d2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "Variant-specific automatic data is not reliably exposed; manual verification is required"
   },
   {
     "supplierId": "dentaltix",
     "productId": "santex-nitrile-black-xs",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "santex-nitrile-black-s",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.830Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "santex-nitrile-black-m",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.831Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "santex-nitrile-black-l",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.831Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "peeso-no1",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.831Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentaltix",
     "productId": "peeso-no2",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.831Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "peeso-no1",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.831Z",
     "message": "EXACT; anomaly normal"
   },
   {
     "supplierId": "dentalcost",
     "productId": "peeso-no2",
     "status": "green",
-    "checkedAt": "2026-10-07T11:21:19.570Z",
+    "checkedAt": "2026-10-07T11:33:26.831Z",
     "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020a1",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.831Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020a1",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.832Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020a2",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.832Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020a2",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.832Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020a3",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.832Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020a3",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.832Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020a3-5",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.832Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020a3-5",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.832Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020a4",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.833Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020a4",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.833Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020b1",
+    "status": "amber",
+    "checkedAt": "2026-10-07T11:33:26.833Z",
+    "message": "Manufacturer reference not found on parsed page"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020b1",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.833Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020b2",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.833Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020b2",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020b3",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020b3",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020c2",
+    "status": "amber",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "Manufacturer reference not found on parsed page"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020c2",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "filtek-z250-6020d3",
+    "status": "amber",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "Manufacturer reference not found on parsed page"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "filtek-z250-6020d3",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentaltix",
+    "productId": "adper-scotchbond-1xt-4242",
+    "status": "green",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "EXACT; anomaly normal"
+  },
+  {
+    "supplierId": "dentalcost",
+    "productId": "adper-scotchbond-1xt-4242",
+    "status": "amber",
+    "checkedAt": "2026-10-07T11:33:26.834Z",
+    "message": "Manufacturer reference not found on parsed page"
   }
 ]
