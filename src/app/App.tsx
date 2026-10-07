@@ -1,94 +1,98 @@
 import { useEffect, useMemo, useState } from "react";
+import type { CanonicalProduct } from "../types/domain";
 import { compareSupplierOffers } from "../domain/comparison";
+import { getFreshnessStatus } from "../domain/comparison/compare";
 import { calculateHistoryStats } from "../domain/history";
 import { opportunityFromHistory } from "../domain/opportunity";
+import { normalizeName, normalizeReference } from "../domain/matching/normalization";
 import { ComparisonTable } from "../components/ComparisonTable";
-import { ConnectorStatus } from "../components/ConnectorStatus";
+import { ConnectorStatusPanel } from "../components/ConnectorStatusPanel";
 import { HistoryPanel } from "../components/HistoryPanel";
 import { QuantityControl } from "../components/QuantityControl";
 import { ScoreBadge } from "../components/ScoreBadge";
 import { SearchBar } from "../components/SearchBar";
 import { WinnerCard } from "../components/WinnerCard";
-import { loadPublicData, type PublicData } from "../services/data";
-import { searchProducts } from "../services/search";
-import type { CanonicalProduct } from "../types/domain";
+import { loadPublicData, type PublicData } from "../services/public-data";
+
+function findProduct(products:CanonicalProduct[],query:string):CanonicalProduct|undefined{
+  const q=normalizeName(query);
+  const ref=normalizeReference(query);
+  if(ref){
+    const exact=products.find(p=>normalizeReference(p.manufacturerReference)===ref || normalizeReference(p.eanGtin)===ref);
+    if(exact) return exact;
+  }
+  const tokens=q.split(" ").filter(Boolean);
+  return [...products].map(product=>{
+    const hay=normalizeName([product.manufacturer,product.family,product.productName,product.variant??"",product.shade??"",product.presentation,product.manufacturerReference??""].join(" "));
+    const hits=tokens.filter(t=>hay.includes(t)).length;
+    return {product,score:tokens.length?hits/tokens.length:0};
+  }).sort((a,b)=>b.score-a.score)[0]?.score ? [...products].map(product=>{
+    const hay=normalizeName([product.manufacturer,product.family,product.productName,product.variant??"",product.shade??"",product.presentation,product.manufacturerReference??""].join(" "));
+    const hits=tokens.filter(t=>hay.includes(t)).length;
+    return {product,score:tokens.length?hits/tokens.length:0};
+  }).sort((a,b)=>b.score-a.score)[0].product : undefined;
+}
 
 export function App(){
   const [data,setData]=useState<PublicData|null>(null);
-  const [loading,setLoading]=useState(true);
+  const [error,setError]=useState<string|null>(null);
   const [quantity,setQuantity]=useState(1);
-  const [query,setQuery]=useState("");
   const [selected,setSelected]=useState<CanonicalProduct|null>(null);
-  const [message,setMessage]=useState("Busca por nombre, referencia de fabricante o EAN.");
+  const [query,setQuery]=useState("");
 
   useEffect(()=>{
-    loadPublicData().then(payload=>{
-      setData(payload);
-      setSelected(payload.products[0] ?? null);
-      setLoading(false);
-    });
+    loadPublicData().then(d=>{setData(d);setSelected(d.products[0]??null);}).catch(e=>setError(e instanceof Error?e.message:"Error cargando datos"));
   },[]);
 
-  const currentEntries=useMemo(()=>{
-    if(!data || !selected) return [];
-    return data.current.entries.filter(e=>e.productId===selected.id);
+  const candidates=useMemo(()=>{
+    if(!data||!selected) return [];
+    const ref=normalizeReference(selected.manufacturerReference);
+    const family=normalizeName(selected.family);
+    return data.offers.filter(o=>
+      (ref && normalizeReference(o.manufacturerReference)===ref) ||
+      normalizeName(o.normalizedName).includes(family)
+    );
   },[data,selected]);
 
-  const comparison=useMemo(()=>{
-    if(!selected) return null;
-    return compareSupplierOffers(selected,currentEntries.map(e=>e.offer),quantity);
-  },[selected,currentEntries,quantity]);
-
-  const productHistory=useMemo(()=>{
-    if(!data || !selected) return [];
-    return data.history.filter(h=>h.productId===selected.id && h.requestedQuantity===quantity);
-  },[data,selected,quantity]);
-
-  const stats=useMemo(()=>calculateHistoryStats(productHistory),[productHistory]);
-  const score=useMemo(()=>{
-    const best=comparison?.ranked[0];
-    return opportunityFromHistory(productHistory,{
-      isFresh:Boolean(best && new Date(best.offer.observedAt).getTime()>Date.now()-24*3600000),
-      inStock:Boolean(best && (best.offer.stockStatus==="in_stock" || best.offer.stockStatus==="low_stock")),
-      hasActivePromotion:Boolean(best?.offer.promotion)
-    });
-  },[productHistory,comparison]);
-
-  function runSearch(value:string){
-    setQuery(value);
-    if(!data) return;
-    const results=searchProducts(data.products,value);
-    if(!results.length){
-      setMessage("No encuentro ese producto en el catálogo validado todavía.");
-      return;
-    }
-    setSelected(results[0].product);
-    setMessage(results.length>1 ? `Mostrando la mejor coincidencia de ${results.length} resultados.` : "Producto identificado.");
-  }
-
-  if(loading) return <main className="app-shell"><section className="hero"><p>Cargando catálogo validado…</p></section></main>;
-  if(!data) return <main className="app-shell"><section className="hero"><p>No se pudieron cargar los datos públicos.</p></section></main>;
-
+  const comparison=useMemo(()=>selected?compareSupplierOffers(selected,candidates,quantity):null,[selected,candidates,quantity]);
+  const history=useMemo(()=>data&&selected?data.history.filter(h=>h.productId===selected.id&&h.requestedQuantity===quantity):[],[data,selected,quantity]);
+  const stats=useMemo(()=>calculateHistoryStats(history),[history]);
   const winner=comparison?.ranked[0];
-  const matches=comparison?.matches ?? [];
+  const score=useMemo(()=>opportunityFromHistory(history,{
+    isFresh:winner?getFreshnessStatus(winner.offer)==="fresh":false,
+    inStock:Boolean(winner&&(winner.offer.stockStatus==="in_stock"||winner.offer.stockStatus==="low_stock")),
+    hasActivePromotion:Boolean(winner?.offer.promotion)
+  }),[history,winner]);
+
+  const onSearch=(q:string)=>{
+    if(!data) return;
+    setQuery(q);
+    const found=findProduct(data.products,q);
+    setSelected(found??null);
+  };
+
+  if(error) return <main className="app-shell"><section className="card"><h2>No se pudieron cargar los datos</h2><p>{error}</p></section></main>;
+  if(!data) return <main className="app-shell"><section className="card"><h2>Cargando Dental Price…</h2></section></main>;
+
   return <main className="app-shell">
-    <header className="topbar"><div><span className="brand-mark">DP</span><strong>DENTAL PRICE</strong></div><span className="live">{data.products.length} SKUs validados</span></header>
+    <header className="topbar"><div><span className="brand-mark">DP</span><strong>DENTAL PRICE</strong></div><span className="live">DATOS PÚBLICOS · {data.offers.length} ofertas</span></header>
     <section className="hero">
       <p className="eyebrow">COMPRA INTELIGENTE PARA CLÍNICAS DENTALES</p>
       <h1>Compara el coste real, no solo el precio.</h1>
-      <p className="subtitle">Catálogo real validado, matching exacto y precios públicos con trazabilidad. Los proveedores bloqueados o incompletos no pueden ganar automáticamente.</p>
-      <SearchBar onSearch={runSearch}/>
-      <p className="search-message">{message}</p>
+      <p className="subtitle">Datos públicos actualizados por conectores, matching exacto, promociones, portes e histórico.</p>
+      <SearchBar onSearch={onSearch}/>
       <div className="hero-meta"><QuantityControl value={quantity} onChange={setQuantity}/><ScoreBadge score={score}/></div>
     </section>
 
-    {selected && <section className="product-head card"><div><p className="eyebrow">PRODUCTO</p><h2>{selected.family}{selected.shade?` · ${selected.shade}`:""}{selected.variant?` ${selected.variant}`:""}</h2><p>{selected.presentation} · {selected.packCount} × {selected.quantity} {selected.unit} · Ref. {selected.manufacturerReference ?? "—"}</p></div><span className="query-chip">{query || selected.manufacturerReference || selected.family}</span></section>}
+    {!selected && <section className="card"><p className="eyebrow">SIN COINCIDENCIA</p><h2>No hay un producto del catálogo que coincida suficientemente con “{query}”.</h2><p>No se inventan equivalencias. Prueba con nombre, referencia de fabricante o EAN.</p></section>}
 
-    {winner ? <WinnerCard item={winner}/> : <section className="card no-winner"><p className="eyebrow">RESULTADO</p><h3>Sin ganador automático</h3><p>{matches.length ? "Hay ofertas encontradas, pero ninguna cumple a la vez identidad exacta, stock, frescura, IVA y transporte suficientes para comparar el coste final con seguridad." : "Aún no hay una oferta pública verificada para este SKU en los datos generados."}</p></section>}
+    {selected && <section className="product-head card"><div><p className="eyebrow">PRODUCTO CANÓNICO</p><h2>{selected.family}{selected.shade?` · ${selected.shade}`:""}{selected.variant?` ${selected.variant}`:""}</h2><p>{selected.presentation} {selected.quantity} {selected.unit} · Ref. {selected.manufacturerReference??"—"}</p></div><span className="query-chip">{query||selected.normalizedName}</span></section>}
 
-    <ComparisonTable items={matches}/>
-    <HistoryPanel history={productHistory} stats={stats}/>
-    <ConnectorStatus data={data.connectors}/>
-    <footer>Mejor precio encontrado entre los proveedores consultados · Nunca se completa con datos inventados.</footer>
+    {selected && !winner && <section className="card"><p className="eyebrow">COMPARACIÓN</p><h2>Aún no hay una oferta elegible como ganadora.</h2><p>Puede deberse a falta de IVA/portes confirmados, datos antiguos, stock no disponible, anomalías o matching insuficiente.</p></section>}
+    {winner && <WinnerCard item={winner}/>} 
+    {comparison && <ComparisonTable items={comparison.matches}/>} 
+    {selected && <HistoryPanel history={history} stats={stats}/>} 
+    <ConnectorStatusPanel items={data.connectors}/>
+    <footer>Mejor precio encontrado entre los proveedores consultados · España peninsular · Nunca se inventan IVA, portes ni equivalencias.</footer>
   </main>;
 }
