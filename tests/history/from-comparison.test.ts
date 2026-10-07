@@ -24,7 +24,9 @@ describe("persistComparisonHistory",()=>{
   it("stores effective total cost from comparison",()=>{
     const h=persistComparisonHistory([], [item(42)]);
     expect(h).toHaveLength(1);
-    expect(h[0].effectiveUnitCost).toBe(42);\n    expect(h[0].effectiveTotalCost).toBe(42);\n    expect(h[0].requestedQuantity).toBe(1);
+    expect(h[0].effectiveUnitCost).toBe(42);
+    expect(h[0].effectiveTotalCost).toBe(42);
+    expect(h[0].requestedQuantity).toBe(1);
   });
 
   it("compacts repeated identical comparison results",()=>{
