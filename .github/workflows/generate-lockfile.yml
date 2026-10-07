@@ -1,4 +1,4 @@
-name: Generate npm lockfile
+name: Generate npm lockfile v2
 
 on:
   workflow_dispatch:
