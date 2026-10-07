@@ -59,6 +59,8 @@ export const supplierOfferSchema = z.object({
   shippingVatRate: z.number().nonnegative().optional(),
   freeShippingThreshold: z.number().nonnegative().optional(),
   freeShippingThresholdBasis: z.enum(["net","gross"]).optional(),
+  smallOrderThreshold: z.number().nonnegative().optional(),
+  smallOrderSurcharge: z.number().nonnegative().optional(),
   shippingPolicyObservedAt: z.string().datetime().optional(),
   shippingPolicySourceUrl: z.string().url().optional(),
   deliveryZone: z.enum(["ES_PENINSULA","ES_BALEARES","ES_CANARIAS","ES_CEUTA_MELILLA","OTHER"]).optional(),
