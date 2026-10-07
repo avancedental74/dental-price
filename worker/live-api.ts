@@ -79,12 +79,11 @@ function queryLooksLikeReference(query:string){
 }
 
 function relevantToQuery(offer:SupplierOffer,query:string){
-  const compact=normalizeReference(query);
+  const compact=normalizeReference(query)??"";
   if(queryLooksLikeReference(query)){
-    return Boolean(
-      (offer.manufacturerReference&&normalizeReference(offer.manufacturerReference).includes(compact))||
-      (offer.supplierSku&&normalizeReference(offer.supplierSku).includes(compact))
-    );
+    const manufacturerRef=normalizeReference(offer.manufacturerReference)??"";
+    const supplierRef=normalizeReference(offer.supplierSku)??"";
+    return Boolean((manufacturerRef&&manufacturerRef.includes(compact))||(supplierRef&&supplierRef.includes(compact)));
   }
   const tokens=normalizeName(query).split(" ").filter(t=>t.length>=2);
   const hay=normalizeName([offer.rawName,offer.normalizedName,offer.manufacturer,offer.manufacturerReference,offer.supplierSku].filter(Boolean).join(" "));
