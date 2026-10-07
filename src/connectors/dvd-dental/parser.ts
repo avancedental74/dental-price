@@ -32,7 +32,7 @@ export function parseDvdProductHtml(html:string,productUrl:string):DvdProductRaw
  });
  if(!variants.length){
    const ref=labeledValue($,/REF\.\s*FAB\s*:\s*([A-Za-z0-9._/-]+)/i) ?? body.match(/REF\.\s*FAB\s*:\s*([A-Za-z0-9._/-]+?)(?=\s|$)/i)?.[1];
-   const sku=$("[data-product-sku]").first().text().trim() || labeledValue($,/REF\.\s*DVD\s*:?[\s]*([A-Za-z0-9._/-]+)/i) ?? body.match(/REF\.\s*DVD\s*([A-Za-z0-9._/-]+?)(?=\s|$)/i)?.[1];
+   const sku=$("[data-product-sku]").first().text().trim() || (labeledValue($,/REF\.\s*DVD\s*:?[\s]*([A-Za-z0-9._/-]+)/i) ?? body.match(/REF\.\s*DVD\s*([A-Za-z0-9._/-]+?)(?=\s|$)/i)?.[1]);
    const gross=body.match(/(\d+(?:[.,]\d+)?)\s*€\s*IVA incl/i)?.[1];
    const net=body.match(/(\d+(?:[.,]\d+)?)\s*€\s*excl\.\s*Tax/i)?.[1];
    const localStock=clean($(".productView__stock,.form-field--stock").first().text())
