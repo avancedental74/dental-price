@@ -57,4 +57,19 @@ describe("DentalCost connector",()=>{
    expect(offer.packCount).toBe(4);
  });
 
+  it("normalizes Filtek Z250 6020 syringe references",()=>{
+    const z250=`<html><body>
+      <h1>Filtek Z250 Composite Universal Jeringa Reposición 4g. 3M Espe</h1>
+      <div>Solventum</div>
+      <div>Precio sin IVA 63,43 € Precio con IVA (10%) 69,77 €</div>
+      <div>Todas referencias Filtek Z250 Composite Universal Jeringa Reposición 4g. 3M Espe: A3
+      Ref: 02653M3 Ref fabricante: 6020A3 Disponibilidad: 25uds 63,43 €</div>
+    </body></html>`;
+    const offers=normalizeDentalCost(parseDentalCostProductHtml(z250,"https://www.dentalcost.es/composites-universales/265-demo.html"));
+    const offer=offers.find(o=>o.manufacturerReference==="6020A3");
+    expect(offer?.presentation).toBe("Jeringa");
+    expect(offer?.quantity).toBe(4);
+    expect(offer?.packCount).toBe(1);
+    expect(offer?.shade).toBe("A3");
+  });
 });
