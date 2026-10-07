@@ -33,6 +33,7 @@ export function saveManualOffers(offers:SupplierOffer[]):void{
 
 export function buildManualOffer(product:CanonicalProduct,input:ManualOfferInput):SupplierOffer{
   if(!product.manufacturerReference) throw new Error("El producto no tiene referencia de fabricante");
+  if(!Number.isFinite(input.price)||input.price<=0) throw new Error("El precio debe ser mayor que cero");
   const url=new URL(input.productUrl);
   if(url.protocol!=="https:"&&url.protocol!=="http:") throw new Error("La URL debe ser http/https");
   const offer:SupplierOffer={
