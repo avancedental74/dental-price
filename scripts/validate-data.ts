@@ -21,7 +21,7 @@ const policySchema=z.array(z.object({
 const metricsSchema=z.object({
   generatedAt:z.string(),verifiedOffers:z.number().int().nonnegative(),purchasableOffers:z.number().int().nonnegative(),
   unavailableOffers:z.number().int().nonnegative(),lowStockOffers:z.number().int().nonnegative(),
-  productsWithTwoOrMoreAutomaticSuppliers:z.number().int().nonnegative(),automaticSuppliers:z.number().int().nonnegative(),
+  productsWithTwoOrMoreVerifiedSuppliers:z.number().int().nonnegative(),productsWithTwoOrMorePurchasableSuppliers:z.number().int().nonnegative(),automaticSuppliers:z.number().int().nonnegative(),
   supplierOfferCounts:z.record(z.string(),z.number().int().nonnegative())
 });
 const seedSchema=z.array(z.object({productId:z.string(),supplierId:z.enum(["dentaltix","proclinic","dental-iberica","dentalcost","dvd-dental"]),url:z.string().url()}));
@@ -33,7 +33,7 @@ const status=statusSchema.parse(await readJson("data/connector-status.json"));
 const seeds=seedSchema.parse(await readJson("data/supplier-seeds.json"));
 const policies=policySchema.parse(await readJson("data/supplier-policies.json"));
 const metrics=metricsSchema.parse(await readJson("data/metrics.json").catch(()=>({
-  generatedAt:new Date(0).toISOString(),verifiedOffers:current.length,purchasableOffers:0,unavailableOffers:0,lowStockOffers:0,productsWithTwoOrMoreAutomaticSuppliers:0,automaticSuppliers:0,supplierOfferCounts:{}
+  generatedAt:new Date(0).toISOString(),verifiedOffers:current.length,purchasableOffers:0,unavailableOffers:0,lowStockOffers:0,productsWithTwoOrMoreVerifiedSuppliers:0,productsWithTwoOrMorePurchasableSuppliers:0,automaticSuppliers:0,supplierOfferCounts:{}
 })));
 
 const ids=new Set<string>();
