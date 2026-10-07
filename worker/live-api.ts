@@ -115,7 +115,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       const offer:SupplierOffer={
         supplierId:"dvd-dental",
         supplierSku:record.sku,
-        manufacturer:record.brand,
+        manufacturer:record.brand&&normalizeName(rawName).includes(normalizeName(record.brand).split(" ")[0]??"")?record.brand:undefined,
         manufacturerReference,
         rawName,
         normalizedName:normalizeName([rawName,record.brand??"",manufacturerReference??"",record.sku??""].join(" ")),
