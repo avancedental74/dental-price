@@ -14,8 +14,8 @@ export async function fetchDentalExpressProduct(productUrl:string,fetchImpl:type
  const html=await response.text(),$=cheerio.load(html),body=$("body").text().replace(/\s+/g," ").trim();
  const ld=jsonLd($).find(x=>x?.["@type"]==="Product");
  const title=$("h1").first().text().replace(/\s+/g," ").trim()||ld?.name||"Producto Dental Express";
- const manufacturerReference=body.match(/Referencia del fabricante\s*:?\s*([A-Za-z0-9._/-]+)/i)?.[1]||ld?.mpn;
- const supplierSku=body.match(/Referencia DE\s*:?\s*([A-Za-z0-9._/-]+)/i)?.[1]||ld?.sku;
+ const manufacturerReference=body.match(/Referencia del fabricante\s*:?\s*([A-Za-z0-9._/-]+?)(?=\s*(?:Referencia\s+DE|Marca|Precio|PVP|IVA|Stock|Disponible|El\s|$))/i)?.[1]||ld?.mpn;
+ const supplierSku=body.match(/Referencia DE\s*:?\s*([A-Za-z0-9._/-]+?)(?=\s*(?:PVP|Referencia del fabricante|Marca|Precio|IVA|Stock|Disponible|$))/i)?.[1]||ld?.sku;
  const brand=typeof ld?.brand==="string"?ld.brand:ld?.brand?.name;
  const offers=ld?.offers;
  const ldOffer=Array.isArray(offers)?offers[0]:offers;
