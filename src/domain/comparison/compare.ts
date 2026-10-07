@@ -1,11 +1,7 @@
 import type { CanonicalProduct, SupplierOffer } from "../../types/domain";
 import { matchOfferToProduct } from "../matching/matcher";
+import { calculatePricing } from "../pricing";
 import type { ComparisonResult, MatchedSupplierOffer } from "./types";
-
-function effectiveBasePrice(offer: SupplierOffer): number {
-  const candidate = offer.salePrice ?? offer.regularPrice;
-  return Number.isFinite(candidate) ? candidate : Number.POSITIVE_INFINITY;
-}
 
 function isFreshEnough(offer: SupplierOffer, now = new Date()): boolean {
   const observed = new Date(offer.observedAt);
@@ -14,13 +10,19 @@ function isFreshEnough(offer: SupplierOffer, now = new Date()): boolean {
   return ageMs <= 72 * 60 * 60 * 1000;
 }
 
+function hasIncompleteEconomicData(item: MatchedSupplierOffer): boolean {
+  return Boolean(item.pricing?.warnings.some(w => w === "IVA no confirmado" || w === "IVA excluido pero tasa desconocida" || w === "Transporte no confirmado"));
+}
+
 function rankingEligible(item: MatchedSupplierOffer): boolean {
   return (
     item.match.status === "EXACT" &&
     item.offer.sourceStatus !== "quarantined" &&
     item.offer.stockStatus !== "unavailable" &&
     isFreshEnough(item.offer) &&
-    effectiveBasePrice(item.offer) > 0
+    item.pricing !== null &&
+    item.pricing.effectiveTotalCost > 0 &&
+    !hasIncompleteEconomicData(item)
   );
 }
 
@@ -31,12 +33,13 @@ export function compareSupplierOffers(
 ): ComparisonResult {
   const matches = offers.map((offer): MatchedSupplierOffer => {
     const match = matchOfferToProduct(product, offer);
-    const item: MatchedSupplierOffer = {
-      product,
-      offer,
-      match,
-      eligibleForRanking: false
-    };
+    let pricing = null;
+    try {
+      pricing = calculatePricing(offer, { requestedQuantity: quantity, includeVat: true });
+    } catch {
+      pricing = null;
+    }
+    const item: MatchedSupplierOffer = { product, offer, match, pricing, eligibleForRanking: false };
     item.eligibleForRanking = rankingEligible(item);
     return item;
   });
@@ -44,16 +47,15 @@ export function compareSupplierOffers(
   const ranked = matches
     .filter((item) => item.eligibleForRanking)
     .sort((a, b) => {
-      const priceDiff = effectiveBasePrice(a.offer) - effectiveBasePrice(b.offer);
-      if (priceDiff !== 0) return priceDiff;
+      const costDiff = (a.pricing?.effectiveTotalCost ?? Infinity) - (b.pricing?.effectiveTotalCost ?? Infinity);
+      if (costDiff !== 0) return costDiff;
+      const unitDiff = (a.pricing?.effectiveUnitCost ?? Infinity) - (b.pricing?.effectiveUnitCost ?? Infinity);
+      if (unitDiff !== 0) return unitDiff;
       return new Date(b.offer.observedAt).getTime() - new Date(a.offer.observedAt).getTime();
     });
 
   return {
-    product,
-    quantity,
-    matches,
-    ranked,
+    product, quantity, matches, ranked,
     rejected: matches.filter((item) => !item.eligibleForRanking)
   };
 }
