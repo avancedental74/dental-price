@@ -18,6 +18,8 @@ export async function healthCheckProclinic(url="https://www.proclinic.es/tienda/
     if(!result.raw.title || result.offers.length===0) return {status:"amber",checkedAt,message:"Página accesible pero parser incompleto"};
     return {status:"green",checkedAt,message:result.offers.length+" oferta(s) normalizada(s)"};
   } catch(error) {
-    return {status:"red",checkedAt,message:error instanceof Error ? error.message : "Error desconocido"};
+    const message=error instanceof Error ? error.message : "Error desconocido";
+    if(message.includes("HTTP 405")) return {status:"amber",checkedAt,message:"Acceso automatizado no disponible (HTTP 405); se conserva el último snapshot verificado"};
+    return {status:"red",checkedAt,message};
   }
 }
