@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - "src/connectors/**"
+      - "package-lock.json"
       - ".github/workflows/connector-health.yml"
   schedule:
     - cron: "47 5,11,17,23 * * *"
