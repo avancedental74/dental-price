@@ -98,6 +98,23 @@ describe("Dentaltix connector", () => {
     expect(selected?.packCount).toBe(1);
     expect(selected?.shade).toBe("A3");
   });
+  it("normalizes Filtek Z250 6021 capsules as 20 x 0.2 g and not as syringes", () => {
+    const html = `
+      <html><body>
+        <h1>Filtek Z250: Composite Universal - Solventum</h1>
+        <p><span>Marca:</span><a>Solventum</a></p>
+        <div class="product-variation" data-sku="053M6021A3" data-manufacturer-reference="6021A3">20 Cap. de 0,2 gr - A3 88,43 € 61,90 € En stock</div>
+      </body></html>`;
+    const offers = normalizeDentaltix(parseDentaltixProductHtml(html, "https://www.dentaltix.com/es/demo"));
+    const offer = offers.find(o => o.manufacturerReference === "6021A3");
+    expect(offer?.presentation).toBe("Cápsulas");
+    expect(offer?.quantity).toBe(0.2);
+    expect(offer?.unit).toBe("g");
+    expect(offer?.packCount).toBe(20);
+    expect(offer?.variant).toBe("Capsule");
+    expect(offer?.shade).toBe("A3");
+  });
+
   it("keeps Adper Scotchbond bottle separate from kit", () => {
     const html=`<html><body>
       <h1>Adper Scotchbond 1XT: Adhesivo Monocomponente - Solventum</h1>
