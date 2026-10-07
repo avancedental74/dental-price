@@ -8,11 +8,11 @@ const names:Record<string,string>={
   "dental-iberica":"Dental Ibérica",
   "dentalexpress":"Dental Express",
   "brokerdental":"Broker Dental",
-  "ortodonland":"Ortodonland"
+  "ortolan":"Ortolan Dental"
 };
 
 export function ConnectorStatusPanel({items}:{items:ConnectorStatus[]}){
-  const suppliers=["dentaltix","dentalcost","dvd-dental","proclinic","dental-iberica","dentalexpress","brokerdental","ortodonland"];
+  const suppliers=["dentaltix","dentalcost","dvd-dental","proclinic","dental-iberica","dentalexpress","brokerdental","ortolan"];
   return <section className="card">
     <div className="section-head"><div><p className="eyebrow">FUENTES</p><h3>Estado de proveedores</h3></div></div>
     <div className="stats-grid">{suppliers.map(id=>{
