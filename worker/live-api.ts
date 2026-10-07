@@ -11,7 +11,7 @@ import { fetchDentalIbericaProduct } from "../src/connectors/dental-iberica";
 import { fetchDentalExpressProduct } from "../src/connectors/dentalexpress";
 import { fetchBrokerDentalProduct } from "../src/connectors/brokerdental";
 import { fetchOrtolanProduct } from "../src/connectors/ortolan";
-import { discoverSupplierProductUrls, searchDvdKlevuRecords, type SearchSupplierId } from "../src/connectors/live-search";
+import { discoverSupplierProductUrls, searchDvdKlevuRecords, searchOrtolanRecords, type SearchSupplierId } from "../src/connectors/live-search";
 import { normalizeName, normalizeReference } from "../src/domain/matching/normalization";
 
 type Env={ALLOWED_ORIGIN?:string};
@@ -71,6 +71,39 @@ function relevantToQuery(offer:SupplierOffer,query:string){
 
 async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string){
   const fetchImpl=withTimeout();
+  if(supplierId==="ortolan"){
+    const records=await searchOrtolanRecords(query,fetchImpl,5);
+    const policy=policyList.find(p=>p.supplierId===supplierId);
+    const offers=records.map(record=>{
+      const rawName=[record.name,record.variant].filter(Boolean).join(" - ");
+      const shade=rawName.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?)\b/i)?.[1]?.replace(",",".").toUpperCase();
+      const quantityMatch=rawName.match(/(\d+(?:[.,]\d+)?)\s*(g|grm?|ml)\b/i);
+      const quantity=quantityMatch?Number(quantityMatch[1].replace(",",".")):undefined;
+      const unit=quantityMatch?(quantityMatch[2].toLowerCase().startsWith("g")?"g":"ml"):undefined;
+      const offer:SupplierOffer={
+        supplierId:"ortolan",
+        supplierSku:record.supplierSku,
+        rawName,
+        normalizedName:normalizeName(rawName),
+        productUrl:record.url??"https://ortolan.es/es/busqueda?controller=search&s="+encodeURIComponent(query),
+        presentation:/jeringa/i.test(rawName)?"Jeringa":/cavifill|capsul|cápsul/i.test(rawName)?"Cápsulas":undefined,
+        quantity,unit,packCount:quantity?1:undefined,shade,
+        stockStatus:"unknown",
+        regularPrice:record.price,
+        salePrice:record.price,
+        vatStatus:"unknown",
+        currency:"EUR",
+        observedAt:new Date().toISOString(),
+        sourceStatus:"normal",
+        sourceMode:"automatic"
+      };
+      return applySupplierPolicy(offer,policy);
+    })
+      .filter(o=>relevantToQuery(o,query))
+      .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+      .filter(o=>supplierOfferSchema.safeParse(o).success);
+    return {offers,error:offers.length?null:"Sin coincidencias verificables",discoveredFrom:"ortolan-structured-search"};
+  }
   if(supplierId==="dvd-dental"){
     const records=await searchDvdKlevuRecords(query,fetchImpl,5);
     const policy=policyList.find(p=>p.supplierId===supplierId);
