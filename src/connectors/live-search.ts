@@ -35,8 +35,10 @@ const deniedParts=["/login","/registro","/cart","/carrito","/checkout","/contact
 function scoreLink(text:string,href:string,query:string):number{
   const q=normalizeName(query),hay=normalizeName(text+" "+href);
   const compact=normalizeReference(query)??"";
+  const compact=normalizeReference(query)??"";
+  const normalizedHay=normalizeReference(hay)??"";
   let score=0;
-  if(compact&&normalizeReference(hay)?.includes(compact))score+=12;
+  if(compact&&normalizedHay.includes(compact))score+=12;
   const tokens=q.split(" ").filter(t=>t.length>=2);
   for(const token of tokens)if(hay.includes(token))score+=token.length>=5?3:1;
   if(/product|producto|html|\/es\//i.test(href))score+=1;
