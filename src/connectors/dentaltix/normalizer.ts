@@ -13,7 +13,7 @@ function normalizeStock(value?: string): StockStatus {
 function inferPresentation(value: string): string | undefined {
   if (/jeringa|\bjer\.|\bsyr\.?\b|syringe/i.test(value)) return "Jeringa";
   if (/\bcap\.|\bcaps?\.?\b|cápsul|capsul/i.test(value)) return "Cápsulas";
-  if (/caja/i.test(value)) return "Caja";
+  if (/caja|\bfresas?\b|\bpeeso\b/i.test(value)) return "Caja";
   if (/kit/i.test(value)) return "Kit";
   return undefined;
 }
@@ -21,7 +21,8 @@ function inferPresentation(value: string): string | undefined {
 function inferQuantity(value: string): { quantity?: number; unit?: string; packCount?: number } {
   const units = value.match(/(?:caja de\s*)?(\d+)\s*(?:uds?|unidades)\b/i);
   const capsules = value.match(/(?:caja de\s*)?(\d+)\s*(?:caps?\.?|c[aá]psulas?)\b/i);
-  const metric = value.match(/(?:de\s*)?(\d+(?:[.,]\d+)?)\s*(gr|g|ml)\b/i);
+  const metric = value.match(/(?:de\s*)?(\d+(?:[.,]\d+)?)\s*(gr|g|ml|mm)\b/i);
+  if (metric && metric[2].toLowerCase()==="mm" && units) return { quantity:Number(metric[1].replace(",",".")), unit:"mm", packCount:Number(units[1]) };
   if (units && !metric) return { quantity:Number(units[1]), unit:"ud", packCount:1 };
   return {
     quantity: metric ? Number(metric[1].replace(",", ".")) : undefined,
@@ -35,6 +36,8 @@ function inferShade(value: string): string | undefined {
 }
 
 function inferVariant(value: string): string | undefined {
+  const peeso=value.match(/(?:n[ºo°]\s*|numero\s*)([1-6])\b/i)?.[1];
+  if(peeso) return "No"+peeso;
   const size=value.match(/(?:talla\s*:?\s*|\b)(XS|XL|XXL|S|M|L)\b/i)?.[1]?.toUpperCase();
   if(size) return size;
   if (/\bbody\b/i.test(value)) return "Body";
