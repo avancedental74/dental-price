@@ -11,7 +11,7 @@ import { fetchDentalIbericaProduct } from "../src/connectors/dental-iberica";
 import { fetchDentalExpressProduct } from "../src/connectors/dentalexpress";
 import { fetchBrokerDentalProduct } from "../src/connectors/brokerdental";
 import { fetchOrtolanProduct } from "../src/connectors/ortolan";
-import { discoverSupplierProductUrls, type SearchSupplierId } from "../src/connectors/live-search";
+import { discoverSupplierProductUrls, searchDvdKlevuRecords, type SearchSupplierId } from "../src/connectors/live-search";
 import { normalizeName, normalizeReference } from "../src/domain/matching/normalization";
 
 type Env={ALLOWED_ORIGIN?:string};
@@ -71,6 +71,39 @@ function relevantToQuery(offer:SupplierOffer,query:string){
 
 async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string){
   const fetchImpl=withTimeout();
+  if(supplierId==="dvd-dental"){
+    const records=await searchDvdKlevuRecords(query,fetchImpl,5);
+    const policy=policyList.find(p=>p.supplierId===supplierId);
+    const offers=records.map(record=>{
+      const sale=Number(record.salePrice??record.price??record.basePrice);
+      const regular=Number(record.basePrice??record.price??record.salePrice);
+      const manufacturerReference=record["nº_pieza_fabricante"];
+      const rawName=record.name??"Producto DVD Dental";
+      const offer:SupplierOffer={
+        supplierId:"dvd-dental",
+        supplierSku:record.sku,
+        manufacturer:record.brand,
+        manufacturerReference,
+        rawName,
+        normalizedName:normalizeName([rawName,record.brand??"",manufacturerReference??"",record.sku??""].join(" ")),
+        productUrl:record.url??"https://www.dvd-dental.com/",
+        stockStatus:/^(?:yes|true|1)$/i.test(record.inStock??"")?"in_stock":"unknown",
+        regularPrice:Number.isFinite(regular)&&regular>0?regular:Number.isFinite(sale)&&sale>0?sale:0,
+        salePrice:Number.isFinite(sale)&&sale>0?sale:undefined,
+        vatStatus:"unknown",
+        currency:"EUR",
+        observedAt:new Date().toISOString(),
+        sourceStatus:"normal",
+        sourceMode:"automatic"
+      };
+      return applySupplierPolicy(offer,policy);
+    })
+      .filter(o=>o.regularPrice>0)
+      .filter(o=>relevantToQuery(o,query))
+      .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+      .filter(o=>supplierOfferSchema.safeParse(o).success);
+    return {offers,error:offers.length?null:"Sin coincidencias verificables",discoveredFrom:"klevu"};
+  }
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,3);
   if(!discovered.urls.length)return {offers:[] as SupplierOffer[],error:discovered.error??"Sin resultados",discoveredFrom:discovered.searchUrl};
   const pages=await Promise.all(discovered.urls.map(async productUrl=>{
