@@ -43,8 +43,11 @@ function variant(value: string): string | undefined {
 
 function vatInfo(net?: number, gross?: number): { status: VatStatus; rate?: number } {
   if (!net || !gross || gross < net) return {status:"unknown"};
-  const rate=Math.round(((gross/net)-1)*10000)/100;
-  return {status:"excluded", rate};
+  const rawRate=((gross/net)-1)*100;
+  const allowed=[4,10,21];
+  const nearest=allowed.reduce((best,current)=>Math.abs(current-rawRate)<Math.abs(best-rawRate)?current:best,allowed[0]);
+  if(Math.abs(nearest-rawRate)>0.35) return {status:"unknown"};
+  return {status:"excluded", rate:nearest};
 }
 
 function createOffer(raw: ProclinicProductRaw, item?: ProclinicVariantRaw): SupplierOffer {
@@ -55,13 +58,20 @@ function createOffer(raw: ProclinicProductRaw, item?: ProclinicVariantRaw): Supp
   const vat=vatInfo(sale ?? regular, item?.vatIncludedPrice ?? raw.vatIncludedPrice);
   return {
     supplierId:"proclinic", supplierSku:item?.supplierSku ?? raw.pageSupplierSku,
+    manufacturer:raw.manufacturer,
     manufacturerReference:item?.manufacturerReference ?? raw.pageManufacturerReference,
     rawName:item?.title ?? raw.title, normalizedName:normalizeName([raw.title,source,raw.manufacturer ?? ""].join(" ")),
     productUrl:item?.productUrl ?? raw.productUrl, presentation:inferPresentation(source),
     quantity:metrics.quantity, unit:metrics.unit, packCount:metrics.packCount, variant:variant(source), shade:shade(source),
     stockStatus:stock(item?.rawStockText ?? raw.rawStockText), rawStockText:item?.rawStockText ?? raw.rawStockText,
     regularPrice:regular, salePrice:sale, vatStatus:vat.status, vatRate:vat.rate, currency:"EUR",
-    freeShippingThreshold:raw.freeShippingThreshold, deliveryEstimate:raw.rawStockText,
+    shippingCost:6,
+    shippingCostVatIncluded:false,
+    shippingVatRate:21,
+    freeShippingThreshold:raw.freeShippingThreshold ?? 110,
+    freeShippingThresholdBasis:"net",
+    deliveryZone:"ES_PENINSULA",
+    deliveryEstimate:raw.rawStockText,
     observedAt:new Date().toISOString(), sourceStatus:"normal"
   };
 }
