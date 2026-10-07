@@ -27,9 +27,9 @@ export interface LiveCatalogSearchResponse {
 }
 
 function apiBase(){
-  const base=(import.meta.env.VITE_LIVE_API_URL as string|undefined)?.replace(/\\/$/,"");
-  if(!base) throw new Error("LIVE_API_NOT_CONFIGURED");
-  return base;
+  const raw=import.meta.env.VITE_LIVE_API_URL as string|undefined;
+  if(!raw) throw new Error("LIVE_API_NOT_CONFIGURED");
+  return raw.endsWith("/")?raw.slice(0,-1):raw;
 }
 
 export async function fetchLivePrices(productId:string):Promise<LivePriceResponse>{
