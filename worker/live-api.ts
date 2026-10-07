@@ -51,6 +51,24 @@ async function fetchSupplierUrl(supplierId:SearchSupplierId,productUrl:string,fe
   return [];
 }
 
+function inferLightAttributes(rawName:string){
+  const compact=rawName.replace(/\s+/g," ");
+  const multi=compact.match(/(\d+)\s*x\s*(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i);
+  const single=compact.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i);
+  const quantityMatch=multi?.[2]??single?.[1];
+  const unitMatch=multi?.[3]??single?.[2];
+  const presentation=/jeringa|syringe/i.test(compact)?"Jeringa":/cavifil|caps?\.?|c[aá]psul/i.test(compact)?"Cápsulas":/bote|frasco|botella/i.test(compact)?"Frasco":undefined;
+  const shade=compact.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?)\b/i)?.[1]?.replace(",",".").toUpperCase();
+  const variant=/\bbody\b/i.test(compact)?"Body":/dentina|dentin/i.test(compact)?"Dentin":/esmalte|enamel/i.test(compact)?"Enamel":undefined;
+  return {
+    presentation,
+    quantity:quantityMatch?Number(quantityMatch.replace(",",".")):undefined,
+    unit:unitMatch?(unitMatch.toLowerCase().startsWith("g")?"g":"ml"):undefined,
+    packCount:multi?Number(multi[1]):single?1:undefined,
+    shade,variant
+  };
+}
+
 function looksLikeReference(query:string){
   const compact=normalizeReference(query)??"";
   return compact.length>=4&&/\d/.test(compact)&&!query.trim().includes(" ");
@@ -112,6 +130,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       const regular=Number(record.basePrice??record.price??record.salePrice);
       const manufacturerReference=record["nº_pieza_fabricante"];
       const rawName=record.name??"Producto DVD Dental";
+      const attrs=inferLightAttributes(rawName);
       const offer:SupplierOffer={
         supplierId:"dvd-dental",
         supplierSku:record.sku,
@@ -120,6 +139,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         rawName,
         normalizedName:normalizeName([rawName,record.brand??"",manufacturerReference??"",record.sku??""].join(" ")),
         productUrl:record.url??"https://www.dvd-dental.com/",
+        presentation:attrs.presentation,quantity:attrs.quantity,unit:attrs.unit,packCount:attrs.packCount,shade:attrs.shade,variant:attrs.variant,
         stockStatus:/^(?:yes|true|1)$/i.test(record.inStock??"")?"in_stock":"unknown",
         regularPrice:Number.isFinite(regular)&&regular>0?regular:Number.isFinite(sale)&&sale>0?sale:0,
         salePrice:Number.isFinite(sale)&&sale>0?sale:undefined,
