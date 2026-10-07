@@ -10,6 +10,7 @@ Estado verificado el 07/10/2026:
 
 - **94 ofertas verificadas automáticamente** en el último refresh publicado.
 - **84 ofertas comprables ahora**: identidad, precio, IVA, portes, stock y frescura suficientes para competir.
+- **134 observaciones históricas** acumuladas y **24 promociones estructuradas** detectadas en el snapshot actual.
 - **34 productos** tienen al menos dos proveedores automáticos comprables.
 - **3 proveedores automáticos** aportan datos actuales: Dentaltix, DentalCost y DVD Dental (este último, por ahora, para `41294`).
 - **Dentaltix: 42 ofertas automáticas**: 13 Filtek Supreme XTE, 10 Filtek Universal Restorative, 7 Filtek Z250 jeringa, 4 RelyX Universal, 1 Scotchbond Universal Plus, 1 Adper Scotchbond 1XT, 4 tallas de guantes Santex y 2 referencias Peeso 28 mm.
@@ -18,6 +19,7 @@ Estado verificado el 07/10/2026:
 - **DVD Dental**: automatización validada para Scotchbond Universal Plus `41294`; las variantes complejas siguen en verificación manual cuando la web no expone variante→SKU/precio de forma fiable.
 - **Proclinic y Dental Ibérica**: GitHub Actions recibe HTTP 405; se usa snapshot manual seguro.
 - Las ofertas manuales se guardan solo en `localStorage`, exigen dominio del proveedor + referencia de fabricante coincidente y conservan histórico local.
+- El modo manual permite indicar si los portes incluyen IVA y si el umbral de envío gratis se expresa en base neta o bruta; no se asume una semántica comercial por defecto.
 - CI completo y auditoría de dependencias con severidad `high` en verde.
 - Todas las peticiones a proveedores tienen timeout de 15 s; una web lenta no puede bloquear todo el refresh.
 - El parser de fichas simples de DentalCost ya recupera también disponibilidad; Adper 4242 y Scotchbond 41294 tienen stock confirmado y pueden competir en el ranking.
@@ -58,11 +60,11 @@ El estado real y las limitaciones verificadas están en `docs/HARDENING_STATUS.m
 
 - Snapshot actual reconstruido desde cero en cada refresh: un fallo de verificación no conserva un precio antiguo como ganador.
 - Estados separados de fuente, match y comprabilidad.
-- Políticas de portes versionadas fuera de los conectores.
+- Políticas de portes versionadas fuera de los conectores y **revalidadas automáticamente cada semana** contra las páginas públicas de Dentaltix, DentalCost y DVD Dental; si no se pueden confirmar, no se renueva su vigencia.
 - Promociones reales estructuradas; regalos de otro producto se muestran como informativos y no se descuentan como si fueran unidades del mismo SKU.
 - Búsqueda ambigua con selección explícita de candidatos.
 - Registry central de referencias y presentaciones.
-- Basket Optimizer V1: distribuye una cesta entre proveedores considerando promociones, IVA, portes y umbrales.
+- Basket Optimizer V1: distribuye una cesta entre proveedores considerando promociones, IVA, portes y umbrales; usa poda y memoización en lugar de producto cartesiano y tiene regresión de 18 líneas × 3 proveedores.
 - Validación de todo el catálogo contra referencias exactas y referencias contradictorias.
 
 ## Principio no negociable
