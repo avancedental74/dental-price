@@ -3,476 +3,476 @@
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a1d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.645Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a1d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.645Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a2d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a2d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a3d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a4d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a4d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910b3d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910b3d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910c4d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910c4d",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.901Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a3-5b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3-5b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a4b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a4b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910b1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910b1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910b2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910b2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910b3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910b3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910c1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910c1b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910c2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910c2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910c3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910c3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910d2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910d2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a1e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a1e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910a3e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910b1e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910b1e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910b2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910b2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910d2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910d2e",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021a1",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021a2",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021a3",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021a3-5",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021a4",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021b1",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021b2",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021b3",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021c2",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021d3",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021ud",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "air-n-go-f10251",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "air-n-go-f10253",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "air-n-go-f10255",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "air-n-go-f10252",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "air-n-go-f10254",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "air-n-go-f10250",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "peeso-no1",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "peeso-no2",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "peeso-no3",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:07:53.902Z",
+    "checkedAt": "2026-10-07T10:09:36.646Z",
     "message": "Automated access unavailable (HTTP 405); last verified data retained"
   }
 ]
