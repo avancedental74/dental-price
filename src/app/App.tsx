@@ -6,6 +6,7 @@ import { appendObservation, calculateHistoryStats, type PriceObservation } from 
 import { opportunityFromHistory } from "../domain/opportunity";
 import { calculatePricing } from "../domain/pricing";
 import { normalizeName, normalizeReference } from "../domain/matching/normalization";
+import { searchProducts, type ProductSearchResult } from "../domain/search";
 import { ComparisonTable } from "../components/ComparisonTable";
 import { ConnectorStatusPanel } from "../components/ConnectorStatusPanel";
 import { HistoryPanel } from "../components/HistoryPanel";
@@ -14,25 +15,10 @@ import { ScoreBadge } from "../components/ScoreBadge";
 import { SearchBar } from "../components/SearchBar";
 import { WinnerCard } from "../components/WinnerCard";
 import { ManualOfferPanel } from "../components/ManualOfferPanel";
+import { SearchCandidates } from "../components/SearchCandidates";
+import { MetricsPanel } from "../components/MetricsPanel";
 import { loadPublicData, type PublicData } from "../services/public-data";
 import { loadManualHistory, loadManualOffers, saveManualHistory, saveManualOffers } from "../services/manual-offers";
-
-function findProduct(products:CanonicalProduct[],query:string):CanonicalProduct|undefined{
-  const q=normalizeName(query);
-  const ref=normalizeReference(query);
-  if(ref){
-    const exact=products.find(p=>normalizeReference(p.manufacturerReference)===ref || normalizeReference(p.eanGtin)===ref);
-    if(exact) return exact;
-  }
-  const tokens=q.split(" ").filter(Boolean);
-  if(!tokens.length) return undefined;
-  const ranked=products.map(product=>{
-    const hay=normalizeName([product.manufacturer,product.family,product.productName,product.variant??"",product.shade??"",product.presentation,product.manufacturerReference??""].join(" "));
-    const hits=tokens.filter(t=>hay.includes(t)).length;
-    return {product,score:hits/tokens.length};
-  }).sort((a,b)=>b.score-a.score);
-  return ranked[0]?.score>=0.6 ? ranked[0].product : undefined;
-}
 
 export function App(){
   const [data,setData]=useState<PublicData|null>(null);
@@ -40,6 +26,7 @@ export function App(){
   const [quantity,setQuantity]=useState(1);
   const [selected,setSelected]=useState<CanonicalProduct|null>(null);
   const [query,setQuery]=useState("");
+  const [searchCandidates,setSearchCandidates]=useState<ProductSearchResult[]>([]);
   const [manualOffers,setManualOffers]=useState<SupplierOffer[]>(()=>loadManualOffers());
   const [manualHistory,setManualHistory]=useState<PriceObservation[]>(()=>loadManualHistory());
 
@@ -88,8 +75,19 @@ export function App(){
   const onSearch=(q:string)=>{
     if(!data) return;
     setQuery(q);
-    const found=findProduct(data.products,q);
-    setSelected(found??null);
+    const results=searchProducts(data.products,q);
+    setSearchCandidates(results);
+    if(results.length===1 || results[0]?.exactReference){
+      setSelected(results[0]?.product??null);
+      setSearchCandidates([]);
+    }else{
+      setSelected(null);
+    }
+  };
+  const onSelectCandidate=(id:string)=>{
+    if(!data) return;
+    setSelected(data.products.find(p=>p.id===id)??null);
+    setSearchCandidates([]);
   };
 
   if(error) return <main className="app-shell"><section className="card"><h2>No se pudieron cargar los datos</h2><p>{error}</p></section></main>;
@@ -97,6 +95,7 @@ export function App(){
 
   return <main className="app-shell">
     <header className="topbar"><div><span className="brand-mark">DP</span><strong>DENTAL PRICE</strong></div><span className="live">{data.offers.length} automáticas · {manualOffers.length} manuales</span></header>
+    <MetricsPanel metrics={data.metrics}/>
     <section className="hero">
       <p className="eyebrow">COMPRA INTELIGENTE PARA CLÍNICAS DENTALES</p>
       <h1>Compara el coste real, no solo el precio.</h1>
@@ -105,7 +104,8 @@ export function App(){
       <div className="hero-meta"><QuantityControl value={quantity} onChange={setQuantity}/><ScoreBadge score={score}/></div>
     </section>
 
-    {!selected && <section className="card"><p className="eyebrow">SIN COINCIDENCIA</p><h2>No hay un producto del catálogo que coincida suficientemente con “{query}”.</h2><p>No se inventan equivalencias. Prueba con nombre, referencia de fabricante o EAN.</p></section>}
+    <SearchCandidates items={searchCandidates} onSelect={onSelectCandidate}/>
+    {!selected && searchCandidates.length===0 && query && <section className="card"><p className="eyebrow">SIN COINCIDENCIA</p><h2>No hay un producto del catálogo que coincida suficientemente con “{query}”.</h2><p>No se inventan equivalencias. Prueba con nombre, referencia de fabricante o EAN.</p></section>}
 
     {selected && <section className="product-head card"><div><p className="eyebrow">PRODUCTO CANÓNICO</p><h2>{selected.family}{selected.shade?` · ${selected.shade}`:""}{selected.variant?` ${selected.variant}`:""}</h2><p>{selected.presentation} {selected.quantity} {selected.unit} · Ref. {selected.manufacturerReference??"—"}</p></div><span className="query-chip">{query||selected.normalizedName}</span></section>}
 
