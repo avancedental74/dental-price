@@ -115,4 +115,19 @@ describe("DentalCost connector",()=>{
     expect(a1?.shade).toBe("A1");
     expect(ao3?.shade).toBe("AO3");
   });
+  it("normalizes DentalCost Filtek Universal 6555 shades",()=>{
+    const html=`<html><body>
+      <h1>Filtek Composite Universal Restorative Jeringa Reposición 4 g 3M</h1>
+      <div>Solventum Precio sin IVA 53,82 € Precio con IVA (10%) 59,20 €</div>
+      <div>Filtek Universal: A3 Ref: 89513M3 Ref fabricante: 6555A3 Disponibilidad: 1uds 53,82 €
+      Filtek Universal: XW Ref: 89513M8 Ref fabricante: 6555XW Disponibilidad: 8uds 53,82 €</div>
+    </body></html>`;
+    const offers=normalizeDentalCost(parseDentalCostProductHtml(html,"https://www.dentalcost.es/composites-universales/8951-demo.html"));
+    const a3=offers.find(o=>o.manufacturerReference==="6555A3");
+    const xw=offers.find(o=>o.manufacturerReference==="6555XW");
+    expect(a3?.presentation).toBe("Jeringa");
+    expect(a3?.quantity).toBe(4);
+    expect(a3?.shade).toBe("A3");
+    expect(xw?.shade).toBe("XW");
+  });
 });
