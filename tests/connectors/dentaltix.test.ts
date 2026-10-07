@@ -46,7 +46,8 @@ describe("Dentaltix connector", () => {
     expect(selected).toBeDefined();
     expect(selected?.supplierSku).toBe("053M4910A3B");
     expect(selected?.salePrice).toBe(44.9);
-    expect(selected?.vatStatus).toBe("included");
+    expect(selected?.vatStatus).toBe("excluded");
+    expect(selected?.vatRate).toBe(10);
     expect(selected?.variant).toBe("Body");
     expect(selected?.shade).toBe("A3");
     expect(selected?.quantity).toBe(3);
