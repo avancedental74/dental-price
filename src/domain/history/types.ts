@@ -6,12 +6,18 @@ export interface PriceObservation {
   observedAt: string;
   lastSeenAt: string;
   seenCount: number;
+  requestedQuantity: number;
   regularPrice: number;
   salePrice?: number;
-  effectivePrice?: number;
+  effectiveUnitCost?: number;
+  effectiveTotalCost?: number;
   stockStatus: string;
   shippingCost?: number;
   promotionSignature?: string;
+  presentation?: string;
+  quantity?: number;
+  unit?: string;
+  packCount?: number;
   sourceUrl: string;
 }
 
@@ -26,6 +32,9 @@ export interface PriceHistoryStats {
   observations30d: number;
   observations90d: number;
   observationsTotal: number;
+  coverageDays30: number;
+  coverageDays90: number;
+  coverageDaysTotal: number;
 }
 
 export interface HistoryAppendResult {
