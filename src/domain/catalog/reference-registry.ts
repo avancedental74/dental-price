@@ -13,7 +13,13 @@ const exact:Record<string,ReferenceKnowledge>={
   "56971":{presentation:"Jeringa",quantity:3.4,unit:"g",packCount:1,shade:"Translucido"},
   "56972":{presentation:"Jeringa",quantity:3.4,unit:"g",packCount:1,shade:"A1"},
   "56973":{presentation:"Jeringa",quantity:3.4,unit:"g",packCount:1,shade:"AO3"},
-  "56974":{presentation:"Jeringa",quantity:3.4,unit:"g",packCount:1,shade:"WO"}
+  "56974":{presentation:"Jeringa",quantity:3.4,unit:"g",packCount:1,shade:"WO"},
+  "F10250":{presentation:"Frasco",quantity:250,unit:"g",packCount:4},
+  "F10251":{presentation:"Frasco",quantity:250,unit:"g",packCount:4},
+  "F10252":{presentation:"Frasco",quantity:250,unit:"g",packCount:4},
+  "F10253":{presentation:"Frasco",quantity:250,unit:"g",packCount:4},
+  "F10254":{presentation:"Frasco",quantity:250,unit:"g",packCount:4},
+  "F10255":{presentation:"Frasco",quantity:250,unit:"g",packCount:4}
 };
 
 export function knowledgeForReference(ref?:string):ReferenceKnowledge{
