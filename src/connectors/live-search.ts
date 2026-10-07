@@ -187,7 +187,13 @@ export async function discoverSupplierProductUrls(
     const searchUrl=template.replace("{q}",encodeURIComponent(query));
     try{
       const result=await trySearchRequest(searchUrl,query,cfg.origin,fetchImpl,maxResults);
-      if(result.urls.length)return {urls:result.urls,searchUrl};
+      if(result.urls.length){
+        if(supplierId==="ortolan"){
+          const productPages=result.urls.filter(u=>/\.html(?:[?#]|$)/i.test(u));
+          if(productPages.length)return {urls:productPages,searchUrl};
+        }
+        return {urls:result.urls,searchUrl};
+      }
       lastError="Sin enlaces de producto";
     }catch(error){lastError=error instanceof Error?error.message:"SEARCH_ERROR";}
   }
