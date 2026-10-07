@@ -31,3 +31,12 @@ export async function fetchOrtolanProduct(productUrl:string,fetchImpl:typeof fet
  }
  return {offers};
 }
+
+export async function healthCheckOrtolan(url="https://ortolan.es/es/odontologia/3802-tetric-evoceram.html",fetchImpl:typeof fetch=fetch){
+  const checkedAt=new Date().toISOString();
+  try{
+    const result=await fetchOrtolanProduct(url,fetchImpl);
+    if(!result.offers.length) return {status:"amber" as const,checkedAt,message:"Página accesible pero parser sin ofertas"};
+    return {status:"green" as const,checkedAt,message:result.offers.length+" oferta(s) normalizada(s)"};
+  }catch(error){return {status:"red" as const,checkedAt,message:error instanceof Error?error.message:"Ortolan error desconocido"};}
+}
