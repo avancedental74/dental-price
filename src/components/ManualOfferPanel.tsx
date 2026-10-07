@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import type { CanonicalProduct, SupplierOffer, StockStatus, VatStatus } from "../types/domain";
 import { buildManualOffer, type ManualOfferInput, upsertManualOffer } from "../services/manual-offers";
 
-const supplierNames:Record<ManualOfferInput["supplierId"],string>={"proclinic":"Proclinic","dental-iberica":"Dental Ibérica"};
+const supplierNames:Record<ManualOfferInput["supplierId"],string>={"proclinic":"Proclinic","dental-iberica":"Dental Ibérica","dvd-dental":"DVD Dental"};
 
 export function ManualOfferPanel({product,offers,onChange,onRecord}:{product:CanonicalProduct|null;offers:SupplierOffer[];onChange:(offers:SupplierOffer[])=>void;onRecord:(offer:SupplierOffer)=>void}){
   const [supplierId,setSupplierId]=useState<ManualOfferInput["supplierId"]>("proclinic");
@@ -42,9 +42,9 @@ export function ManualOfferPanel({product,offers,onChange,onRecord}:{product:Can
 
   return <section className="card manual-panel">
     <div className="section-head"><div><p className="eyebrow">VERIFICACIÓN MANUAL</p><h3>Proveedor bloqueado para automatización</h3></div><span>Solo se guarda en este navegador</span></div>
-    <p className="manual-note">Usa esta vía para Proclinic o Dental Ibérica cuando compruebes la ficha en tu navegador. La referencia queda fijada a <strong>{product.manufacturerReference}</strong>; si faltan IVA, portes o stock, la oferta no podrá ganar.</p>
+    <p className="manual-note">Usa esta vía para Proclinic, Dental Ibérica o DVD Dental cuando compruebes la ficha en tu navegador. La referencia queda fijada a <strong>{product.manufacturerReference}</strong>; si faltan IVA, portes o stock, la oferta no podrá ganar.</p>
     <form className="manual-form" onSubmit={submit}>
-      <label>Proveedor<select value={supplierId} onChange={e=>setSupplierId(e.target.value as ManualOfferInput["supplierId"])}><option value="proclinic">Proclinic</option><option value="dental-iberica">Dental Ibérica</option></select></label>
+      <label>Proveedor<select value={supplierId} onChange={e=>setSupplierId(e.target.value as ManualOfferInput["supplierId"])}><option value="proclinic">Proclinic</option><option value="dental-iberica">Dental Ibérica</option><option value="dvd-dental">DVD Dental</option></select></label>
       <label>URL de la ficha<input required type="url" value={productUrl} onChange={e=>setProductUrl(e.target.value)} placeholder="https://…"/></label>
       <label>Ref. fabricante observada<input required value={manufacturerReference} onChange={e=>setManufacturerReference(e.target.value)} placeholder={product.manufacturerReference}/></label>
       <label>Precio web (€)<input required min="0.01" step="0.01" type="number" value={price} onChange={e=>setPrice(e.target.value)}/></label>
