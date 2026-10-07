@@ -30,7 +30,7 @@ const configs:Record<SearchSupplierId,{origin:string;home:string;templates:strin
   ]}
 };
 
-const deniedParts=["/login","/registro","/cart","/carrito","/checkout","/contact","/contacto","/blog","/category","/categoria","/marca","/brand","javascript:","#"];
+const deniedParts=["/login","/registro","/cart","/carrito","/checkout","/contact","/contacto","/blog","/category","/categoria","/marca","/brand","javascript:"];
 const searchRouteParts=["/search-results","/search.php","/catalogsearch/result","/busqueda","/buscar","/search?","/search/","?s="];
 
 function isSearchOrNavigationUrl(url:string,base:string):boolean{
@@ -74,13 +74,13 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
     const raw=$(el).attr("href")??"";
     try{
       const url=new URL(raw,base).toString();
-      if(new URL(url).origin===new URL(origin).origin&&!deniedParts.some(x=>url.toLowerCase().includes(x))&&!isSearchOrNavigationUrl(url,base))productUrls.add(url);
+      if(!raw.startsWith("#")&&new URL(url).origin===new URL(origin).origin&&!deniedParts.some(x=>url.toLowerCase().includes(x))&&!isSearchOrNavigationUrl(url,base))productUrls.add(url);
     }catch{ /* ignore invalid result link */ }
   });
   $("a[href]").each((_,el)=>{
     const raw=$(el).attr("href")??"";
     const text=$(el).text().replace(/\s+/g," ").trim();
-    if(!raw||deniedParts.some(x=>raw.toLowerCase().includes(x)))return;
+    if(!raw||raw.startsWith("#")||deniedParts.some(x=>raw.toLowerCase().includes(x)))return;
     let url:string;
     try{url=new URL(raw,base).toString();}catch{return;}
     if(new URL(url).origin!==new URL(origin).origin)return;
@@ -147,7 +147,19 @@ async function searchViaDetectedForm(cfg:{origin:string;home:string},query:strin
   return {urls:[] as string[]};
 }
 
-async function searchDvdKlevu(query:string,fetchImpl:typeof fetch,maxResults:number){
+export interface DvdKlevuRecord {
+  url?:string;
+  name?:string;
+  sku?:string;
+  brand?:string;
+  price?:string;
+  salePrice?:string;
+  basePrice?:string;
+  inStock?:string;
+  ["nº_pieza_fabricante"]?:string;
+}
+
+export async function searchDvdKlevuRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=5):Promise<DvdKlevuRecord[]>{
   const endpoint="https://eucs34v2.ksearchnet.com/cs/v2/search";
   const apiKey="klevu-174436997355118006";
   const body={
@@ -164,15 +176,15 @@ async function searchDvdKlevu(query:string,fetchImpl:typeof fetch,maxResults:num
     body:JSON.stringify(body)
   });
   if(!response.ok)throw new Error("KLEVU_HTTP_"+response.status);
-  const data=await response.json() as {
-    queryResults?:Array<{records?:Array<{url?:string;name?:string;sku?:string;["nº_pieza_fabricante"]?:string}>}>
-  };
-  const records=data.queryResults?.flatMap(x=>x.records??[])??[];
-  const urls=records
-    .filter(record=>record.url&&scoreLink([record.name,record.sku,record["nº_pieza_fabricante"]].filter(Boolean).join(" "),record.url,query)>=2)
-    .map(record=>record.url!)
+  const data=await response.json() as {queryResults?:Array<{records?:DvdKlevuRecord[]}>};
+  return (data.queryResults?.flatMap(x=>x.records??[])??[])
+    .filter(record=>record.url&&scoreLink([record.name,record.sku,record["nº_pieza_fabricante"]].filter(Boolean).join(" "),record.url!,query)>=2)
     .slice(0,maxResults);
-  return [...new Set(urls)];
+}
+
+async function searchDvdKlevu(query:string,fetchImpl:typeof fetch,maxResults:number){
+  const records=await searchDvdKlevuRecords(query,fetchImpl,maxResults);
+  return [...new Set(records.map(record=>record.url!).filter(Boolean))];
 }
 
 async function searchViaSitemap(cfg:{origin:string},query:string,fetchImpl:typeof fetch,maxResults:number){
