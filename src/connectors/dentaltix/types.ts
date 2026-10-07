@@ -22,6 +22,7 @@ export interface DentaltixProductRaw {
   vatIncluded?: boolean;
   rawStockText?: string;
   productUrl: string;
+  promotionText?: string;
   variants: DentaltixVariantRaw[];
 }
 
