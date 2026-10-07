@@ -44,7 +44,7 @@ export function stripDiacritics(value: string): string {
 export function normalizeToken(value: string): string {
   return stripDiacritics(value)
     .toLowerCase()
-    .replace(/[()\[\],;:/\\|]+/g, " ")
+    .replace(/[()[\],;:/\\|]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
