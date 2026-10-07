@@ -2,6 +2,10 @@ name: Refresh public prices
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "data/catalog-seeds.json"
+      - ".github/workflows/refresh-prices.yml"
   schedule:
     - cron: "17 */6 * * *"
 
