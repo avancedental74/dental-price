@@ -114,10 +114,12 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
   const vatIncludedPrice = vatMatch ? parseEuro(vatMatch[2]) : undefined;
   const stockMatch = bodyText.match(/(Solo quedan[^.]+\.|En stock[^.]+\.|Entrega[^.]+\.|No disponible[^.]*\.?)/i)?.[1];
   const parsedVariants = extractVariants($, productUrl);
-  if (!parsedVariants.length && pageManufacturerReference) {
-    const selectedType = bodyText.match(/(?:Type|Tipo)\s*:\s*([^€]{3,80}?)(?=\s+\d{1,4}(?:[.,]\d{2})?\s*€|\s+IN STOCK|\s+En stock|$)/i)?.[1]?.trim();
+  if (pageManufacturerReference && !parsedVariants.some(v => v.manufacturerReference === pageManufacturerReference)) {
+    const selectedType =
+      $("[data-testid=\"variation-cards-label\"] b").first().text().replace(/\s+/g, " ").trim() ||
+      bodyText.match(/(?:Type|Tipo)\s*:\s*([^€]{3,100}?)(?=\s+\d{1,4}(?:[.,]\d{2})?\s*€|\s+IN STOCK|\s+EN STOCK|\s+En stock|$)/i)?.[1]?.trim();
     if (selectedType) {
-      parsedVariants.push({
+      parsedVariants.unshift({
         title: selectedType,
         supplierSku: pageSupplierSku,
         manufacturerReference: pageManufacturerReference,
