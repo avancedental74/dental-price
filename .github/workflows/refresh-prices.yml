@@ -4,7 +4,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "data/catalog-seeds.json"
+      - "data/supplier-seeds.json"
+      - "data/products.json"
+      - "src/connectors/**"
+      - "package-lock.json"
       - ".github/workflows/refresh-prices.yml"
   schedule:
     - cron: "17 */6 * * *"
