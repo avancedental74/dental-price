@@ -19,6 +19,8 @@ function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVaria
   const output:DentaltixVariantRaw[]=[];
   const seen=new Set<string>();
   const scripts=$('script[type="application/json"],script#__NUXT_DATA__').toArray();
+  const productPath=(()=>{try{return new URL(productUrl).pathname.toLowerCase();}catch{return productUrl.toLowerCase();}})();
+
   for(const el of scripts){
     const text=$(el).text().trim();
     if(!text.startsWith("[")) continue;
@@ -28,50 +30,70 @@ function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVaria
         if(typeof value==="number"&&Number.isInteger(value)&&value>=0&&value<payload.length) return payload[value];
         return value;
       };
-      const resolveNumber=(value:unknown):number|undefined=>{
+      const resolveObject=(value:unknown):Record<string,unknown>|undefined=>{
         const resolved=resolve(value);
-        return typeof resolved==="number"&&Number.isFinite(resolved)?resolved:undefined;
+        return resolved&&typeof resolved==="object"&&!Array.isArray(resolved)?resolved as Record<string,unknown>:undefined;
       };
-      for(const entry of payload){
-        if(!entry||typeof entry!=="object"||Array.isArray(entry)) continue;
+      const roots=payload.filter((entry):entry is Record<string,unknown>=>{
+        if(!entry||typeof entry!=="object"||Array.isArray(entry))return false;
         const obj=entry as Record<string,unknown>;
-        if(!("manRef" in obj)||!("sku" in obj)) continue;
+        return "mainVar" in obj&&"variations" in obj&&"slug" in obj;
+      });
+      const root=roots.find(obj=>{
+        const slug=resolve(obj.slug);
+        return typeof slug==="string"&&slug.length>3&&productPath.includes(slug.toLowerCase());
+      });
+      if(!root) continue;
+
+      const candidates:Record<string,unknown>[]=[];
+      const addCandidate=(value:unknown)=>{
+        const obj=resolveObject(value);
+        if(obj&&"manRef" in obj&&"sku" in obj)candidates.push(obj);
+      };
+      addCandidate(root.mainVar);
+      const variations=resolveObject(root.variations);
+      if(variations){
+        for(const value of Object.values(variations)){
+          const resolved=resolve(value);
+          if(Array.isArray(resolved)){
+            for(const nested of resolved)addCandidate(nested);
+          }else addCandidate(resolved);
+        }
+      }
+
+      for(const obj of candidates){
         const manufacturerReference=resolve(obj.manRef);
         const supplierSku=resolve(obj.sku);
-        if(typeof manufacturerReference!=="string"||!manufacturerReference.trim()) continue;
+        if(typeof manufacturerReference!=="string"||!manufacturerReference.trim())continue;
         const longName=resolve(obj.name);
         const type=resolve(obj.type);
         const title=[typeof longName==="string"?longName:undefined,typeof type==="string"?type:undefined].filter(Boolean).join(" - ");
-        if(!title) continue;
+        if(!title)continue;
         const priceResolved=resolve(obj.price);
         let salePrice:number|undefined,regularPrice:number|undefined;
+        const resolveNumber=(value:unknown):number|undefined=>{
+          const resolved=resolve(value);
+          return typeof resolved==="number"&&Number.isFinite(resolved)?resolved:undefined;
+        };
         if(priceResolved&&typeof priceResolved==="object"&&!Array.isArray(priceResolved)){
           const priceObj=priceResolved as Record<string,unknown>;
           const sales=resolve(priceObj.sales);
           const recommended=resolve(priceObj.recommended);
-          if(sales&&typeof sales==="object"&&!Array.isArray(sales)) salePrice=resolveNumber((sales as Record<string,unknown>).value);
-          if(recommended&&typeof recommended==="object"&&!Array.isArray(recommended)) regularPrice=resolveNumber((recommended as Record<string,unknown>).value);
+          if(sales&&typeof sales==="object"&&!Array.isArray(sales))salePrice=resolveNumber((sales as Record<string,unknown>).value);
+          if(recommended&&typeof recommended==="object"&&!Array.isArray(recommended))regularPrice=resolveNumber((recommended as Record<string,unknown>).value);
         }
         const stockValue=resolve(obj.stock);
         const delivery=resolve(obj.deliveryEstimate);
         const rawStockText=[typeof stockValue==="string"?stockValue:undefined,typeof delivery==="string"?delivery:undefined].filter(Boolean).join(" ");
         const sku=typeof supplierSku==="string"?supplierSku:undefined;
         const key=manufacturerReference+"|"+(sku??"");
-        if(seen.has(key)) continue;
+        if(seen.has(key))continue;
         seen.add(key);
         let variantUrl=productUrl;
         if(sku){
           try{const u=new URL(productUrl);u.searchParams.set("sku",sku);variantUrl=u.toString();}catch{ /* keep base URL */ }
         }
-        output.push({
-          title,
-          supplierSku:sku,
-          manufacturerReference,
-          regularPrice,
-          salePrice,
-          rawStockText:rawStockText||undefined,
-          productUrl:variantUrl
-        });
+        output.push({title,supplierSku:sku,manufacturerReference,regularPrice,salePrice,rawStockText:rawStockText||undefined,productUrl:variantUrl});
       }
     }catch{
       // optional Nuxt payload
