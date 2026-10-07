@@ -34,7 +34,7 @@ function offer(raw:DentalCostProductRaw,v:DentalCostVariantRaw):SupplierOffer{
     stockStatus:stock(v.stockText),rawStockText:v.stockText,
     regularPrice:v.price??raw.regularPrice??raw.salePrice??0,salePrice:v.price??raw.salePrice,
     vatStatus:typeof raw.vatRate==="number"?"excluded":"unknown",vatRate:raw.vatRate,currency:"EUR",
-    promotion:promotionForObservedPrices([text,raw.promotionText??""].join(" "),raw.regularPrice, v.price??raw.salePrice),
+    promotion:promotionForObservedPrices(raw.promotionText??"",raw.regularPrice,v.price??raw.salePrice,raw.title),
     observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"
   };
 }
