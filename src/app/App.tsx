@@ -17,6 +17,7 @@ import { WinnerCard } from "../components/WinnerCard";
 import { ManualOfferPanel } from "../components/ManualOfferPanel";
 import { SearchCandidates } from "../components/SearchCandidates";
 import { MetricsPanel } from "../components/MetricsPanel";
+import { CoverageQueue } from "../components/CoverageQueue";
 import { BasketPanel, type BasketUiItem } from "../components/BasketPanel";
 import { optimizeBasket } from "../domain/basket";
 import { loadPublicData, type PublicData } from "../services/public-data";
@@ -123,6 +124,7 @@ export function App(){
   return <main className="app-shell">
     <header className="topbar"><div><span className="brand-mark">DP</span><strong>DENTAL PRICE</strong></div><span className="live">{data.offers.length} automáticas · {manualOffers.length} manuales</span></header>
     <MetricsPanel metrics={data.metrics}/>
+    <CoverageQueue products={data.products} connectors={data.connectors} onSelect={onSelectCandidate}/>
     <section className="hero">
       <p className="eyebrow">COMPRA INTELIGENTE PARA CLÍNICAS DENTALES</p>
       <h1>Compara el coste real, no solo el precio.</h1>
