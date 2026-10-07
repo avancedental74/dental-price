@@ -1,8 +1,8 @@
 import type { PriceHistoryStats, PriceObservation } from "./types";
 
 function priceOf(obs:PriceObservation):number|null{
-  const value=obs.effectiveUnitCost ?? obs.salePrice ?? obs.regularPrice;
-  return Number.isFinite(value) && value>0 ? value : null;
+  const value=obs.effectiveUnitCost;
+  return typeof value==="number" && Number.isFinite(value) && value>0 ? value : null;
 }
 function round(n:number){return Math.round(n*100)/100;}
 function days(ms:number){return ms/(24*60*60*1000);}
