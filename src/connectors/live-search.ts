@@ -47,6 +47,24 @@ function scoreLink(text:string,href:string,query:string):number{
 function extractProductLinks(html:string,base:string,origin:string,query:string,maxResults:number){
   const $=cheerio.load(html);
   const found=new Map<string,{url:string;score:number}>();
+  const productSelectors=[
+    '[data-testid="product-card"] a[href]',
+    '.product-item a[href]',
+    '.product-items a[href]',
+    '.product-miniature a[href]',
+    'article[data-id-product] a[href]',
+    '.product-container a[href]',
+    '.product-title a[href]',
+    'a.product-item-link[href]'
+  ].join(",");
+  const productUrls=new Set<string>();
+  $(productSelectors).each((_,el)=>{
+    const raw=$(el).attr("href")??"";
+    try{
+      const url=new URL(raw,base).toString();
+      if(new URL(url).origin===new URL(origin).origin&&!deniedParts.some(x=>url.toLowerCase().includes(x)))productUrls.add(url);
+    }catch{ /* ignore invalid result link */ }
+  });
   $("a[href]").each((_,el)=>{
     const raw=$(el).attr("href")??"";
     const text=$(el).text().replace(/\s+/g," ").trim();
@@ -54,11 +72,12 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
     let url:string;
     try{url=new URL(raw,base).toString();}catch{return;}
     if(new URL(url).origin!==new URL(origin).origin)return;
-    if(url===base||url.endsWith("/")||text.length<2)return;
-    const score=scoreLink(text,url,query);
+    if(url===base||url.endsWith("/"))return;
+    const isProductResult=productUrls.has(url);
+    const score=scoreLink(text,url,query)+(isProductResult?8:0);
     if(score<2)return;
-    const old=found.get(url);
-    if(!old||score>old.score)found.set(url,{url,score});
+    const previous=found.get(url);
+    if(!previous||score>previous.score)found.set(url,{url,score});
   });
   return [...found.values()].sort((a,b)=>b.score-a.score).slice(0,maxResults).map(x=>x.url);
 }
