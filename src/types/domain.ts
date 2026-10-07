@@ -13,8 +13,8 @@ export type StockStatus =
   | "unknown";
 
 export type VatStatus = "included" | "excluded" | "unknown";
-
 export type FreshnessStatus = "fresh" | "aging" | "stale";
+export type ShippingThresholdBasis = "net" | "gross";
 
 export interface CanonicalProduct {
   id: string;
@@ -50,12 +50,15 @@ export interface Promotion {
   minQty?: number;
   freeQty?: number;
   discountPercent?: number;
+  discountAmount?: number;
+  bundlePrice?: number;
   validUntil?: string;
 }
 
 export interface SupplierOffer {
   supplierId: string;
   supplierSku?: string;
+  manufacturer?: string;
   manufacturerReference?: string;
   eanGtin?: string;
   rawName: string;
@@ -76,7 +79,11 @@ export interface SupplierOffer {
   currency: "EUR";
   promotion?: Promotion;
   shippingCost?: number;
+  shippingCostVatIncluded?: boolean;
+  shippingVatRate?: number;
   freeShippingThreshold?: number;
+  freeShippingThresholdBasis?: ShippingThresholdBasis;
+  deliveryZone?: "ES_PENINSULA" | "ES_BALEARES" | "ES_CANARIAS" | "ES_CEUTA_MELILLA" | "OTHER";
   deliveryEstimate?: string;
   observedAt: string;
   sourceStatus: "normal" | "suspicious" | "quarantined";
