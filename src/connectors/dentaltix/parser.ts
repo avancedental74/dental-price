@@ -69,6 +69,25 @@ function extractVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVa
       productUrl
     });
   });
+  if (!variants.length) {
+    const bodyText = $("body").text().replace(/\s+/g, " ").trim();
+    const row = /([^€]{5,140}?)\s+Ref\.\s+([A-Za-z0-9._/-]+)\s+(?:Ref\.\s*fab\.|Manufacturer Ref\.|Manuf\. ref\.)\s+([A-Za-z0-9._/-]+)\s+(\d{1,5}(?:[.,]\d{2})?)\s*€\s*(\d{1,5}(?:[.,]\d{2})?)\s*€/gi;
+    for (const match of bodyText.matchAll(row)) {
+      const title = match[1].trim();
+      const supplierSku = match[2];
+      const manufacturerReference = match[3];
+      const key = supplierSku+"|"+manufacturerReference;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      variants.push({
+        title, supplierSku, manufacturerReference,
+        regularPrice: parseEuro(match[4]),
+        salePrice: parseEuro(match[5]),
+        rawStockText: stockFromText(title),
+        productUrl
+      });
+    }
+  }
   return variants;
 }
 
