@@ -2,6 +2,16 @@ import * as cheerio from "cheerio";
 import type { DvdProductRaw, DvdVariantRaw } from "./types";
 function euro(v?:string):number|undefined{if(!v)return;const n=Number(v.replace(/\s/g,"").replace(/€/g,"").replace(/\./g,"").replace(",",".").replace(/[^0-9.]/g,""));return Number.isFinite(n)?n:undefined;}
 const clean=(v:string)=>v.replace(/\s+/g," ").trim();
+function labeledValue($:cheerio.CheerioAPI,label:RegExp):string|undefined{
+  let found:string|undefined;
+  $("p,div,dd,span").each((_,el)=>{
+    if(found) return;
+    const text=clean($(el).clone().children().remove().end().text()) || clean($(el).text());
+    const match=text.match(label);
+    if(match?.[1]) found=match[1].trim();
+  });
+  return found;
+}
 
 export function parseDvdProductHtml(html:string,productUrl:string):DvdProductRaw{
  const $=cheerio.load(html), body=clean($("body").text());
@@ -21,14 +31,14 @@ export function parseDvdProductHtml(html:string,productUrl:string):DvdProductRaw
    variants.push({title:joined,supplierSku:cells[1],manufacturerReference:refFab,netPrice:prices[0],grossPrice:prices[1],stockText:joined,productUrl});
  });
  if(!variants.length){
-   const ref=body.match(/REF\.\s*FAB\s*:\s*([A-Za-z0-9._/-]+)/i)?.[1];
-   const sku=body.match(/REF\.\s*DVD\s*([A-Za-z0-9._/-]+)/i)?.[1];
+   const ref=labeledValue($,/REF\.\s*FAB\s*:\s*([A-Za-z0-9._/-]+)/i) ?? body.match(/REF\.\s*FAB\s*:\s*([A-Za-z0-9._/-]+?)(?=\s|$)/i)?.[1];
+   const sku=$("[data-product-sku]").first().text().trim() || labeledValue($,/REF\.\s*DVD\s*:?[\s]*([A-Za-z0-9._/-]+)/i) ?? body.match(/REF\.\s*DVD\s*([A-Za-z0-9._/-]+?)(?=\s|$)/i)?.[1];
    const gross=body.match(/(\d+(?:[.,]\d+)?)\s*€\s*IVA incl/i)?.[1];
    const net=body.match(/(\d+(?:[.,]\d+)?)\s*€\s*excl\.\s*Tax/i)?.[1];
    const localStock=clean($(".productView__stock,.form-field--stock").first().text())
      || body.match(/\b\d+\s+en stock\b|Disponible para compra|Sin stock|No disponible|Agotado/i)?.[0];
    if(ref) variants.push({title,supplierSku:sku,manufacturerReference:ref,netPrice:euro(net),grossPrice:euro(gross),stockText:localStock||undefined,productUrl});
  }
- const promotionText=clean($(".promo-sku-tooltip-item").first().text()) || undefined;
+ const promotionText=clean($(".promo-sku-tooltip-item").first().text()) || labeledValue($,/(Compra\s+\d+[^.]{0,220}(?:regalamos|gratis)[^.]{0,220})/i) || undefined;
  return {title,manufacturer,variants,productUrl,promotionText};
 }
