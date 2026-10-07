@@ -5,6 +5,7 @@ import { knowledgeForReference } from "../../domain/catalog";
 const USER_AGENT="DentalPrice/0.2 (+https://github.com/avancedental74/dental-price; single-user price research)";
 function euro(v?:string){if(!v)return undefined;const n=Number(v.replace(/\s/g,"").replace(/€/g,"").replace(/\./g,"").replace(",",".").replace(/[^0-9.]/g,""));return Number.isFinite(n)?n:undefined;}
 function stock(text:string):StockStatus{if(/agotado|no disponible|sin stock/i.test(text))return"unavailable";if(/stock|entrega express|24h|disponible/i.test(text))return"in_stock";return"unknown";}
+function vatRateFrom(net?:number,gross?:number):number|undefined{if(!net||!gross||gross<net)return undefined;const raw=((gross/net)-1)*100;const allowed=[4,10,21];const nearest=allowed.reduce((a,b)=>Math.abs(b-raw)<Math.abs(a-raw)?b:a);return Math.abs(nearest-raw)<=0.4?nearest:undefined;}
 export async function fetchBrokerDentalProduct(productUrl:string,fetchImpl:typeof fetch=fetch):Promise<{offers:SupplierOffer[]}>{
  const response=await fetchImpl(productUrl,{headers:{"user-agent":USER_AGENT,accept:"text/html,application/xhtml+xml"}});
  if(!response.ok)throw new Error("Broker Dental HTTP "+response.status);
@@ -22,9 +23,12 @@ export async function fetchBrokerDentalProduct(productUrl:string,fetchImpl:typeo
    if(!manufacturerReference||!prices.length)continue;
    const regularPrice=prices.length>1?Math.max(...prices.slice(0,3)):prices[0],salePrice=Math.min(...prices.slice(0,3));
    const known=knowledgeForReference(manufacturerReference);
+   const grossMatch=text.match(/(?:Precio\s+con\s+IVA(?:\s+incluido)?|IVA\s+incluido)\s*:?\s*(\d{1,5}(?:[.,]\d{2})?)\s*€/i)
+     ?? body.match(/(?:Precio\s+con\s+IVA(?:\s+incluido)?|IVA\s+incluido)\s*:?\s*(\d{1,5}(?:[.,]\d{2})?)\s*€/i);
+   const vatRate=vatRateFrom(salePrice,grossMatch?euro(grossMatch[1]):undefined);
    offers.push({supplierId:"brokerdental",supplierSku,manufacturer:brand,manufacturerReference,rawName:text.slice(0,240),normalizedName:normalizeName([title,text,brand??""].join(" ")),productUrl,
     presentation:known.presentation,quantity:known.quantity,unit:known.unit,packCount:known.packCount,variant:known.variant,shade:known.shade,
-    stockStatus:stock(text+" "+body.slice(0,1200)),regularPrice,salePrice,vatStatus:"excluded",vatRate:21,currency:"EUR",observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"});
+    stockStatus:stock(text+" "+body.slice(0,1200)),regularPrice,salePrice,vatStatus:vatRate?"excluded":"unknown",vatRate,currency:"EUR",observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"});
  }
  return {offers};
 }
