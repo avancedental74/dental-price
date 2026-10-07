@@ -34,7 +34,7 @@ function inferShade(value: string): string | undefined {
 
 function inferVariant(value: string): string | undefined {
   if (/\bbody\b/i.test(value)) return "Body";
-  if (/\bdentina\b|\bdentin\b/i.test(value)) return "Dentin";
+  if (/\bdentina\b|\bdentin\b|\bdentine\b/i.test(value)) return "Dentin";
   if (/\besmalte\b|\benamel\b|\bglaze\b/i.test(value)) return "Enamel";
   return undefined;
 }
