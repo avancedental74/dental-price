@@ -44,6 +44,7 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
   return {
     supplierId: "dentaltix",
     supplierSku: variant.supplierSku,
+    manufacturer: raw.manufacturer,
     manufacturerReference: variant.manufacturerReference,
     rawName: variant.title,
     normalizedName: normalizeName([raw.title, variant.title, raw.manufacturer ?? ""].join(" ")),
@@ -58,8 +59,15 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
     rawStockText: variant.rawStockText,
     regularPrice: variant.regularPrice ?? variant.salePrice ?? raw.regularPrice ?? raw.salePrice ?? 0,
     salePrice: variant.salePrice ?? raw.salePrice,
-    vatStatus: "unknown",
+    vatStatus: typeof raw.vatRate === "number" ? "excluded" : "unknown",
+    vatRate: raw.vatRate,
     currency: "EUR",
+    shippingCost: 4.95,
+    shippingCostVatIncluded: false,
+    shippingVatRate: 21,
+    freeShippingThreshold: 100,
+    freeShippingThresholdBasis: "net",
+    deliveryZone: "ES_PENINSULA",
     observedAt: new Date().toISOString(),
     sourceStatus: "normal"
   };
@@ -71,6 +79,7 @@ export function normalizeDentaltix(raw: DentaltixProductRaw): SupplierOffer[] {
   const single: SupplierOffer = {
     supplierId: "dentaltix",
     supplierSku: raw.pageSupplierSku,
+    manufacturer: raw.manufacturer,
     manufacturerReference: raw.pageManufacturerReference,
     rawName: raw.title,
     normalizedName: normalizeName([raw.title, raw.manufacturer ?? ""].join(" ")),
@@ -85,8 +94,15 @@ export function normalizeDentaltix(raw: DentaltixProductRaw): SupplierOffer[] {
     rawStockText: raw.rawStockText,
     regularPrice: raw.regularPrice ?? raw.salePrice ?? 0,
     salePrice: raw.salePrice,
-    vatStatus: "unknown",
+    vatStatus: typeof raw.vatRate === "number" ? "excluded" : "unknown",
+    vatRate: raw.vatRate,
     currency: "EUR",
+    shippingCost: 4.95,
+    shippingCostVatIncluded: false,
+    shippingVatRate: 21,
+    freeShippingThreshold: 100,
+    freeShippingThresholdBasis: "net",
+    deliveryZone: "ES_PENINSULA",
     observedAt: new Date().toISOString(),
     sourceStatus: "normal"
   };
