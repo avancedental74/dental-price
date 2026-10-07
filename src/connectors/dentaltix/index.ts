@@ -12,7 +12,7 @@ export async function fetchDentaltixProduct(productUrl: string, fetchImpl: typeo
   return { raw, offers: normalizeDentaltix(raw) };
 }
 
-export async function healthCheckDentaltix(url = "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer", fetchImpl: typeof fetch = fetch): Promise<DentaltixHealth> {
+export async function healthCheckDentaltix(url = "https://www.dentaltix.com/en/3m/filtek-supreme-xte-versatile-nanocomposite-syringe?sku=053M4910A3B", fetchImpl: typeof fetch = fetch): Promise<DentaltixHealth> {
   const checkedAt = new Date().toISOString();
   try {
     const result = await fetchDentaltixProduct(url, fetchImpl);
