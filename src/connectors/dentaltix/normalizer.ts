@@ -58,8 +58,7 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
     rawStockText: variant.rawStockText,
     regularPrice: variant.regularPrice ?? variant.salePrice ?? raw.regularPrice ?? raw.salePrice ?? 0,
     salePrice: variant.salePrice ?? raw.salePrice,
-    vatStatus: "excluded",
-    vatRate: 20,
+    vatStatus: "unknown",
     currency: "EUR",
     observedAt: new Date().toISOString(),
     sourceStatus: "normal"
@@ -86,8 +85,7 @@ export function normalizeDentaltix(raw: DentaltixProductRaw): SupplierOffer[] {
     rawStockText: raw.rawStockText,
     regularPrice: raw.regularPrice ?? raw.salePrice ?? 0,
     salePrice: raw.salePrice,
-    vatStatus: "excluded",
-    vatRate: 20,
+    vatStatus: "unknown",
     currency: "EUR",
     observedAt: new Date().toISOString(),
     sourceStatus: "normal"
