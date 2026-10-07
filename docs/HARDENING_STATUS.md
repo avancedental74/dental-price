@@ -4,7 +4,7 @@ Fecha: 2026-10-07
 
 ## Estado real
 
-La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. Dentaltix ya dispone de una ruta automática validada para el SKU 4910A3B. Proclinic y Dental Ibérica siguen limitados por el comportamiento de sus sitios desde GitHub Actions.
+La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. Dentaltix dispone de automatización validada para 13 variantes Filtek Supreme XTE. Proclinic y Dental Ibérica siguen limitados por el comportamiento de sus sitios desde GitHub Actions.
 
 ## Validado
 
@@ -30,10 +30,10 @@ La arquitectura, motores de dominio, validación, CI, seguridad y frontend está
 Automatización operativa y validada para 13 variantes Filtek Supreme XTE con SKU Dentaltix `053M…`. El refresh real del 2026-10-07 produjo 13 ofertas, 13 históricos y 0 falsos `EXACT`: 12 variantes en stock y `4910B2E` con stock bajo. Las variantes verificadas muestran 44,90 € antes de IVA, IVA 10%; para una unidad el motor calcula 55,38 € incluyendo portes cuando aplica el coste estándar. La cobertura seguirá ampliándose solo con mappings SKU↔referencia verificables.
 
 ### Proclinic
-Las fichas públicas son visibles en navegador/buscadores, pero GitHub Actions recibe HTTP 405. Se usa `manual_verification` para evitar peticiones repetidas que el sitio rechaza. La interfaz permite registrar un snapshot verificado manualmente que se guarda únicamente en `localStorage` del navegador y pasa por el mismo matching/pricing que las ofertas automáticas. La interfaz permite registrar un snapshot verificado manualmente que se guarda únicamente en `localStorage` del navegador y pasa por el mismo matching/pricing que las ofertas automáticas.
+Las fichas públicas son visibles en navegador/buscadores, pero GitHub Actions recibe HTTP 405. Se usa `manual_verification` para evitar peticiones repetidas que el sitio rechaza. La interfaz permite registrar un snapshot verificado manualmente que se guarda únicamente en `localStorage` del navegador, exige dominio correcto y referencia de fabricante coincidente, pasa por el mismo matching/pricing y conserva histórico local.
 
 ### Dental Ibérica
-Las fichas públicas son visibles en navegador/buscadores, pero GitHub Actions recibe HTTP 405. Se usa `manual_verification` para evitar peticiones repetidas que el sitio rechaza.
+Las fichas públicas son visibles en navegador/buscadores, pero GitHub Actions recibe HTTP 405. Se usa `manual_verification` para evitar peticiones repetidas que el sitio rechaza. La interfaz permite registrar snapshots verificados en `localStorage`, con validación de dominio y referencia, y conserva histórico local para scoring futuro.
 
 ## Principio de seguridad de datos
 
