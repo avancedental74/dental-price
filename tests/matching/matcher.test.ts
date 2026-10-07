@@ -83,6 +83,12 @@ describe("matchOfferToProduct", () => {
     expect(result.conflicts).toContain("Pack incompatible");
   });
 
+  it("does not call a strong reference EXACT when critical fields are missing", () => {
+    const result = matchOfferToProduct(product, offer({ variant: undefined, shade: undefined }));
+    expect(result.status).toBe("HIGH_CONFIDENCE");
+    expect(result.conflicts.some(x => x.includes("Campos críticos ausentes"))).toBe(true);
+  });
+
   it("rejects contradictory manufacturer references", () => {
     const result = matchOfferToProduct(
       product,
