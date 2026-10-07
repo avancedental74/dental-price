@@ -34,3 +34,29 @@ jobs:
           probe dentalexpress "41294"
           probe ortolan "Tetric EvoCeram"
           probe dvd-dental "Scotchbond Universal Plus"
+      - name: Inspect Dental Express product identifiers
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const url="https://dentalexpress.es/adhesivo-scotchbond-universal-plus-5ml-solventum";
+          const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html"}});
+          const html=await r.text();
+          const $=cheerio.load(html);
+          const body=$("body").text().replace(/\s+/g," ");
+          console.log("DEX HTTP",r.status,"LEN",html.length);
+          console.log("41294 POS",body.indexOf("41294"));
+          for(const re of [/Referencia.{0,160}/gi,/41294.{0,200}/gi,/sku.{0,200}/gi,/mpn.{0,200}/gi]){
+            console.log(String(re),JSON.stringify((body.match(re)||[]).slice(0,20)));
+          }
+          console.log("LD",JSON.stringify($('script[type="application/ld+json"]').toArray().map(x=>$(x).text()).filter(x=>/Product|41294|sku|mpn/i.test(x)).slice(0,6),null,2));
+          NODE
+      - name: Inspect DVD Klevu configuration
+        run: |
+          node --input-type=module <<'NODE'
+          const url="https://www.dvd-dental.com/search.php?search_query=Scotchbond%20Universal%20Plus";
+          const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html"}});
+          const html=await r.text();
+          console.log("DVD HTTP",r.status,"LEN",html.length);
+          const patterns=[/klevu.{0,500}/gi,/apiKey.{0,300}/gi,/searchUrl.{0,300}/gi,/cloudSearchUrl.{0,300}/gi,/restapi.{0,300}/gi];
+          for(const re of patterns)console.log(String(re),JSON.stringify((html.match(re)||[]).slice(0,20),null,2));
+          NODE
