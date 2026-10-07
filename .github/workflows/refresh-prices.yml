@@ -42,3 +42,4 @@ jobs:
           git commit -m "data: refresh public prices"
           git pull --rebase origin main
           git push origin HEAD:main
+# manual-current-state-trigger
