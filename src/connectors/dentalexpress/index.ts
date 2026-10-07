@@ -30,3 +30,12 @@ export async function fetchDentalExpressProduct(productUrl:string,fetchImpl:type
   regularPrice:salePrice,salePrice,vatStatus:"excluded",currency:"EUR",observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"};
  return {offers:[offer]};
 }
+
+export async function healthCheckDentalExpress(url="https://dentalexpress.es/adhesivo-scotchbond-universal-plus-5ml-solventum-3m",fetchImpl:typeof fetch=fetch){
+  const checkedAt=new Date().toISOString();
+  try{
+    const result=await fetchDentalExpressProduct(url,fetchImpl);
+    if(!result.offers.length) return {status:"amber" as const,checkedAt,message:"Página accesible pero parser sin ofertas"};
+    return {status:"green" as const,checkedAt,message:result.offers.length+" oferta(s) normalizada(s)"};
+  }catch(error){return {status:"red" as const,checkedAt,message:error instanceof Error?error.message:"Dental Express error desconocido"};}
+}
