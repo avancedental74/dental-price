@@ -78,4 +78,24 @@ describe("Dentaltix connector", () => {
     expect(offers[0].packCount).toBe(1);
     expect(offers[0].variant).toBe("XS");
   });
+  it("normalizes Filtek Z250 syringe separately from capsules", () => {
+    const html = `
+      <html><body>
+        <h1>Filtek Z250: Composite Universal - Solventum</h1>
+        <p><span>Marca:</span><a>Solventum</a></p>
+        <p><span>Referencia:</span><strong>053M6020A3</strong></p>
+        <p><span>Ref. Fabricante:</span><span>6020A3</span></p>
+        <span>88,43 €</span><span>61,90 €</span>
+        <div>Precio IVA incluido (10%) 68,09 €</div>
+        <div>EN STOCK.</div>
+        <div data-testid="variation-cards-label">Tipo: <b>1 Jer. de 4 gr - Color: A3</b></div>
+      </body></html>`;
+    const offers = normalizeDentaltix(parseDentaltixProductHtml(html, "https://www.dentaltix.com/es/demo?sku=053M6020A3"));
+    const selected = offers.find(o => o.manufacturerReference === "6020A3");
+    expect(selected?.presentation).toBe("Jeringa");
+    expect(selected?.quantity).toBe(4);
+    expect(selected?.unit).toBe("g");
+    expect(selected?.packCount).toBe(1);
+    expect(selected?.shade).toBe("A3");
+  });
 });
