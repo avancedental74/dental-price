@@ -28,3 +28,12 @@ export async function fetchBrokerDentalProduct(productUrl:string,fetchImpl:typeo
  }
  return {offers};
 }
+
+export async function healthCheckBrokerDental(url="https://www.brokerdental.es/equia-fil-a2.html",fetchImpl:typeof fetch=fetch){
+  const checkedAt=new Date().toISOString();
+  try{
+    const result=await fetchBrokerDentalProduct(url,fetchImpl);
+    if(!result.offers.length) return {status:"amber" as const,checkedAt,message:"Página accesible pero parser sin ofertas"};
+    return {status:"green" as const,checkedAt,message:result.offers.length+" oferta(s) normalizada(s)"};
+  }catch(error){return {status:"red" as const,checkedAt,message:error instanceof Error?error.message:"Broker Dental error desconocido"};}
+}
