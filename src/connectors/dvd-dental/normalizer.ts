@@ -19,6 +19,7 @@ function toOffer(raw:DvdProductRaw,v:DvdVariantRaw):SupplierOffer{
  presentation:known.presentation??inferPresentation(raw.title+" "+v.title),quantity:known.quantity??q.quantity,unit:known.unit??q.unit,packCount:known.packCount??(q.quantity?1:undefined),
  variant:known.variant,shade:known.shade,stockStatus:stock(v.stockText),rawStockText:v.stockText,
  regularPrice:v.netPrice??0,salePrice:v.netPrice,vatStatus:typeof vatRate==="number"?"excluded":"unknown",vatRate,currency:"EUR",
+ promotion:raw.promotionText?{type:"other",description:raw.promotionText}:undefined,
  observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"};
 }
 export function normalizeDvd(raw:DvdProductRaw):SupplierOffer[]{return raw.variants.map(v=>toOffer(raw,v)).filter(o=>o.regularPrice>0);}
