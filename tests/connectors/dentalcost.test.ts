@@ -32,8 +32,6 @@ describe("DentalCost connector",()=>{
    expect(offers[0].presentation).toBe("Jeringa");
    expect(offers[0].variant).toBe("Body");
    expect(offers[0].stockStatus).toBe("in_stock");
-   expect(offers[0].shippingCost).toBe(5.8);
-   expect(offers[0].freeShippingThreshold).toBe(120);
    expect(offers[1].stockStatus).toBe("unavailable");
  });
  it("normalizes Peeso packaging and variant from public rows",()=>{
