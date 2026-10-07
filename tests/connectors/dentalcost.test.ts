@@ -97,6 +97,7 @@ describe("DentalCost connector",()=>{
     expect(offer.presentation).toBe("Frasco");
     expect(offer.quantity).toBe(5);
     expect(offer.unit).toBe("ml");
+    expect(offer.stockStatus).toBe("in_stock");
   });
 
   it("normalizes RelyX Universal reference-specific shades",()=>{
