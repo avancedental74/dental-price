@@ -1,6 +1,6 @@
 import type { MatchedSupplierOffer } from "../domain/comparison/types";
 import { getFreshnessStatus } from "../domain/comparison/compare";
-const names:Record<string,string>={"dentaltix":"Dentaltix","proclinic":"Proclinic","dental-iberica":"Dental Ibérica"};
+const names:Record<string,string>={"dentaltix":"Dentaltix","proclinic":"Proclinic","dental-iberica":"Dental Ibérica","dentalcost":"DentalCost","dvd-dental":"DVD Dental"};
 
 function eligibilityLabel(item:MatchedSupplierOffer):string{
   if(item.eligibleForRanking) return "Comparable";
