@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "src/connectors/**"
+      - "scripts/connector-health.ts"
       - "package-lock.json"
       - ".github/workflows/connector-health.yml"
   schedule:
@@ -23,3 +24,4 @@ jobs:
       - run: npm run health
 
 # Health is observational only. refresh-prices.yml is the sole writer of connector-status.json.
+# five-supplier-health-trigger
