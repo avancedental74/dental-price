@@ -10,4 +10,10 @@ describe("promotion extraction",()=>{
  it("keeps a 3+1 even when a sale price is present",()=>{
    expect(promotionForObservedPrices("Promoción 3+1",114.14,79.90)).toMatchObject({type:"buy_x_get_y",minQty:3,freeQty:1});
  });
+ it("rejects a promotion belonging to a recommended different product",()=>{
+   expect(promotionForObservedPrices("Promoción 3+1 Filtek Easy Match",64.14,44.9,"Filtek Supreme XTE Universal Restorative")).toBeUndefined();
+ });
+ it("keeps a promotion clearly tied to the current product",()=>{
+   expect(promotionForObservedPrices("Promoción 3+1. Comprando 3 reposiciones de RelyX Universal te regalamos una unidad",191.29,133.9,"RelyX Universal Cemento de Resina")).toMatchObject({type:"buy_x_get_y",minQty:3,freeQty:1});
+ });
 });
