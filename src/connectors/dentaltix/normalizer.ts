@@ -81,7 +81,8 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
     freeShippingThresholdBasis: "net",
     deliveryZone: "ES_PENINSULA",
     observedAt: new Date().toISOString(),
-    sourceStatus: "normal"
+    sourceStatus: "normal",
+    sourceMode: "automatic"
   };
 }
 
@@ -117,7 +118,8 @@ export function normalizeDentaltix(raw: DentaltixProductRaw): SupplierOffer[] {
     freeShippingThresholdBasis: "net",
     deliveryZone: "ES_PENINSULA",
     observedAt: new Date().toISOString(),
-    sourceStatus: "normal"
+    sourceStatus: "normal",
+    sourceMode: "automatic"
   };
   return single.regularPrice > 0 || (single.salePrice ?? 0) > 0 ? [single] : [];
 }
