@@ -50,14 +50,19 @@ export function App(){
 
   const comparison=useMemo(()=>selected?compareSupplierOffers(selected,candidates,quantity):null,[selected,candidates,quantity]);
   const allOffers=useMemo(()=>data?[...data.offers,...manualOffers]:manualOffers,[data,manualOffers]);
-  const basketResult=useMemo(()=>{
-    if(!data||!basket.length) return null;
-    return optimizeBasket(basket.map(item=>({
-      product:item.product,
-      quantity:item.quantity,
-      offers:allOffers.filter(o=>normalizeReference(o.manufacturerReference)===normalizeReference(item.product.manufacturerReference))
-    })));
+  const basketComputation=useMemo(()=>{
+    if(!data||!basket.length) return {result:null,error:null as string|null};
+    try{
+      return {result:optimizeBasket(basket.map(item=>({
+        product:item.product,
+        quantity:item.quantity,
+        offers:allOffers.filter(o=>normalizeReference(o.manufacturerReference)===normalizeReference(item.product.manufacturerReference))
+      }))),error:null};
+    }catch(error){
+      return {result:null,error:error instanceof Error?error.message:"No se pudo optimizar la cesta"};
+    }
   },[data,basket,allOffers]);
+  const basketResult=basketComputation.result;
   const winner=comparison?.ranked[0];
   const history=useMemo(()=>data&&selected&&winner?[...data.history,...manualHistory].filter(h=>h.productId===selected.id&&h.requestedQuantity===quantity&&h.supplierId===winner.offer.supplierId):[],[data,selected,quantity,winner,manualHistory]);
   const stats=useMemo(()=>calculateHistoryStats(history),[history]);
@@ -135,7 +140,7 @@ export function App(){
     {winner && <WinnerCard item={winner}/>} 
     {comparison && <ComparisonTable items={comparison.matches}/>} 
     {selected && <HistoryPanel history={history} stats={stats}/>} 
-    <BasketPanel items={basket} result={basketResult} onChangeQuantity={changeBasketQuantity} onRemove={removeBasketItem}/>
+    <BasketPanel items={basket} result={basketResult} error={basketComputation.error} onChangeQuantity={changeBasketQuantity} onRemove={removeBasketItem}/>
     <ManualOfferPanel product={selected} offers={manualOffers} onChange={onManualOffersChange} onRecord={onManualObservation}/>
     <ConnectorStatusPanel items={data.connectors}/>
     <footer>Mejor precio encontrado entre los proveedores consultados · España peninsular · Nunca se inventan IVA, portes ni equivalencias.</footer>
