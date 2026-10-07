@@ -8,6 +8,9 @@ import { fetchProclinicProduct } from "../src/connectors/proclinic";
 import { fetchDentalIbericaProduct } from "../src/connectors/dental-iberica";
 import { fetchDentalCostProduct } from "../src/connectors/dentalcost";
 import { fetchDvdProduct } from "../src/connectors/dvd-dental";
+import { fetchDentalExpressProduct } from "../src/connectors/dentalexpress";
+import { fetchBrokerDentalProduct } from "../src/connectors/brokerdental";
+import { fetchOrtolanProduct } from "../src/connectors/ortolan";
 import { normalizeReference } from "../src/domain/matching/normalization";
 import { analyzeOfferAnomaly } from "../src/domain/anomaly";
 import { matchOfferToProduct } from "../src/domain/matching/matcher";
@@ -59,6 +62,9 @@ async function fetchPage(seed:Seed):Promise<SupplierOffer[]>{
   if(seed.supplierId==="dental-iberica") return (await fetchDentalIbericaProduct(seed.url,timedFetch)).offers;
   if(seed.supplierId==="dentalcost") return (await fetchDentalCostProduct(seed.url,timedFetch)).offers;
   if(seed.supplierId==="dvd-dental") return (await fetchDvdProduct(seed.url,timedFetch)).offers;
+  if(seed.supplierId==="dentalexpress") return (await fetchDentalExpressProduct(seed.url,timedFetch)).offers;
+  if(seed.supplierId==="brokerdental") return (await fetchBrokerDentalProduct(seed.url,timedFetch)).offers;
+  if(seed.supplierId==="ortolan") return (await fetchOrtolanProduct(seed.url,timedFetch)).offers;
   throw new Error("Unsupported supplier "+seed.supplierId);
 }
 
