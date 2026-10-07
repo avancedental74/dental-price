@@ -87,4 +87,5 @@ export interface SupplierOffer {
   deliveryEstimate?: string;
   observedAt: string;
   sourceStatus: "normal" | "suspicious" | "quarantined";
+  sourceMode?: "automatic" | "manual";
 }
