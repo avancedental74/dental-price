@@ -150,4 +150,19 @@ describe("Dentaltix connector", () => {
     expect(a1?.shade).toBe("A1");
     expect(ao3?.shade).toBe("AO3");
   });
+  it("normalizes Filtek Universal 6555 reference shades",()=>{
+    const html=`<html><body>
+      <h1>Filtek Universal Restorative: Nanocomposite - Solventum</h1>
+      <p><span>Marca:</span><a>Solventum</a></p>
+      <div class="product-variation" data-sku="058109" data-manufacturer-reference="6555A3">1 Jer. de 4 gr - Color: A3 71,29 € 49,90 € En stock</div>
+      <div class="product-variation" data-sku="H011" data-manufacturer-reference="6555XW">1 Jer. de 4 gr - Extra White 71,29 € 49,90 € En stock</div>
+      <div class="product-variation" data-sku="H012" data-manufacturer-reference="6555PO">1 Jer. de 4 gr - Opaque Pink 71,29 € 49,90 € En stock</div>
+    </body></html>`;
+    const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo"));
+    expect(offers.find(o=>o.manufacturerReference==="6555A3")?.shade).toBe("A3");
+    expect(offers.find(o=>o.manufacturerReference==="6555XW")?.shade).toBe("XW");
+    expect(offers.find(o=>o.manufacturerReference==="6555PO")?.shade).toBe("PO");
+    expect(offers[0].quantity).toBe(4);
+    expect(offers[0].presentation).toBe("Jeringa");
+  });
 });
