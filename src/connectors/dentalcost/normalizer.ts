@@ -14,6 +14,7 @@ function presentation(text:string):string|undefined{
   if(/jeringa/i.test(text)) return "Jeringa";
   if(/c[aá]psul/i.test(text)) return "Cápsulas";
   if(/caja|peeso|fresa/i.test(text)) return "Caja";
+  if(/\bbote\b|\bfrasco\b|\bbotella\b/i.test(text)) return "Frasco";
   if(/air[- ]?n[- ]?go|polvo|bicarbonato|botes?|frascos?/i.test(text)) return "Frasco";
 }
 function quantity(text:string){const m=text.match(/(\d+(?:[.,]\d+)?)\s*(gr|g|ml|mm)\b/i);return m?{quantity:Number(m[1].replace(",",".")),unit:m[2].toLowerCase()==="gr"?"g":m[2].toLowerCase()}:{};}
