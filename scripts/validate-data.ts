@@ -16,7 +16,7 @@ const statusSchema=z.array(z.object({
 }).passthrough());
 const policySchema=z.array(z.object({
   supplierId:z.string(),zone:z.literal("ES_PENINSULA"),shippingCost:z.number().nonnegative(),shippingCostVatIncluded:z.boolean(),shippingVatRate:z.number().nonnegative(),
-  freeShippingThreshold:z.number().nonnegative(),freeShippingThresholdBasis:z.enum(["net","gross"]),observedAt:z.string(),sourceUrl:z.string().url()
+  freeShippingThreshold:z.number().nonnegative(),freeShippingThresholdBasis:z.enum(["net","gross"]),smallOrderThreshold:z.number().nonnegative().optional(),smallOrderSurcharge:z.number().nonnegative().optional(),observedAt:z.string(),sourceUrl:z.string().url()
 }));
 const metricsSchema=z.object({
   generatedAt:z.string(),verifiedOffers:z.number().int().nonnegative(),purchasableOffers:z.number().int().nonnegative(),
@@ -24,7 +24,7 @@ const metricsSchema=z.object({
   productsWithTwoOrMoreVerifiedSuppliers:z.number().int().nonnegative(),productsWithTwoOrMorePurchasableSuppliers:z.number().int().nonnegative(),automaticSuppliers:z.number().int().nonnegative(),
   supplierOfferCounts:z.record(z.string(),z.number().int().nonnegative())
 });
-const seedSchema=z.array(z.object({productId:z.string(),supplierId:z.enum(["dentaltix","proclinic","dental-iberica","dentalcost","dvd-dental"]),url:z.string().url()}));
+const seedSchema=z.array(z.object({productId:z.string(),supplierId:z.enum(["dentaltix","proclinic","dental-iberica","dentalcost","dvd-dental","dentalexpress","brokerdental","ortolan"]),url:z.string().url(),acquisitionMode:z.enum(["direct","manual_verification"]).optional()}));
 
 const products=z.array(canonicalProductSchema).parse(await readJson("data/products.json"));
 const current=z.array(supplierOfferSchema).parse(await readJson("data/current-prices.json"));
