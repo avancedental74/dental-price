@@ -57,6 +57,7 @@ function filtekFromRef(ref?:string): {presentation?:string;quantity?:number;unit
   if(z250Syringe) return {presentation:"Jeringa",quantity:4,unit:"g",packCount:1,shade:z250Syringe[1].toUpperCase()};
   const z250Capsule=ref?.match(/^6021([A-Z]\d(?:\.5)?|UD)$/i);
   if(z250Capsule) return {presentation:"Cápsulas",quantity:0.2,unit:"g",packCount:20,variant:"Capsule",shade:z250Capsule[1].toUpperCase()};
+  if(ref==="4242") return {presentation:"Frasco",quantity:6,unit:"ml",packCount:1};
   return {};
 }
 
@@ -71,10 +72,10 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
     rawName: variant.title,
     normalizedName: normalizeName([raw.title, variant.title, raw.manufacturer ?? ""].join(" ")),
     productUrl: variant.productUrl,
-    presentation: inferPresentation(variant.title) ?? inferPresentation(raw.title) ?? byRef.presentation,
-    quantity: q.quantity ?? byRef.quantity,
-    unit: q.unit ?? byRef.unit,
-    packCount: q.packCount ?? byRef.packCount,
+    presentation: byRef.presentation ?? inferPresentation(variant.title) ?? inferPresentation(raw.title),
+    quantity: byRef.quantity ?? q.quantity,
+    unit: byRef.unit ?? q.unit,
+    packCount: byRef.packCount ?? q.packCount,
     variant: inferVariant(variant.title) ?? byRef.variant,
     shade: inferShade(variant.title) ?? byRef.shade,
     stockStatus: normalizeStock(variant.rawStockText),
@@ -108,10 +109,10 @@ export function normalizeDentaltix(raw: DentaltixProductRaw): SupplierOffer[] {
     rawName: raw.title,
     normalizedName: normalizeName([raw.title, raw.manufacturer ?? ""].join(" ")),
     productUrl: raw.productUrl,
-    presentation: inferPresentation(raw.title) ?? byRef.presentation,
-    quantity: q.quantity ?? byRef.quantity,
-    unit: q.unit ?? byRef.unit,
-    packCount: q.packCount ?? byRef.packCount,
+    presentation: byRef.presentation ?? inferPresentation(raw.title),
+    quantity: byRef.quantity ?? q.quantity,
+    unit: byRef.unit ?? q.unit,
+    packCount: byRef.packCount ?? q.packCount,
     variant: inferVariant(raw.title) ?? byRef.variant,
     shade: inferShade(raw.title) ?? byRef.shade,
     stockStatus: normalizeStock(raw.rawStockText),
