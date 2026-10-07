@@ -22,7 +22,7 @@ export function ComparisonTable({items}:{items:MatchedSupplierOffer[]}){
   return <section className="card"><div className="section-head"><div><p className="eyebrow">COMPARATIVA</p><h3>Proveedores</h3></div><span>{items.length} resultados</span></div>
     <div className="table-wrap"><table><thead><tr><th>Proveedor</th><th>Precio</th><th>Coste efectivo</th><th>Stock</th><th>Estado</th></tr></thead>
       <tbody>{items.map((item,index)=><tr key={`${item.offer.supplierId}-${item.offer.supplierSku ?? item.offer.manufacturerReference ?? index}`}>
-        <td><strong>{names[item.offer.supplierId] ?? item.offer.supplierId}</strong></td>
+        <td><strong>{names[item.offer.supplierId] ?? item.offer.supplierId}</strong>{item.offer.sourceMode==="manual"&&<small className="source-note">Verificación manual</small>}</td>
         <td>{(item.offer.salePrice ?? item.offer.regularPrice).toFixed(2)} €</td>
         <td>{item.pricing ? `${item.pricing.effectiveTotalCost.toFixed(2)} €` : "—"}</td>
         <td>{item.offer.stockStatus==="in_stock"?"Disponible":item.offer.stockStatus==="low_stock"?"Pocas unidades":item.offer.stockStatus}</td>
