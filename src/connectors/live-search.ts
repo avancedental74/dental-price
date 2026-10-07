@@ -182,6 +182,51 @@ export async function searchDvdKlevuRecords(query:string,fetchImpl:typeof fetch=
     .slice(0,maxResults);
 }
 
+export interface OrtolanSearchRecord {
+  supplierSku?:string;
+  name:string;
+  price:number;
+  variant?:string;
+  url?:string;
+}
+
+export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=5):Promise<OrtolanSearchRecord[]>{
+  const searchUrl="https://ortolan.es/es/busqueda?controller=search&s="+encodeURIComponent(query);
+  const response=await fetchImpl(searchUrl,{
+    headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36",accept:"text/html,application/xhtml+xml"},
+    redirect:"follow"
+  });
+  if(!response.ok)throw new Error("ORTOLAN_SEARCH_HTTP_"+response.status);
+  const html=await response.text();
+  const $=cheerio.load(html);
+  const urlsByProduct=new Map<string,string>();
+  $('article[data-id-product]').each((_,el)=>{
+    const id=$(el).attr("data-id-product");
+    const href=$(el).find('a[href*=".html"]').first().attr("href");
+    if(id&&href){
+      try{urlsByProduct.set(id,new URL(href,response.url||searchUrl).toString());}catch{ /* ignore */ }
+    }
+  });
+  const records:OrtolanSearchRecord[]=[];
+  const seen=new Set<string>();
+  for(const match of html.matchAll(/"item_id":"([^"]+)","item_name":"([^"]+)"[^{}]{0,700}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,700}?"item_variant":"([^"]*)"/g)){
+    const supplierSku=match[1];
+    const name=match[2];
+    const price=Number(match[3]);
+    const variant=match[4]||undefined;
+    if(!Number.isFinite(price)||price<=0)continue;
+    const hay=[name,variant,supplierSku].filter(Boolean).join(" ");
+    if(scoreLink(hay,hay,query)<2)continue;
+    const baseId=supplierSku?.split("-")[0];
+    const key=[supplierSku,name,variant].join("|");
+    if(seen.has(key))continue;
+    seen.add(key);
+    records.push({supplierSku,name,price,variant,url:baseId?urlsByProduct.get(baseId):undefined});
+    if(records.length>=maxResults)break;
+  }
+  return records;
+}
+
 async function searchDvdKlevu(query:string,fetchImpl:typeof fetch,maxResults:number){
   const records=await searchDvdKlevuRecords(query,fetchImpl,maxResults);
   return [...new Set(records.map(record=>record.url!).filter(Boolean))];
