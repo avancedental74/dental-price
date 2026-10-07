@@ -14,6 +14,7 @@ function inferPresentation(value: string): string | undefined {
   if (/jeringa|\bjer\.|\bsyr\.?\b|syringe/i.test(value)) return "Jeringa";
   if (/\bcap\.|\bcaps?\.?\b|cápsul|capsul/i.test(value)) return "Cápsulas";
   if (/caja|\bfresas?\b|\bpeeso\b/i.test(value)) return "Caja";
+  if (/\bbote\b|\bfrasco\b|\bbotella\b/i.test(value)) return "Frasco";
   if (/kit/i.test(value)) return "Kit";
   return undefined;
 }
