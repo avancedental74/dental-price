@@ -1,0 +1,24 @@
+[
+  {
+    "supplierId": "dentaltix",
+    "zone": "ES_PENINSULA",
+    "shippingCost": 4.95,
+    "shippingCostVatIncluded": false,
+    "shippingVatRate": 21,
+    "freeShippingThreshold": 100,
+    "freeShippingThresholdBasis": "net",
+    "observedAt": "2026-10-07T00:00:00.000Z",
+    "sourceUrl": "https://www.dentaltix.com/es/content/envios"
+  },
+  {
+    "supplierId": "dentalcost",
+    "zone": "ES_PENINSULA",
+    "shippingCost": 5.8,
+    "shippingCostVatIncluded": false,
+    "shippingVatRate": 21,
+    "freeShippingThreshold": 120,
+    "freeShippingThresholdBasis": "gross",
+    "observedAt": "2026-10-07T00:00:00.000Z",
+    "sourceUrl": "https://www.dentalcost.es/"
+  }
+]
