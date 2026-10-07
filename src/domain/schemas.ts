@@ -62,5 +62,6 @@ export const supplierOfferSchema = z.object({
   deliveryZone: z.enum(["ES_PENINSULA","ES_BALEARES","ES_CANARIAS","ES_CEUTA_MELILLA","OTHER"]).optional(),
   deliveryEstimate: z.string().optional(),
   observedAt: z.string().datetime(),
-  sourceStatus: z.enum(["normal","suspicious","quarantined"])
+  sourceStatus: z.enum(["normal","suspicious","quarantined"]),
+  sourceMode: z.enum(["automatic","manual"]).optional()
 });
