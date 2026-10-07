@@ -1,1 +1,1 @@
-export { extractPromotionFromText } from "./extract";
+export { extractPromotionFromText, promotionForObservedPrices } from "./extract";
