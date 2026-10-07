@@ -125,9 +125,8 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
   const vatRate = vatMatch ? Number(vatMatch[1]) : undefined;
   const vatIncludedPrice = vatMatch ? parseEuro(vatMatch[2]) : undefined;
   const stockMatch = bodyText.match(/(Solo quedan[^.]+\.|En stock[^.]+\.|Entrega[^.]+\.|No disponible[^.]*\.?)/i)?.[1];
-  const promotionText = bodyText.match(/(?:Oferta|Promoci[oó]n|Descuento|Compra|Envío gratis)[^.]{0,160}(?:\.|$)/i)?.[0]
-    ?? bodyText.match(/\b\d+\s*\+\s*\d+\b[^.]{0,120}/i)?.[0]
-    ?? bodyText.match(/-\d{1,2}\s*%[^.]{0,120}/i)?.[0];
+  const promoIndex=bodyText.search(/(?:Oferta|Promoci[oó]n|Descuento|Compra|Envío gratis)/i);
+  const promotionText=promoIndex>=0?bodyText.slice(promoIndex,promoIndex+600):undefined;
   const parsedVariants = extractVariants($, productUrl);
   if (pageManufacturerReference && !parsedVariants.some(v => v.manufacturerReference === pageManufacturerReference)) {
     const selectedType =
