@@ -9,6 +9,13 @@ function applyPromotion(unitCents:number,quantity:number,promotion?:Promotion){
   let paidUnits=quantity, receivedUnits=quantity, subtotalCents=unitCents*quantity, discountCents=0;
   const warnings:string[]=[];
   if(!promotion) return {paidUnits,receivedUnits,subtotalCents,discountCents,warnings};
+  if(promotion.validUntil){
+    const end=new Date(promotion.validUntil.length===10?promotion.validUntil+"T23:59:59.999Z":promotion.validUntil).getTime();
+    if(Number.isFinite(end)&&end<Date.now()){
+      warnings.push("Promoción caducada");
+      return {paidUnits,receivedUnits,subtotalCents,discountCents,warnings};
+    }
+  }
 
   switch(promotion.type){
     case "percentage_discount": {
