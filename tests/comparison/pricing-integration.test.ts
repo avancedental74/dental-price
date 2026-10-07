@@ -46,4 +46,10 @@ describe("comparison + pricing integration",()=>{
     expect(result.ranked.map(x=>x.offer.supplierId)).toEqual(["complete"]);
     expect(result.rejected.some(x=>x.offer.supplierId==="incomplete")).toBe(true);
   });
+  it("rejects an automatic offer when its shipping policy is stale",()=>{
+    const stale=offer("stale",20,{sourceMode:"automatic",shippingPolicyObservedAt:"2026-01-01T00:00:00.000Z"});
+    const fresh=offer("fresh",25,{sourceMode:"automatic",shippingPolicyObservedAt:new Date().toISOString()});
+    const result=compareSupplierOffers(product,[stale,fresh],1);
+    expect(result.ranked.map(x=>x.offer.supplierId)).toEqual(["fresh"]);
+  });
 });
