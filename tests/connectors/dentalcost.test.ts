@@ -36,4 +36,25 @@ describe("DentalCost connector",()=>{
    expect(offers[0].freeShippingThreshold).toBe(120);
    expect(offers[1].stockStatus).toBe("unavailable");
  });
+ it("normalizes Peeso packaging and variant from public rows",()=>{
+   const peeso=`<html><body><h1>Fresa Ensanchadora Peeso Largo 28mm 6 uds. Maillefer</h1><div>Maillefer Precio sin IVA 17,52 € Precio con IVA (21%) 21,19 €</div><div>Fresa Ensanchadora Peeso Largo 28mm 6 uds. Maillefer: Nº1 Ref: 5513MA1 Ref fabricante: A000923000100 Disponibilidad: 6uds 17,52 €</div></body></html>`;
+   const [offer]=normalizeDentalCost(parseDentalCostProductHtml(peeso,"https://www.dentalcost.es/fresas-endodoncia/5513-demo.html"));
+   expect(offer.manufacturerReference).toBe("A000923000100");
+   expect(offer.presentation).toBe("Caja");
+   expect(offer.quantity).toBe(28);
+   expect(offer.unit).toBe("mm");
+   expect(offer.packCount).toBe(6);
+   expect(offer.variant).toBe("No1");
+ });
+
+ it("normalizes AIR-N-GO as four bottles of 250 g",()=>{
+   const air=`<html><body><h1>Air-N-Go Classic Polvo Para Aeropulidor 4 Botes 250gr. Satelec Acteon</h1><div>Acteon Precio sin IVA 66,63 € Precio con IVA (21%) 80,62 €</div><div>Air-N-Go Classic Polvo Para Aeropulidor 4 Botes 250gr. Satelec Acteon: Limón Ref: 4155SA2 Ref fabricante: F10251 Disponibilidad: 8uds 66,63 €</div></body></html>`;
+   const [offer]=normalizeDentalCost(parseDentalCostProductHtml(air,"https://www.dentalcost.es/polvo-aeropulidores/4155-demo.html"));
+   expect(offer.manufacturerReference).toBe("F10251");
+   expect(offer.presentation).toBe("Frasco");
+   expect(offer.quantity).toBe(250);
+   expect(offer.unit).toBe("g");
+   expect(offer.packCount).toBe(4);
+ });
+
 });
