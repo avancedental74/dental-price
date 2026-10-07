@@ -8,7 +8,7 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "observedAt": "2026-10-07T00:00:00.000Z",
-    "sourceUrl": "https://www.dentaltix.com/es/content/envios"
+    "sourceUrl": "https://www.dentaltix.com/es/envios"
   },
   {
     "supplierId": "dentalcost",
@@ -19,7 +19,7 @@
     "freeShippingThreshold": 120,
     "freeShippingThresholdBasis": "gross",
     "observedAt": "2026-10-07T00:00:00.000Z",
-    "sourceUrl": "https://www.dentalcost.es/"
+    "sourceUrl": "https://www.dentalcost.es/content/1-entrega-devolucion"
   },
   {
     "supplierId": "dvd-dental",
@@ -30,6 +30,6 @@
     "freeShippingThreshold": 110,
     "freeShippingThresholdBasis": "net",
     "observedAt": "2026-10-07T00:00:00.000Z",
-    "sourceUrl": "https://www.dvd-dental.com/"
+    "sourceUrl": "https://www.dvd-dental.com/guia-compra/"
   }
 ]
