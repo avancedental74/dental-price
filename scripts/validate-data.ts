@@ -31,8 +31,25 @@ if(!Array.isArray(gt.cases)||gt.cases.length<30) throw new Error("Ground truth m
 let mismatches=0;
 let falseExact=0;
 for(const c of gt.cases){
-  const canonical=canonicalProductSchema.parse(c.canonical);
-  const candidate=supplierOfferSchema.parse(c.candidate);
+  const canonical=canonicalProductSchema.parse({
+    id:c.id,
+    productName:c.canonical.family,
+    category:"validation",
+    normalizedName:String(c.canonical.family).toLowerCase(),
+    active:true,
+    ...c.canonical
+  });
+  const candidate=supplierOfferSchema.parse({
+    rawName:c.offer.normalizedName,
+    productUrl:"https://example.com/validation",
+    stockStatus:"in_stock",
+    regularPrice:1,
+    vatStatus:"included",
+    currency:"EUR",
+    observedAt:"2026-10-07T08:00:00.000Z",
+    sourceStatus:"normal",
+    ...c.offer
+  });
   const actual=matchOfferToProduct(canonical,candidate).status;
   if(actual!==c.expected){
     mismatches++;
