@@ -35,14 +35,13 @@ function variant(ref?:string,text=""):string|undefined{
 }
 function offer(raw:DentalCostProductRaw,v:DentalCostVariantRaw):SupplierOffer{
   const q=quantity(v.title+" "+raw.title);
-  const adper4242=v.manufacturerReference==="4242";
   const isAdper4242=v.manufacturerReference==="4242";
   return {
     supplierId:"dentalcost",supplierSku:v.supplierSku,manufacturer:raw.manufacturer,manufacturerReference:v.manufacturerReference,
     rawName:v.title||raw.title,normalizedName:normalizeName([raw.title,v.title,raw.manufacturer??""].join(" ")),productUrl:v.productUrl,
-    presentation:presentation(v.title+" "+raw.title) ?? (/^(4910|6020)/i.test(v.manufacturerReference??"")?"Jeringa":/^6021/i.test(v.manufacturerReference??"")?"Cápsulas":v.manufacturerReference==="4242"?"Frasco":undefined),
+    presentation:isAdper4242?"Frasco":presentation(v.title+" "+raw.title) ?? (/^(4910|6020)/i.test(v.manufacturerReference??"")?"Jeringa":/^6021/i.test(v.manufacturerReference??"")?"Cápsulas":undefined),
     quantity:isAdper4242?6:(q.quantity ?? (/^6020/i.test(v.manufacturerReference??"")?4:/^6021/i.test(v.manufacturerReference??"")?0.2:undefined)),
-    unit:isAdper4242?"g":(q.unit ?? (/^602[01]/i.test(v.manufacturerReference??"")?"g":undefined)),
+    unit:isAdper4242?"ml":(q.unit ?? (/^602[01]/i.test(v.manufacturerReference??"")?"g":undefined)),
     packCount:isAdper4242?1:(pack(v.title+" "+raw.title) ?? (/^6021/i.test(v.manufacturerReference??"")?20:1)),
     variant:variant(v.manufacturerReference,v.title+" "+raw.title),shade:shade(v.manufacturerReference,v.title),
     stockStatus:stock(v.stockText),rawStockText:v.stockText,
