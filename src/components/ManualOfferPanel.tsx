@@ -7,6 +7,7 @@ const supplierNames:Record<ManualOfferInput["supplierId"],string>={"proclinic":"
 export function ManualOfferPanel({product,offers,onChange}:{product:CanonicalProduct|null;offers:SupplierOffer[];onChange:(offers:SupplierOffer[])=>void}){
   const [supplierId,setSupplierId]=useState<ManualOfferInput["supplierId"]>("proclinic");
   const [productUrl,setProductUrl]=useState("");
+  const [manufacturerReference,setManufacturerReference]=useState("");
   const [price,setPrice]=useState("");
   const [vatStatus,setVatStatus]=useState<VatStatus>("excluded");
   const [vatRate,setVatRate]=useState("10");
@@ -24,7 +25,7 @@ export function ManualOfferPanel({product,offers,onChange}:{product:CanonicalPro
     event.preventDefault();
     try{
       const next=buildManualOffer(product,{
-        supplierId,productUrl,price:Number(price),vatStatus,
+        supplierId,productUrl,manufacturerReference,price:Number(price),vatStatus,
         vatRate:vatStatus==="unknown"||vatRate===""?undefined:Number(vatRate),
         stockStatus,
         shippingCost:shippingCost===""?undefined:Number(shippingCost),
@@ -44,6 +45,7 @@ export function ManualOfferPanel({product,offers,onChange}:{product:CanonicalPro
     <form className="manual-form" onSubmit={submit}>
       <label>Proveedor<select value={supplierId} onChange={e=>setSupplierId(e.target.value as ManualOfferInput["supplierId"])}><option value="proclinic">Proclinic</option><option value="dental-iberica">Dental Ibérica</option></select></label>
       <label>URL de la ficha<input required type="url" value={productUrl} onChange={e=>setProductUrl(e.target.value)} placeholder="https://…"/></label>
+      <label>Ref. fabricante observada<input required value={manufacturerReference} onChange={e=>setManufacturerReference(e.target.value)} placeholder={product.manufacturerReference}/></label>
       <label>Precio web (€)<input required min="0.01" step="0.01" type="number" value={price} onChange={e=>setPrice(e.target.value)}/></label>
       <label>IVA<select value={vatStatus} onChange={e=>setVatStatus(e.target.value as VatStatus)}><option value="excluded">No incluido</option><option value="included">Incluido</option><option value="unknown">No confirmado</option></select></label>
       <label>IVA %<input min="0" step="0.01" type="number" disabled={vatStatus==="unknown"} value={vatRate} onChange={e=>setVatRate(e.target.value)}/></label>
