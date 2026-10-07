@@ -13,22 +13,25 @@ permissions:
   contents: write
 
 concurrency:
-  group: connector-health
-  cancel-in-progress: true
+  group: dental-price-data-writes
+  cancel-in-progress: false
 
 jobs:
   health:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
         with:
           node-version: "22.13.1"
-      - run: npm install
+          cache: npm
+      - run: npm ci
       - run: npm run health
       - name: Commit health status
         run: |
-          if git diff --quiet -- data/connector-status.json public/data/connector-status.json; then
+          if [ -z "$(git status --porcelain -- data/connector-status.json public/data/connector-status.json)" ]; then
             echo "No health changes"
             exit 0
           fi
@@ -36,4 +39,5 @@ jobs:
           git config user.email "dental-price-bot@users.noreply.github.com"
           git add data/connector-status.json public/data/connector-status.json
           git commit -m "data: update connector health"
-          git push
+          git pull --rebase origin main
+          git push origin HEAD:main
