@@ -86,4 +86,32 @@ describe("DentalCost connector",()=>{
     expect(offer.unit).toBe("ml");
     expect(offer.packCount).toBe(1);
   });
+  it("normalizes single-reference Scotchbond Plus 41294",()=>{
+    const html=`<html><body>
+      <h1>Scotchbond Adhesivo Universal Plus Reposición 5ml 3M Espe</h1>
+      <div>Solventum Precio sin IVA 88,55 € Precio con IVA (10%) 97,40 €</div>
+      <div>Referencia: 81003M Ref. Fabricante: 41294 Disponibilidad: 335 artículo disponible Más info</div>
+    </body></html>`;
+    const [offer]=normalizeDentalCost(parseDentalCostProductHtml(html,"https://www.dentalcost.es/adhesivos/8100-demo.html"));
+    expect(offer.manufacturerReference).toBe("41294");
+    expect(offer.presentation).toBe("Frasco");
+    expect(offer.quantity).toBe(5);
+    expect(offer.unit).toBe("ml");
+  });
+
+  it("normalizes RelyX Universal reference-specific shades",()=>{
+    const html=`<html><body>
+      <h1>Relyx Universal Cemento de Resina Reposición Jeringa 3,4g 3M</h1>
+      <div>Solventum Precio sin IVA 136,99 € Precio con IVA (10%) 150,69 €</div>
+      <div>Relyx Universal: A1 Ref: 89553M1 Ref fabricante: 56972 Disponibilidad: 52uds 136,99 €
+      Relyx Universal: A3 Opaco Ref: 89553M3 Ref fabricante: 56973 Disponibilidad: 11uds 136,99 €</div>
+    </body></html>`;
+    const offers=normalizeDentalCost(parseDentalCostProductHtml(html,"https://www.dentalcost.es/varios-cementos-de-resina/8955-demo.html"));
+    const a1=offers.find(o=>o.manufacturerReference==="56972");
+    const ao3=offers.find(o=>o.manufacturerReference==="56973");
+    expect(a1?.presentation).toBe("Jeringa");
+    expect(a1?.quantity).toBe(3.4);
+    expect(a1?.shade).toBe("A1");
+    expect(ao3?.shade).toBe("AO3");
+  });
 });
