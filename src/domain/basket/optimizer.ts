@@ -8,13 +8,23 @@ function withoutShipping(offer:SupplierOffer):SupplierOffer{return {...offer,shi
 function lineCosts(offer:SupplierOffer,quantity:number){
   const p=calculatePricing(withoutShipping(offer),{requestedQuantity:quantity,includeVat:true});
   const gross=p.effectiveTotalCost;
-  const net=offer.vatStatus==="included"&&typeof offer.vatRate==="number" ? gross/(1+offer.vatRate/100) : p.promotionalSubtotal;
-  return {gross:money(gross),net:money(net)};
+  const net=offer.vatStatus==="excluded" ? p.promotionalSubtotal
+    : offer.vatStatus==="included"&&typeof offer.vatRate==="number" ? gross/(1+offer.vatRate/100)
+    : null;
+  return {gross:money(gross),net:net==null?null:money(net)};
 }
-function supplierShipping(offer:SupplierOffer,net:number,gross:number):number{
-  if(offer.promotion?.type==="free_shipping") return 0;
+function supplierShipping(lines:BasketAssignment[],net:number|null,gross:number):number{
+  const offer=lines[0].offer;
+  const policyKeys=new Set(lines.map(line=>JSON.stringify([
+    line.offer.shippingCost,line.offer.shippingCostVatIncluded,line.offer.shippingVatRate,
+    line.offer.freeShippingThreshold,line.offer.freeShippingThresholdBasis
+  ])));
+  if(policyKeys.size>1) return Infinity;
+  if(lines.every(line=>line.offer.promotion?.type==="free_shipping")) return 0;
   if(typeof offer.freeShippingThreshold==="number"){
-    const basis=(offer.freeShippingThresholdBasis??"net")==="net"?net:gross;
+    const basisType=offer.freeShippingThresholdBasis??"net";
+    if(basisType==="net"&&net==null) return Infinity;
+    const basis=basisType==="net" ? net! : gross;
     if(basis>=offer.freeShippingThreshold) return 0;
   }
   if(typeof offer.shippingCost!=="number") return Infinity;
@@ -50,8 +60,9 @@ export function optimizeBasket(items:BasketRequestItem[],maxCombinations=100000)
     let total=0,invalid=false;
     for(const [supplierId,lines] of groups){
       const merchandiseGross=money(lines.reduce((n,x)=>n+x.lineGross,0));
-      const merchandiseNet=money(lines.reduce((n,x)=>n+x.lineNet,0));
-      const shipping=supplierShipping(lines[0].offer,merchandiseNet,merchandiseGross);
+      const netValues=lines.map(x=>x.lineNet);
+      const merchandiseNet=netValues.some(x=>x==null)?null:money(netValues.reduce((n,x)=>n+(x??0),0));
+      const shipping=supplierShipping(lines,merchandiseNet,merchandiseGross);
       if(!Number.isFinite(shipping)){invalid=true;break;}
       const supplierTotal=money(merchandiseGross+shipping);
       suppliers.push({supplierId,merchandiseGross,merchandiseNet,shipping,total:supplierTotal,lines:lines.length});
