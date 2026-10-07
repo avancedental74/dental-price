@@ -31,7 +31,7 @@ export function ManualOfferPanel({product,offers,onChange,onRecord}:{product:Can
         vatRate:vatStatus==="unknown"||vatRate===""?undefined:Number(vatRate),
         stockStatus,
         shippingCost:shippingCost===""?undefined:Number(shippingCost),
-        shippingCostVatIncluded,
+        shippingCostVatIncluded:shippingVatIncluded,
         shippingVatRate:shippingCost===""||shippingVatIncluded||shippingVatRate===""?undefined:Number(shippingVatRate),
         freeShippingThreshold:freeShippingThreshold===""?undefined:Number(freeShippingThreshold),
         freeShippingThresholdBasis
