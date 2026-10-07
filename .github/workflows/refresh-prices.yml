@@ -14,23 +14,26 @@ permissions:
   contents: write
 
 concurrency:
-  group: refresh-public-prices
+  group: dental-price-data-writes
   cancel-in-progress: false
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
         with:
           node-version: "22.13.1"
-      - run: npm install
+          cache: npm
+      - run: npm ci
       - run: npm run refresh
       - run: npm run validate:data
       - name: Commit changed public data
         run: |
-          if git diff --quiet -- data public/data; then
+          if [ -z "$(git status --porcelain -- data public/data)" ]; then
             echo "No data changes"
             exit 0
           fi
@@ -38,4 +41,5 @@ jobs:
           git config user.email "dental-price-bot@users.noreply.github.com"
           git add data public/data
           git commit -m "data: refresh public supplier prices"
-          git push
+          git pull --rebase origin main
+          git push origin HEAD:main
