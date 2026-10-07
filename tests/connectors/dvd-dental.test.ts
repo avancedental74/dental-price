@@ -23,4 +23,25 @@ describe("DVD Dental connector",()=>{
    expect(offers[0].freeShippingThreshold).toBe(110);
    expect(offers[0].sourceMode).toBe("automatic");
  });
+  it("parses a simple Scotchbond 41294 page safely",()=>{
+    const html=`<html><body>
+      <h2>SOLVENTUM</h2><h1>Adhesivo Scotchbond Universal Plus (5ml)</h1>
+      <div>Contenido: Frasco de 5ml.</div>
+      <div>REF. FAB: 41294</div>
+      <div>631 en stock</div>
+      <div>94,49€ IVA incl. (Incluido impuestos)</div>
+      <div>85,90€ excl. Tax (Excluyendo impuestos)</div>
+      <div>Disponible para compra.</div>
+    </body></html>`;
+    const raw=parseDvdProductHtml(html,"https://www.dvd-dental.com/adhesivo-scotchbond-universal-plus-5ml/");
+    const offers=normalizeDvd(raw);
+    expect(offers).toHaveLength(1);
+    expect(offers[0].manufacturerReference).toBe("41294");
+    expect(offers[0].presentation).toBe("Frasco");
+    expect(offers[0].quantity).toBe(5);
+    expect(offers[0].unit).toBe("ml");
+    expect(offers[0].stockStatus).toBe("in_stock");
+    expect(offers[0].regularPrice).toBe(85.9);
+    expect(offers[0].vatRate).toBe(10);
+  });
 });
