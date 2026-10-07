@@ -57,16 +57,18 @@ function scoreLink(text:string,href:string,query:string):number{
 function extractProductLinks(html:string,base:string,origin:string,query:string,maxResults:number){
   const $=cheerio.load(html);
   const found=new Map<string,{url:string;score:number}>();
-  const productSelectors=[
-    '[data-testid="product-card"] a[href]',
-    '.product-item a[href]',
-    '.product-items a[href]',
-    '.product-miniature a[href]',
-    'article[data-id-product] a[href]',
-    '.product-container a[href]',
-    '.product-title a[href]',
-    'a.product-item-link[href]'
-  ].join(",");
+  const productSelectors=(origin.includes("ortolan.es")
+    ? ['article[data-id-product] a[href]']
+    : [
+      '[data-testid="product-card"] a[href]',
+      '.product-item a[href]',
+      '.product-items a[href]',
+      '.product-miniature a[href]',
+      'article[data-id-product] a[href]',
+      '.product-container a[href]',
+      '.product-title a[href]',
+      'a.product-item-link[href]'
+    ]).join(",");
   const productUrls=new Set<string>();
   $(productSelectors).each((_,el)=>{
     const raw=$(el).attr("href")??"";
@@ -84,6 +86,7 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
     if(new URL(url).origin!==new URL(origin).origin)return;
     if(url===base||url.endsWith("/")||isSearchOrNavigationUrl(url,base))return;
     const isProductResult=productUrls.has(url);
+    if(origin.includes("ortolan.es")&&!isProductResult)return;
     const score=scoreLink(text,url,query)+(isProductResult?8:0);
     if(score<2)return;
     const previous=found.get(url);
