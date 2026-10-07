@@ -8,12 +8,13 @@ export function persistComparisonHistory(
 ): PriceObservation[] {
   let current=[...history];
   for(const item of items){
-    const effective=item.pricing?.effectiveTotalCost;
     current=appendObservation(
       current,
       item.product.id,
       item.offer,
-      effective
+      item.pricing?.effectiveUnitCost,
+      item.pricing?.effectiveTotalCost,
+      item.pricing?.requestedQuantity ?? 1
     ).history;
   }
   return current;
