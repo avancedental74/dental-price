@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import type { CanonicalProduct, SupplierOffer, StockStatus, VatStatus } from "../types/domain";
 import { buildManualOffer, type ManualOfferInput, upsertManualOffer } from "../services/manual-offers";
 
@@ -20,7 +20,7 @@ export function ManualOfferPanel({product,offers,onChange}:{product:CanonicalPro
   if(!product?.manufacturerReference) return null;
   const related=offers.filter(o=>o.manufacturerReference===product.manufacturerReference);
 
-  const submit=(event:React.FormEvent)=>{
+  const submit=(event:FormEvent)=>{
     event.preventDefault();
     try{
       const next=buildManualOffer(product,{
