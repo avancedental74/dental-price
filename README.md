@@ -8,15 +8,16 @@ Comparador de coste efectivo de suministros dentales para proveedores que venden
 
 Estado verificado el 07/10/2026:
 
-- **45 ofertas automáticas EXACT y normales** en el último refresh publicado.
-- **Dentaltix: 19 ofertas automáticas**: 13 Filtek Supreme XTE, 4 tallas de guantes Santex y 2 referencias Peeso 28 mm.
-- **DentalCost: 26 ofertas automáticas**: 24 Filtek Supreme XTE + 2 referencias Peeso 28 mm.
-- Para referencias compartidas, Dentaltix y DentalCost compiten con precio + IVA + portes + umbral de envío + stock. Ya existe comparación automática real tanto en composites Filtek como en endodoncia Peeso.
+- **74 ofertas automáticas EXACT y normales** en el último refresh publicado.
+- **Dentaltix: 32 ofertas automáticas**: 13 Filtek Supreme XTE, 7 Filtek Z250 jeringa, 4 RelyX Universal, 1 Scotchbond Universal Plus, 1 Adper Scotchbond 1XT, 4 tallas de guantes Santex y 2 referencias Peeso 28 mm.
+- **DentalCost: 42 ofertas automáticas**: 24 Filtek Supreme XTE, 10 Filtek Z250 jeringa, 4 RelyX Universal, 1 Scotchbond Universal Plus, 1 Adper Scotchbond 1XT y 2 referencias Peeso 28 mm.
+- Para referencias compartidas, Dentaltix y DentalCost compiten con precio + IVA + portes + umbral de envío + stock. Ya existe comparación automática real en composites Filtek, endodoncia Peeso, cementos RelyX y adhesivos Scotchbond/Adper.
 - **DVD Dental**: página pública accesible, pero la resolución variante→SKU/precio no es fiable desde automatización; se usa snapshot manual seguro.
 - **Proclinic y Dental Ibérica**: GitHub Actions recibe HTTP 405; se usa snapshot manual seguro.
 - Las ofertas manuales se guardan solo en `localStorage`, exigen dominio del proveedor + referencia de fabricante coincidente y conservan histórico local.
 - CI completo y auditoría de dependencias con severidad `high` en verde.
 - Todas las peticiones a proveedores tienen timeout de 15 s; una web lenta no puede bloquear todo el refresh.
+- En fichas simples de DentalCost donde el stock no puede confirmarse, la oferta se conserva como dato de precio pero no puede ganar el ranking hasta tener stock verificado.
 
 ## Objetivo
 
