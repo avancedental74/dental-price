@@ -57,6 +57,8 @@ function filtekFromRef(ref?:string): {presentation?:string;quantity?:number;unit
   if(z250Syringe) return {presentation:"Jeringa",quantity:4,unit:"g",packCount:1,shade:z250Syringe[1].toUpperCase()};
   const z250Capsule=ref?.match(/^6021([A-Z]\d(?:\.5)?|UD)$/i);
   if(z250Capsule) return {presentation:"Cápsulas",quantity:0.2,unit:"g",packCount:20,variant:"Capsule",shade:z250Capsule[1].toUpperCase()};
+  const filtekUniversal=ref?.match(/^6555(A1|A2|A3|A3\.5|A4|B1|B2|D3|XW|PO)$/i);
+  if(filtekUniversal) return {presentation:"Jeringa",quantity:4,unit:"g",packCount:1,shade:filtekUniversal[1].toUpperCase()};
   if(ref==="4242") return {presentation:"Frasco",quantity:6,unit:"ml",packCount:1};
   if(ref==="41294") return {presentation:"Frasco",quantity:5,unit:"ml",packCount:1};
   const relyx:Record<string,string>={"56971":"Translucido","56972":"A1","56973":"AO3","56974":"WO"};
