@@ -10,6 +10,10 @@ export interface MatchedSupplierOffer {
   eligibleForRanking: boolean;
 }
 
+export interface ComparisonOptions {
+  requiredLiveSessionId?: string;
+}
+
 export interface ComparisonResult {
   product: CanonicalProduct;
   quantity: number;
