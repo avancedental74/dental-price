@@ -1,8 +1,10 @@
 import type { CanonicalProduct, SupplierOffer, StockStatus, VatStatus } from "../types/domain";
+import type { PriceObservation } from "../domain/history";
 import { supplierOfferSchema } from "../domain/schemas";
 import { normalizeReference } from "../domain/matching/normalization";
 
 const STORAGE_KEY="dental-price:manual-offers:v1";
+const HISTORY_KEY="dental-price:manual-history:v1";
 
 export interface ManualOfferInput {
   supplierId:"proclinic"|"dental-iberica";
@@ -26,6 +28,19 @@ export function loadManualOffers():SupplierOffer[]{
     if(!Array.isArray(raw)) return [];
     return raw.flatMap(value=>{const parsed=supplierOfferSchema.safeParse(value);return parsed.success?[parsed.data]:[];});
   }catch{return [];}
+}
+
+export function loadManualHistory():PriceObservation[]{
+  if(typeof window==="undefined") return [];
+  try{
+    const raw=JSON.parse(window.localStorage.getItem(HISTORY_KEY)??"[]");
+    return Array.isArray(raw)?raw:[];
+  }catch{return [];}
+}
+
+export function saveManualHistory(history:PriceObservation[]):void{
+  if(typeof window==="undefined") return;
+  window.localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
 }
 
 export function saveManualOffers(offers:SupplierOffer[]):void{
