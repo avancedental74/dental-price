@@ -754,5 +754,137 @@
     "supplierId": "dvd-dental",
     "url": "https://www.dvd-dental.com/adhesivo-scotchbond-universal-plus-5ml/",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a1",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a1",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a2",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a2",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a3",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a3",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a3-5",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a3-5",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a4",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021a4",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021b1",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021b1",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021b2",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021b2",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021b3",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021b3",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021c2",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021c2",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021d3",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021d3",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021ud",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/composite-filtek-z250-1x4gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "filtek-z250-6021ud",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
+    "acquisitionMode": "direct"
   }
 ]
