@@ -3,42 +3,30 @@ import { normalizeName, normalizeReference } from "../domain/matching/normalizat
 
 export type SearchSupplierId="dentaltix"|"dentalcost"|"dvd-dental"|"proclinic"|"dental-iberica"|"dentalexpress"|"brokerdental"|"ortolan";
 
-const configs:Record<SearchSupplierId,{origin:string;templates:string[]}>={
-  dentaltix:{origin:"https://www.dentaltix.com",templates:[
-    "https://www.dentaltix.com/es/search?q={q}",
-    "https://www.dentaltix.com/es/search?text={q}",
-    "https://www.dentaltix.com/es/search?search_query={q}"
+const configs:Record<SearchSupplierId,{origin:string;home:string;templates:string[]}>={
+  dentaltix:{origin:"https://www.dentaltix.com",home:"https://www.dentaltix.com/es",templates:[
+    "https://www.dentaltix.com/es/search?q={q}","https://www.dentaltix.com/es/search?text={q}","https://www.dentaltix.com/es/search?search_query={q}"
   ]},
-  dentalcost:{origin:"https://dentalcost.es",templates:[
-    "https://dentalcost.es/search?controller=search&s={q}",
-    "https://dentalcost.es/buscar?controller=search&s={q}",
-    "https://dentalcost.es/catalogsearch/result/?q={q}"
+  dentalcost:{origin:"https://www.dentalcost.es",home:"https://www.dentalcost.es/",templates:[
+    "https://www.dentalcost.es/search?controller=search&s={q}","https://www.dentalcost.es/buscar?controller=search&s={q}","https://www.dentalcost.es/catalogsearch/result/?q={q}"
   ]},
-  "dvd-dental":{origin:"https://dvd-dental.com",templates:[
-    "https://dvd-dental.com/search?controller=search&s={q}",
-    "https://dvd-dental.com/buscar?controller=search&s={q}",
-    "https://dvd-dental.com/catalogsearch/result/?q={q}"
+  "dvd-dental":{origin:"https://www.dvd-dental.com",home:"https://www.dvd-dental.com/",templates:[
+    "https://www.dvd-dental.com/search?controller=search&s={q}","https://www.dvd-dental.com/buscar?controller=search&s={q}"
   ]},
-  proclinic:{origin:"https://www.proclinic.es",templates:[
-    "https://www.proclinic.es/tienda/catalogsearch/result/?q={q}",
-    "https://www.proclinic.es/tienda/search?q={q}",
-    "https://www.proclinic.es/tienda/buscar?q={q}"
+  proclinic:{origin:"https://www.proclinic.es",home:"https://www.proclinic.es/tienda/",templates:[
+    "https://www.proclinic.es/tienda/catalogsearch/result/?q={q}","https://www.proclinic.es/tienda/search?q={q}","https://www.proclinic.es/tienda/buscar?q={q}"
   ]},
-  "dental-iberica":{origin:"https://dentaliberica.com",templates:[
-    "https://dentaliberica.com/?s={q}&post_type=product",
-    "https://dentaliberica.com/search?controller=search&s={q}"
+  "dental-iberica":{origin:"https://dentaliberica.com",home:"https://dentaliberica.com/",templates:[
+    "https://dentaliberica.com/?s={q}&post_type=product","https://dentaliberica.com/search?controller=search&s={q}"
   ]},
-  dentalexpress:{origin:"https://dentalexpress.es",templates:[
-    "https://dentalexpress.es/catalogsearch/result/?q={q}",
-    "https://dentalexpress.es/search?controller=search&s={q}"
+  dentalexpress:{origin:"https://dentalexpress.es",home:"https://dentalexpress.es/",templates:[
+    "https://dentalexpress.es/catalogsearch/result/?q={q}","https://dentalexpress.es/search?controller=search&s={q}"
   ]},
-  brokerdental:{origin:"https://www.brokerdental.es",templates:[
-    "https://www.brokerdental.es/catalogsearch/result/?q={q}",
-    "https://www.brokerdental.es/search?controller=search&s={q}"
+  brokerdental:{origin:"https://www.brokerdental.es",home:"https://www.brokerdental.es/",templates:[
+    "https://www.brokerdental.es/catalogsearch/result/?q={q}","https://www.brokerdental.es/search?controller=search&s={q}"
   ]},
-  ortolan:{origin:"https://ortolan.es",templates:[
-    "https://ortolan.es/es/buscar?controller=search&s={q}",
-    "https://ortolan.es/es/search?controller=search&s={q}"
+  ortolan:{origin:"https://ortolan.es",home:"https://ortolan.es/es/",templates:[
+    "https://ortolan.es/es/buscar?controller=search&s={q}","https://ortolan.es/es/search?controller=search&s={q}"
   ]}
 };
 
@@ -48,11 +36,113 @@ function scoreLink(text:string,href:string,query:string):number{
   const q=normalizeName(query),hay=normalizeName(text+" "+href);
   const compact=normalizeReference(query)??"";
   let score=0;
-  if(compact&&normalizeReference(hay).includes(compact))score+=12;
+  if(compact&&normalizeReference(hay)?.includes(compact))score+=12;
   const tokens=q.split(" ").filter(t=>t.length>=2);
   for(const token of tokens)if(hay.includes(token))score+=token.length>=5?3:1;
   if(/product|producto|html|\/es\//i.test(href))score+=1;
   return score;
+}
+
+function extractProductLinks(html:string,base:string,origin:string,query:string,maxResults:number){
+  const $=cheerio.load(html);
+  const found=new Map<string,{url:string;score:number}>();
+  $("a[href]").each((_,el)=>{
+    const raw=$(el).attr("href")??"";
+    const text=$(el).text().replace(/\s+/g," ").trim();
+    if(!raw||deniedParts.some(x=>raw.toLowerCase().includes(x)))return;
+    let url:string;
+    try{url=new URL(raw,base).toString();}catch{return;}
+    if(new URL(url).origin!==new URL(origin).origin)return;
+    if(url===base||url.endsWith("/")||text.length<2)return;
+    const score=scoreLink(text,url,query);
+    if(score<2)return;
+    const old=found.get(url);
+    if(!old||score>old.score)found.set(url,{url,score});
+  });
+  return [...found.values()].sort((a,b)=>b.score-a.score).slice(0,maxResults).map(x=>x.url);
+}
+
+async function trySearchRequest(
+  url:string,
+  query:string,
+  origin:string,
+  fetchImpl:typeof fetch,
+  maxResults:number,
+  init:RequestInit={}
+){
+  const headers={...((init.headers as Record<string,string>|undefined)??{}),"user-agent":"DentalPrice/0.4 (+https://github.com/avancedental74/dental-price; live federated search)",accept:"text/html,application/xhtml+xml"};
+  const response=await fetchImpl(url,{...init,headers,redirect:"follow"});
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const html=await response.text();
+  return {urls:extractProductLinks(html,response.url||url,origin,query,maxResults),html,responseUrl:response.url||url};
+}
+
+async function searchViaDetectedForm(cfg:{origin:string;home:string},query:string,fetchImpl:typeof fetch,maxResults:number){
+  const home=await trySearchRequest(cfg.home,query,cfg.origin,fetchImpl,1);
+  const $=cheerio.load(home.html);
+  const forms=$("form").toArray();
+  for(const form of forms){
+    const inputs=$(form).find("input").toArray();
+    const searchInput=inputs.find(input=>{
+      const node=$(input);
+      const clue=[node.attr("name"),node.attr("id"),node.attr("placeholder"),node.attr("type")].filter(Boolean).join(" ");
+      return /search|buscar|busca|query|keyword|producto|referencia|q\b/i.test(clue)&&node.attr("type")!=="hidden";
+    });
+    if(!searchInput)continue;
+    const name=$(searchInput).attr("name");
+    if(!name)continue;
+    const action=$(form).attr("action")||cfg.home;
+    let target:string;
+    try{target=new URL(action,home.responseUrl).toString();}catch{continue;}
+    if(new URL(target).origin!==new URL(cfg.origin).origin)continue;
+    const params=new URLSearchParams();
+    for(const input of inputs){
+      const node=$(input),n=node.attr("name"),type=node.attr("type");
+      if(!n||n===name||type!=="hidden")continue;
+      params.set(n,node.attr("value")??"");
+    }
+    params.set(name,query);
+    const method=($(form).attr("method")||"GET").toUpperCase();
+    try{
+      const result=method==="POST"
+        ?await trySearchRequest(target,query,cfg.origin,fetchImpl,maxResults,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:params.toString()})
+        :await trySearchRequest(target+(target.includes("?")?"&":"?")+params.toString(),query,cfg.origin,fetchImpl,maxResults);
+      if(result.urls.length)return {urls:result.urls,searchUrl:target};
+    }catch{}
+  }
+  return {urls:[] as string[]};
+}
+
+async function searchViaSitemap(cfg:{origin:string},query:string,fetchImpl:typeof fetch,maxResults:number){
+  const candidates=[cfg.origin+"/sitemap.xml",cfg.origin+"/sitemap_index.xml"];
+  const locs:string[]=[];
+  for(const sitemap of candidates){
+    try{
+      const response=await fetchImpl(sitemap,{headers:{"user-agent":"DentalPrice/0.4","accept":"application/xml,text/xml,text/plain"}});
+      if(!response.ok)continue;
+      const xml=await response.text();
+      const $=cheerio.load(xml,{xmlMode:true});
+      const top=$("loc").toArray().map(x=>$(x).text().trim()).filter(Boolean);
+      const child=top.filter(x=>/sitemap/i.test(x)).slice(0,4);
+      if(child.length){
+        for(const childUrl of child){
+          try{
+            const cr=await fetchImpl(childUrl,{headers:{"user-agent":"DentalPrice/0.4","accept":"application/xml,text/xml,text/plain"}});
+            if(!cr.ok)continue;
+            const cx=cheerio.load(await cr.text(),{xmlMode:true});
+            locs.push(...cx("loc").toArray().map(x=>cx(x).text().trim()).filter(Boolean));
+          }catch{}
+        }
+      }else locs.push(...top);
+      if(locs.length)break;
+    }catch{}
+  }
+  return [...new Set(locs)]
+    .map(url=>({url,score:scoreLink(url,url,query)}))
+    .filter(x=>x.score>=2)
+    .sort((a,b)=>b.score-a.score)
+    .slice(0,maxResults)
+    .map(x=>x.url);
 }
 
 export async function discoverSupplierProductUrls(
@@ -62,32 +152,22 @@ export async function discoverSupplierProductUrls(
   maxResults=5
 ):Promise<{urls:string[];searchUrl?:string;error?:string}>{
   const cfg=configs[supplierId];
-  const headers={"user-agent":"DentalPrice/0.3 (+https://github.com/avancedental74/dental-price; live federated search)",accept:"text/html,application/xhtml+xml"};
   let lastError="";
   for(const template of cfg.templates){
     const searchUrl=template.replace("{q}",encodeURIComponent(query));
     try{
-      const response=await fetchImpl(searchUrl,{headers,redirect:"follow"});
-      if(!response.ok){lastError="HTTP "+response.status;continue;}
-      const html=await response.text(),$=cheerio.load(html);
-      const found=new Map<string,{url:string;score:number}>();
-      $("a[href]").each((_,el)=>{
-        const raw=$(el).attr("href")??"";
-        const text=$(el).text().replace(/\s+/g," ").trim();
-        if(!raw||deniedParts.some(x=>raw.toLowerCase().includes(x)))return;
-        let url:string;
-        try{url=new URL(raw,response.url||cfg.origin).toString();}catch{return;}
-        if(new URL(url).origin!==new URL(cfg.origin).origin)return;
-        if(url===searchUrl||url.endsWith("/")||text.length<2)return;
-        const score=scoreLink(text,url,query);
-        if(score<2)return;
-        const old=found.get(url);
-        if(!old||score>old.score)found.set(url,{url,score});
-      });
-      const urls=[...found.values()].sort((a,b)=>b.score-a.score).slice(0,maxResults).map(x=>x.url);
-      if(urls.length)return {urls,searchUrl};
+      const result=await trySearchRequest(searchUrl,query,cfg.origin,fetchImpl,maxResults);
+      if(result.urls.length)return {urls:result.urls,searchUrl};
       lastError="Sin enlaces de producto";
     }catch(error){lastError=error instanceof Error?error.message:"SEARCH_ERROR";}
   }
+  try{
+    const detected=await searchViaDetectedForm(cfg,query,fetchImpl,maxResults);
+    if(detected.urls.length)return detected;
+  }catch(error){lastError=error instanceof Error?error.message:lastError;}
+  try{
+    const sitemapUrls=await searchViaSitemap(cfg,query,fetchImpl,maxResults);
+    if(sitemapUrls.length)return {urls:sitemapUrls,searchUrl:"sitemap"};
+  }catch(error){lastError=error instanceof Error?error.message:lastError;}
   return {urls:[],error:lastError||"Búsqueda no disponible"};
 }
