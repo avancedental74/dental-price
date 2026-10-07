@@ -7,7 +7,7 @@ export interface ConnectorStatus {
 }
 export interface PublicMetrics {
   generatedAt:string; verifiedOffers:number; purchasableOffers:number; unavailableOffers:number; lowStockOffers:number;
-  productsWithTwoOrMoreAutomaticSuppliers:number; automaticSuppliers:number; supplierOfferCounts:Record<string,number>;
+  productsWithTwoOrMoreVerifiedSuppliers:number; productsWithTwoOrMorePurchasableSuppliers:number; automaticSuppliers:number; supplierOfferCounts:Record<string,number>;
 }
 export interface PublicData { products:CanonicalProduct[]; offers:SupplierOffer[]; history:PriceObservation[]; connectors:ConnectorStatus[]; metrics:PublicMetrics; }
 
