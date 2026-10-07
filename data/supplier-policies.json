@@ -20,5 +20,16 @@
     "freeShippingThresholdBasis": "gross",
     "observedAt": "2026-10-07T00:00:00.000Z",
     "sourceUrl": "https://www.dentalcost.es/"
+  },
+  {
+    "supplierId": "dvd-dental",
+    "zone": "ES_PENINSULA",
+    "shippingCost": 6,
+    "shippingCostVatIncluded": false,
+    "shippingVatRate": 21,
+    "freeShippingThreshold": 110,
+    "freeShippingThresholdBasis": "net",
+    "observedAt": "2026-10-07T00:00:00.000Z",
+    "sourceUrl": "https://www.dvd-dental.com/"
   }
 ]
