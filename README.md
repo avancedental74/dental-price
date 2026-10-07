@@ -8,14 +8,15 @@ Comparador de coste efectivo de suministros dentales para proveedores que venden
 
 Estado verificado el 07/10/2026:
 
-- **43 ofertas automáticas EXACT y normales** en el último refresh publicado.
+- **45 ofertas automáticas EXACT y normales** en el último refresh publicado.
 - **Dentaltix: 19 ofertas automáticas**: 13 Filtek Supreme XTE, 4 tallas de guantes Santex y 2 referencias Peeso 28 mm.
-- **DentalCost: 24 ofertas automáticas** Filtek Supreme XTE.
-- Para referencias compartidas, Dentaltix y DentalCost compiten con precio + IVA + portes + umbral de envío + stock.
+- **DentalCost: 26 ofertas automáticas**: 24 Filtek Supreme XTE + 2 referencias Peeso 28 mm.
+- Para referencias compartidas, Dentaltix y DentalCost compiten con precio + IVA + portes + umbral de envío + stock. Ya existe comparación automática real tanto en composites Filtek como en endodoncia Peeso.
 - **DVD Dental**: página pública accesible, pero la resolución variante→SKU/precio no es fiable desde automatización; se usa snapshot manual seguro.
 - **Proclinic y Dental Ibérica**: GitHub Actions recibe HTTP 405; se usa snapshot manual seguro.
 - Las ofertas manuales se guardan solo en `localStorage`, exigen dominio del proveedor + referencia de fabricante coincidente y conservan histórico local.
 - CI completo y auditoría de dependencias con severidad `high` en verde.
+- Todas las peticiones a proveedores tienen timeout de 15 s; una web lenta no puede bloquear todo el refresh.
 
 ## Objetivo
 
