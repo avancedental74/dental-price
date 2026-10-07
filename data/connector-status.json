@@ -3,35 +3,35 @@
     "supplierId": "dentaltix",
     "productId": "filtek-xte-4910a3b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:22:39.904Z",
+    "checkedAt": "2026-10-07T10:27:50.477Z",
     "message": "Manufacturer reference not found on parsed page"
   },
   {
     "supplierId": "proclinic",
     "productId": "filtek-xte-4910b2b",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:22:39.904Z",
+    "checkedAt": "2026-10-07T10:27:50.478Z",
     "message": "Automatic public access is unavailable; manual verification is required"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "filtek-z250-6021a3",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:22:39.904Z",
+    "checkedAt": "2026-10-07T10:27:50.478Z",
     "message": "Automatic public access is unavailable; manual verification is required"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "air-n-go-f10251",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:22:39.904Z",
+    "checkedAt": "2026-10-07T10:27:50.478Z",
     "message": "Automatic public access is unavailable; manual verification is required"
   },
   {
     "supplierId": "dental-iberica",
     "productId": "peeso-no2",
     "status": "amber",
-    "checkedAt": "2026-10-07T10:22:39.904Z",
+    "checkedAt": "2026-10-07T10:27:50.478Z",
     "message": "Automatic public access is unavailable; manual verification is required"
   }
 ]
