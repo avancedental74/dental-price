@@ -128,7 +128,7 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
     }
   });
   const leadingPrices=visiblePriceTexts.length>=2 ? visiblePriceTexts.slice(0,2) : allPrices.slice(0,2);
-  let salePrice = leadingPrices.length>=2 ? leadingPrices[1] : leadingPrices[0];
+  let salePrice: number | undefined = leadingPrices.length>=2 ? leadingPrices[1] : leadingPrices[0];
   if (!Number.isFinite(salePrice)) salePrice = undefined;
   const recommended = bodyText.match(/(?:Precio recomendado|Recommended price)\s*(\d{1,4}(?:[.,]\d{2})?)\s*€/i);
   const regularPrice = recommended ? parseEuro(recommended[1]) : leadingPrices.length>=2 ? Math.max(...leadingPrices) : salePrice;
