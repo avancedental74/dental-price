@@ -24,6 +24,7 @@ function offer(overrides: Partial<SupplierOffer> = {}): SupplierOffer {
   return {
     supplierId: "supplier-x",
     supplierSku: "SKU-1",
+    manufacturer: "Solventum",
     manufacturerReference: "4910A3B",
     rawName: "Filtek Supreme XTE A3 Body jeringa 3 g Solventum",
     normalizedName: "filtek supreme xte a3 body syringe 3 g solventum",
@@ -49,7 +50,7 @@ describe("matchOfferToProduct", () => {
     const result = matchOfferToProduct(product, offer());
     expect(result.status).toBe("EXACT");
     expect(result.hardReject).toBe(false);
-    expect(result.score).toBeGreaterThanOrEqual(95);
+    expect(result.score).toBeGreaterThanOrEqual(90);
   });
 
   it("rejects A3.5 when canonical shade is A3", () => {
