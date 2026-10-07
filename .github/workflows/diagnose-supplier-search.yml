@@ -64,3 +64,21 @@ jobs:
           const searchEndpoint=html.match(/search\s*:\s*['"]([^'"]*ksearchnet[^'"]*)['"]/i)?.[1];
           console.log("DVD KLEVU ENDPOINT",searchEndpoint||"none");
           NODE
+      - name: Probe DVD Klevu API directly
+        run: |
+          node --input-type=module <<'NODE'
+          const endpoint="https://eucs34v2.ksearchnet.com/cs/v2/search";
+          const apiKey="klevu-174436997355118006";
+          const body={
+            context:{apiKeys:[apiKey]},
+            recordQueries:[{
+              id:"productSearch",
+              typeOfRequest:"SEARCH",
+              settings:{query:{term:"Scotchbond Universal Plus"},limit:5,typeOfRecords:["KLEVU_PRODUCT"]}
+            }]
+          };
+          const r=await fetch(endpoint,{method:"POST",headers:{"content-type":"application/json","accept":"application/json"},body:JSON.stringify(body)});
+          const text=await r.text();
+          console.log("DVD KLEVU API HTTP",r.status);
+          console.log(text.slice(0,20000));
+          NODE
