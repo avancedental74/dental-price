@@ -39,8 +39,20 @@ function inferVariant(value: string): string | undefined {
   return undefined;
 }
 
+function filtek4910FromRef(ref?:string): {presentation?:string;quantity?:number;unit?:string;packCount?:number;variant?:string;shade?:string} {
+  const match=ref?.match(/^4910([A-Z]+\d(?:\.5)?)([BDE])$/i);
+  if(!match) return {};
+  const opacity=match[2].toUpperCase();
+  return {
+    presentation:"Jeringa",quantity:3,unit:"g",packCount:1,
+    variant:opacity==="B"?"Body":opacity==="D"?"Dentin":"Enamel",
+    shade:match[1].toUpperCase()
+  };
+}
+
 function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw): SupplierOffer {
   const q = inferQuantity(variant.title);
+  const byRef=filtek4910FromRef(variant.manufacturerReference);
   return {
     supplierId: "dentaltix",
     supplierSku: variant.supplierSku,
@@ -49,12 +61,12 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
     rawName: variant.title,
     normalizedName: normalizeName([raw.title, variant.title, raw.manufacturer ?? ""].join(" ")),
     productUrl: variant.productUrl,
-    presentation: inferPresentation(variant.title),
-    quantity: q.quantity,
-    unit: q.unit,
-    packCount: q.packCount,
-    variant: inferVariant(variant.title),
-    shade: inferShade(variant.title),
+    presentation: inferPresentation(variant.title) ?? byRef.presentation,
+    quantity: q.quantity ?? byRef.quantity,
+    unit: q.unit ?? byRef.unit,
+    packCount: q.packCount ?? byRef.packCount,
+    variant: inferVariant(variant.title) ?? byRef.variant,
+    shade: inferShade(variant.title) ?? byRef.shade,
     stockStatus: normalizeStock(variant.rawStockText),
     rawStockText: variant.rawStockText,
     regularPrice: variant.regularPrice ?? variant.salePrice ?? raw.regularPrice ?? raw.salePrice ?? 0,
@@ -76,6 +88,7 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
 export function normalizeDentaltix(raw: DentaltixProductRaw): SupplierOffer[] {
   if (raw.variants.length) return raw.variants.map(v => variantToOffer(raw, v)).filter(o => o.regularPrice > 0 || (o.salePrice ?? 0) > 0);
   const q = inferQuantity(raw.title);
+  const byRef=filtek4910FromRef(raw.pageManufacturerReference);
   const single: SupplierOffer = {
     supplierId: "dentaltix",
     supplierSku: raw.pageSupplierSku,
@@ -84,12 +97,12 @@ export function normalizeDentaltix(raw: DentaltixProductRaw): SupplierOffer[] {
     rawName: raw.title,
     normalizedName: normalizeName([raw.title, raw.manufacturer ?? ""].join(" ")),
     productUrl: raw.productUrl,
-    presentation: inferPresentation(raw.title),
-    quantity: q.quantity,
-    unit: q.unit,
-    packCount: q.packCount,
-    variant: inferVariant(raw.title),
-    shade: inferShade(raw.title),
+    presentation: inferPresentation(raw.title) ?? byRef.presentation,
+    quantity: q.quantity ?? byRef.quantity,
+    unit: q.unit ?? byRef.unit,
+    packCount: q.packCount ?? byRef.packCount,
+    variant: inferVariant(raw.title) ?? byRef.variant,
+    shade: inferShade(raw.title) ?? byRef.shade,
     stockStatus: normalizeStock(raw.rawStockText),
     rawStockText: raw.rawStockText,
     regularPrice: raw.regularPrice ?? raw.salePrice ?? 0,
