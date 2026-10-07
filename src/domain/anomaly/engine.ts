@@ -4,7 +4,7 @@ import type { AnomalyInput, AnomalyResult, AnomalySeverity } from "./types";
 
 function effectivePrice(offer:SupplierOffer):number { return offer.salePrice ?? offer.regularPrice; }
 function previousPrice(previous?:PriceObservation):number|undefined {
-  return previous?.effectiveUnitCost ?? previous?.salePrice ?? previous?.regularPrice;
+  return previous?.salePrice ?? previous?.regularPrice;
 }
 function worsen(current:AnomalySeverity,next:AnomalySeverity):AnomalySeverity {
   const rank={normal:0,suspicious:1,quarantined:2};
