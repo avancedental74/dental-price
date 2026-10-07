@@ -15,6 +15,7 @@ export type StockStatus =
 export type VatStatus = "included" | "excluded" | "unknown";
 export type FreshnessStatus = "fresh" | "aging" | "stale";
 export type ShippingThresholdBasis = "net" | "gross";
+export type VerificationKind = "live" | "snapshot" | "manual";
 
 export interface CanonicalProduct {
   id: string;
@@ -90,4 +91,7 @@ export interface SupplierOffer {
   observedAt: string;
   sourceStatus: "normal" | "suspicious" | "quarantined";
   sourceMode?: "automatic" | "manual";
+  verificationKind?: VerificationKind;
+  verificationSessionId?: string;
+  verifiedAt?: string;
 }
