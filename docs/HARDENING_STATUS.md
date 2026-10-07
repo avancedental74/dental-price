@@ -4,7 +4,7 @@ Fecha: 2026-10-07
 
 ## Estado real
 
-La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **43 ofertas automáticas**, **57 observaciones históricas** y **0 falsos EXACT** en validación.
+La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **45 ofertas automáticas**, **59 observaciones históricas** y **0 falsos EXACT** en validación.
 
 ## Cobertura automática actual
 
@@ -12,9 +12,10 @@ La arquitectura, motores de dominio, validación, CI, seguridad y frontend está
   - 13 variantes Filtek Supreme XTE.
   - 4 tallas de guantes Santex nitrilo negro: XS, S, M y L.
   - 2 referencias Peeso 28 mm: Nº1 y Nº2.
-- **DentalCost: 24 ofertas verdes / EXACT**
-  - Variantes Filtek Supreme XTE Body, Dentin y Enamel.
-- Hay referencias Filtek compartidas entre ambos proveedores, por lo que ya existe comparación automática proveedor contra proveedor.
+- **DentalCost: 26 ofertas verdes / EXACT**
+  - 24 variantes Filtek Supreme XTE Body, Dentin y Enamel.
+  - 2 referencias Peeso 28 mm: Nº1 y Nº2.
+- Hay referencias Filtek y Peeso compartidas entre Dentaltix y DentalCost, por lo que ya existe comparación automática proveedor contra proveedor en composites y endodoncia.
 
 ## Validado
 
@@ -35,6 +36,7 @@ La arquitectura, motores de dominio, validación, CI, seguridad y frontend está
 - Security audit automatizado.
 - Dependencias fijadas por package-lock.
 - El workflow de refresh reintenta contra el último `main` si existe una carrera de escritura.
+- Todas las peticiones de refresh y health tienen timeout de 15 segundos.
 
 ## Adquisición de proveedores
 
@@ -49,7 +51,7 @@ Ejemplos verificados:
 
 ### DentalCost
 
-Automatización operativa. Las fichas públicas exponen referencias de fabricante, referencia del depósito, stock y precio por variante. Se han validado 24 variantes Filtek Supreme XTE. El transporte se modela como 5,80 € antes de IVA y envío gratuito desde 120 € IVA incluido.
+Automatización operativa. Las fichas públicas exponen referencias de fabricante, referencia del depósito, stock y precio por variante. Se han validado 24 variantes Filtek Supreme XTE y 2 referencias Peeso 28 mm. El transporte se modela como 5,80 € antes de IVA y envío gratuito desde 120 € IVA incluido.
 
 ### DVD Dental
 
@@ -74,7 +76,7 @@ Las fichas públicas son visibles en navegador/buscadores, pero GitHub Actions r
 Producto: Filtek Supreme XTE A3 Body, ref. `4910A3B`, 1 jeringa de 3 g.
 
 - Dentaltix: precio base 44,90 €, IVA 10 %, portes 4,95 € + IVA → coste efectivo 55,38 €.
-- DentalCost: precio base 47,86 €, IVA 10 %, portes 5,80 € + IVA → coste efectivo 59,66 €.
+- DentalCost: precio base 47,86 €, IVA 10 %, portes 5,80 € + IVA → coste efectivo 59,67 €.
 
 El motor debe seleccionar Dentaltix para una unidad con las condiciones observadas. Existe un test de regresión que fija este comportamiento y otro para comprobar que al superar los umbrales desaparecen los portes.
 
@@ -87,7 +89,7 @@ Si una fuente no puede verificarse automáticamente, Dental Price debe mostrar a
 1. No existe discovery arbitrario de todo el catálogo; la búsqueda opera sobre catálogo canónico curado.
 2. Proclinic y Dental Ibérica requieren API/feed/autorización o verificación manual.
 3. DVD requiere una vía fiable para resolver variante→SKU/precio antes de volver a automatización.
-4. Dentaltix y DentalCost deben ampliar progresivamente categorías y referencias.
+4. Dentaltix y DentalCost deben ampliar progresivamente categorías y referencias. AIR-N-GO en DentalCost quedó fuera de la automatización porque esa ficha devuelve HTTP 404 desde GitHub Actions aunque sea visible públicamente.
 5. Opportunity Score necesita más días de histórico real para ser estadísticamente útil.
 6. Precios negociados, facturas e inventario interno están fuera del V1 público.
 7. Optimización matemática de cesta multi-proveedor queda para la siguiente fase.
