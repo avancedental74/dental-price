@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { CanonicalProduct } from "../types/domain";
+import type { CanonicalProduct, SupplierOffer } from "../types/domain";
 import { compareSupplierOffers } from "../domain/comparison";
 import { getFreshnessStatus } from "../domain/comparison/compare";
 import { calculateHistoryStats } from "../domain/history";
@@ -12,7 +12,9 @@ import { QuantityControl } from "../components/QuantityControl";
 import { ScoreBadge } from "../components/ScoreBadge";
 import { SearchBar } from "../components/SearchBar";
 import { WinnerCard } from "../components/WinnerCard";
+import { ManualOfferPanel } from "../components/ManualOfferPanel";
 import { loadPublicData, type PublicData } from "../services/public-data";
+import { loadManualOffers, saveManualOffers } from "../services/manual-offers";
 
 function findProduct(products:CanonicalProduct[],query:string):CanonicalProduct|undefined{
   const q=normalizeName(query);
@@ -37,6 +39,7 @@ export function App(){
   const [quantity,setQuantity]=useState(1);
   const [selected,setSelected]=useState<CanonicalProduct|null>(null);
   const [query,setQuery]=useState("");
+  const [manualOffers,setManualOffers]=useState<SupplierOffer[]>(()=>loadManualOffers());
 
   useEffect(()=>{
     loadPublicData().then(d=>{setData(d);setSelected(d.products[0]??null);}).catch(e=>setError(e instanceof Error?e.message:"Error cargando datos"));
@@ -46,11 +49,12 @@ export function App(){
     if(!data||!selected) return [];
     const ref=normalizeReference(selected.manufacturerReference);
     const family=normalizeName(selected.family);
-    return data.offers.filter(o=>
+    const allOffers=[...data.offers,...manualOffers];
+    return allOffers.filter(o=>
       (ref && normalizeReference(o.manufacturerReference)===ref) ||
       normalizeName(o.normalizedName).includes(family)
     );
-  },[data,selected]);
+  },[data,selected,manualOffers]);
 
   const comparison=useMemo(()=>selected?compareSupplierOffers(selected,candidates,quantity):null,[selected,candidates,quantity]);
   const winner=comparison?.ranked[0];
@@ -61,6 +65,11 @@ export function App(){
     inStock:Boolean(winner&&(winner.offer.stockStatus==="in_stock"||winner.offer.stockStatus==="low_stock")),
     hasActivePromotion:Boolean(winner?.offer.promotion)
   }),[history,winner]);
+
+  const onManualOffersChange=(next:SupplierOffer[])=>{
+    setManualOffers(next);
+    saveManualOffers(next);
+  };
 
   const onSearch=(q:string)=>{
     if(!data) return;
@@ -73,7 +82,7 @@ export function App(){
   if(!data) return <main className="app-shell"><section className="card"><h2>Cargando Dental Price…</h2></section></main>;
 
   return <main className="app-shell">
-    <header className="topbar"><div><span className="brand-mark">DP</span><strong>DENTAL PRICE</strong></div><span className="live">DATOS PÚBLICOS · {data.offers.length} ofertas</span></header>
+    <header className="topbar"><div><span className="brand-mark">DP</span><strong>DENTAL PRICE</strong></div><span className="live">{data.offers.length} automáticas · {manualOffers.length} manuales</span></header>
     <section className="hero">
       <p className="eyebrow">COMPRA INTELIGENTE PARA CLÍNICAS DENTALES</p>
       <h1>Compara el coste real, no solo el precio.</h1>
@@ -90,6 +99,7 @@ export function App(){
     {winner && <WinnerCard item={winner}/>} 
     {comparison && <ComparisonTable items={comparison.matches}/>} 
     {selected && <HistoryPanel history={history} stats={stats}/>} 
+    <ManualOfferPanel product={selected} offers={manualOffers} onChange={onManualOffersChange}/>
     <ConnectorStatusPanel items={data.connectors}/>
     <footer>Mejor precio encontrado entre los proveedores consultados · España peninsular · Nunca se inventan IVA, portes ni equivalencias.</footer>
   </main>;
