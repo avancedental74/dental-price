@@ -7,6 +7,8 @@ function euro(v?:string){if(!v)return undefined;let s=v.replace(/\s/g,"").replac
 function stock(text:string):StockStatus{if(/agotado|no disponible|sin stock/i.test(text))return"unavailable";if(/24\/48|disponib|cantidad|sum\./i.test(text))return"in_stock";return"unknown";}
 function metrics(text:string){const pack=text.match(/(\d+)\s*(?:cavifills?|uds?\.?|unidades)/i);const m=text.match(/(\d+(?:[.,]\d+)?)\s*(g|grm?|ml)\b/i);return{packCount:pack?Number(pack[1]):undefined,quantity:m?Number(m[1].replace(",",".")):undefined,unit:m?(m[2].toLowerCase().startsWith("g")?"g":"ml"):undefined};}
 export async function fetchOrtolanProduct(productUrl:string,fetchImpl:typeof fetch=fetch):Promise<{offers:SupplierOffer[]}>{
+ const parsedUrl=new URL(productUrl);
+ if(/\/(?:busqueda|search|recherche)(?:\/|$)/i.test(parsedUrl.pathname)||/^(?:s|q|search_query)=/i.test(parsedUrl.search.replace(/^\?/,""))) return {offers:[]};
  const response=await fetchImpl(productUrl,{headers:{"user-agent":USER_AGENT,accept:"text/html,application/xhtml+xml"}});
  if(!response.ok)throw new Error("Ortolan HTTP "+response.status);
  const html=await response.text(),$=cheerio.load(html),body=$("body").text().replace(/\s+/g," ").trim();
