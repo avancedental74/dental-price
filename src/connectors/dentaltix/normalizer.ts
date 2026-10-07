@@ -11,7 +11,7 @@ function normalizeStock(value?: string): StockStatus {
 }
 
 function inferPresentation(value: string): string | undefined {
-  if (/jeringa|\bjer\./i.test(value)) return "Jeringa";
+  if (/jeringa|\bjer\.|\bsyr\.?\b|syringe/i.test(value)) return "Jeringa";
   if (/\bcap\.|cápsul|capsul/i.test(value)) return "Cápsulas";
   if (/caja/i.test(value)) return "Caja";
   if (/kit/i.test(value)) return "Kit";
@@ -24,7 +24,7 @@ function inferQuantity(value: string): { quantity?: number; unit?: string; packC
   return {
     quantity: metric ? Number(metric[1].replace(",", ".")) : undefined,
     unit: metric ? (metric[2].toLowerCase() === "gr" ? "g" : metric[2].toLowerCase()) : undefined,
-    packCount: pack ? Number(pack[1]) : undefined
+    packCount: pack ? Number(pack[1]) : metric ? 1 : undefined
   };
 }
 
@@ -35,7 +35,7 @@ function inferShade(value: string): string | undefined {
 function inferVariant(value: string): string | undefined {
   if (/\bbody\b/i.test(value)) return "Body";
   if (/\bdentina\b|\bdentin\b/i.test(value)) return "Dentin";
-  if (/\besmalte\b|\benamel\b/i.test(value)) return "Enamel";
+  if (/\besmalte\b|\benamel\b|\bglaze\b/i.test(value)) return "Enamel";
   return undefined;
 }
 
