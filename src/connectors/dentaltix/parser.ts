@@ -162,6 +162,7 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
     salePrice,
     vatIncludedPrice,
     vatRate,
+    vatIncluded: Boolean(vatMatch),
     rawStockText: stockFromText(stockMatch),
     productUrl,
     variants: parsedVariants
