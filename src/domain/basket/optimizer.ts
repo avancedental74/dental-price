@@ -129,11 +129,12 @@ export function optimizeBasket(items:BasketRequestItem[],maxStates=250000):Baske
   }
 
   recurse(0,[],0);
+  const resolvedBest=best as {total:number;assignments:BasketAssignment[];suppliers:BasketSupplierSummary[]}|null;
 
-  if(!best){
+  if(!resolvedBest){
     const tooComplex=states>maxStates;
     if(tooComplex) throw new Error("La cesta es demasiado compleja para optimizar con seguridad; reduce temporalmente el número de líneas o proveedores.");
     return {total:null,assignments:[],suppliers:[],missingProductIds:items.map(x=>x.product.id),combinationsEvaluated:states};
   }
-  return {...best,missingProductIds:[],combinationsEvaluated:states};
+  return {...resolvedBest,missingProductIds:[],combinationsEvaluated:states};
 }
