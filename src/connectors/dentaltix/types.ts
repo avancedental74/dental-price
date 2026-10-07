@@ -17,6 +17,8 @@ export interface DentaltixProductRaw {
   pageManufacturerReference?: string;
   regularPrice?: number;
   salePrice?: number;
+  vatIncludedPrice?: number;
+  vatRate?: number;
   rawStockText?: string;
   productUrl: string;
   variants: DentaltixVariantRaw[];
