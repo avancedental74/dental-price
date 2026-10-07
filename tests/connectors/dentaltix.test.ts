@@ -114,7 +114,7 @@ describe("Dentaltix connector", () => {
     const selected=offers.find(o=>o.manufacturerReference==="4242");
     expect(selected?.presentation).toBe("Frasco");
     expect(selected?.quantity).toBe(6);
-    expect(selected?.unit).toBe("g");
+    expect(selected?.unit).toBe("ml");
     expect(selected?.packCount).toBe(1);
     expect(selected?.manufacturerReference).not.toBe("4241");
   });
