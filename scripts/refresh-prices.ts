@@ -46,7 +46,7 @@ for(const seed of seeds){
         if(!pricing.warnings.some(w=>w.includes("no confirmado")||w.includes("desconocida"))){
           unitCost=pricing.effectiveUnitCost; totalCost=pricing.effectiveTotalCost;
         }
-      }catch{}
+      }catch{ /* incomplete economic data is stored without effective cost */ }
       history=appendObservation(history,product.id,offer,unitCost,totalCost,1).history;
       statuses.push({supplierId:seed.supplierId,productId:seed.productId,status:match.status==="REJECTED"?"amber":"green",checkedAt:new Date().toISOString(),message:`${match.status}; ${anomaly.severity}`});
     }
