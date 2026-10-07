@@ -892,5 +892,41 @@
     "supplierId": "dentalcost",
     "url": "https://www.dentalcost.es/fresas-endodoncia/5513-fresa-ensanchadora-peeso-largo-28mm-6-uds.html",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10251",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/satelec/bicarbonato-aeropulidor-air-n-go-4x250gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10253",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/satelec/bicarbonato-aeropulidor-air-n-go-4x250gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10255",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/satelec/bicarbonato-aeropulidor-air-n-go-4x250gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10252",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/satelec/bicarbonato-aeropulidor-air-n-go-4x250gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10254",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/satelec/bicarbonato-aeropulidor-air-n-go-4x250gr",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10250",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/satelec/bicarbonato-aeropulidor-air-n-go-4x250gr",
+    "acquisitionMode": "direct"
   }
 ]
