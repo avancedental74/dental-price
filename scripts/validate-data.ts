@@ -8,7 +8,22 @@ async function readJson(path:string){ return JSON.parse(await readFile(path,"utf
 const historySchema=z.array(z.object({
   id:z.string(),productId:z.string(),supplierId:z.string(),observedAt:z.string(),lastSeenAt:z.string(),seenCount:z.number().int().positive(),requestedQuantity:z.number().int().positive(),regularPrice:z.number().nonnegative(),effectiveUnitCost:z.number().positive().optional(),effectiveTotalCost:z.number().positive().optional(),stockStatus:z.string(),sourceUrl:z.string().url()
 }).passthrough());
-const statusSchema=z.array(z.object({supplierId:z.string(),status:z.enum(["green","amber","red"]),checkedAt:z.string(),message:z.string()}).passthrough());
+const statusSchema=z.array(z.object({
+  supplierId:z.string(),status:z.enum(["green","amber","red"]),checkedAt:z.string(),message:z.string(),
+  verificationStatus:z.enum(["verified","failed","manual_required"]).optional(),
+  matchStatus:z.enum(["EXACT","HIGH_CONFIDENCE","REVIEW_REQUIRED","REJECTED"]).optional(),
+  purchasable:z.boolean().optional()
+}).passthrough());
+const policySchema=z.array(z.object({
+  supplierId:z.string(),zone:z.literal("ES_PENINSULA"),shippingCost:z.number().nonnegative(),shippingCostVatIncluded:z.boolean(),shippingVatRate:z.number().nonnegative(),
+  freeShippingThreshold:z.number().nonnegative(),freeShippingThresholdBasis:z.enum(["net","gross"]),observedAt:z.string(),sourceUrl:z.string().url()
+}));
+const metricsSchema=z.object({
+  generatedAt:z.string(),verifiedOffers:z.number().int().nonnegative(),purchasableOffers:z.number().int().nonnegative(),
+  unavailableOffers:z.number().int().nonnegative(),lowStockOffers:z.number().int().nonnegative(),
+  productsWithTwoOrMoreAutomaticSuppliers:z.number().int().nonnegative(),automaticSuppliers:z.number().int().nonnegative(),
+  supplierOfferCounts:z.record(z.string(),z.number().int().nonnegative())
+});
 const seedSchema=z.array(z.object({productId:z.string(),supplierId:z.enum(["dentaltix","proclinic","dental-iberica","dentalcost","dvd-dental"]),url:z.string().url()}));
 
 const products=z.array(canonicalProductSchema).parse(await readJson("data/products.json"));
@@ -16,6 +31,10 @@ const current=z.array(supplierOfferSchema).parse(await readJson("data/current-pr
 const history=historySchema.parse(await readJson("data/price-history.json"));
 const status=statusSchema.parse(await readJson("data/connector-status.json"));
 const seeds=seedSchema.parse(await readJson("data/supplier-seeds.json"));
+const policies=policySchema.parse(await readJson("data/supplier-policies.json"));
+const metrics=metricsSchema.parse(await readJson("data/metrics.json").catch(()=>({
+  generatedAt:new Date(0).toISOString(),verifiedOffers:current.length,purchasableOffers:0,unavailableOffers:0,lowStockOffers:0,productsWithTwoOrMoreAutomaticSuppliers:0,automaticSuppliers:0,supplierOfferCounts:{}
+})));
 
 const ids=new Set<string>();
 for(const product of products){
@@ -61,5 +80,5 @@ if(falseExact>0) throw new Error("Ground truth contains "+falseExact+" false-pos
 if(mismatches>0) throw new Error("Ground truth mismatches: "+mismatches);
 
 console.log(JSON.stringify({
-  products:products.length,currentOffers:current.length,history:history.length,connectors:status.length,seeds:seeds.length,groundTruth:gt.cases.length,falseExact
+  products:products.length,currentOffers:current.length,history:history.length,connectors:status.length,seeds:seeds.length,policies:policies.length,metrics,groundTruth:gt.cases.length,falseExact
 },null,2));
