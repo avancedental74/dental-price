@@ -14,5 +14,6 @@ describe("anomaly engine",()=>{
   it("flags a >50% drop",()=>expect(analyzeOfferAnomaly({offer:offer(40),previous:previous(100)}).severity).toBe("suspicious"));
   it("quarantines a x10 error",()=>expect(analyzeOfferAnomaly({offer:offer(4),previous:previous(40)}).severity).toBe("quarantined"));
   it("flags >100% rise",()=>expect(analyzeOfferAnomaly({offer:offer(90),previous:previous(40)}).severity).toBe("suspicious"));
+  it("does not compare source price against historical landed cost",()=>expect(analyzeOfferAnomaly({offer:offer(40),previous:previous(40,{effectiveUnitCost:80})}).severity).toBe("normal"));
   it("quarantines pack drift",()=>expect(analyzeOfferAnomaly({offer:offer(40,{packCount:20}),previous:previous(40)}).severity).toBe("quarantined"));
 });
