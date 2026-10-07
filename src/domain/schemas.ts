@@ -65,5 +65,8 @@ export const supplierOfferSchema = z.object({
   deliveryEstimate: z.string().optional(),
   observedAt: z.string().datetime(),
   sourceStatus: z.enum(["normal","suspicious","quarantined"]),
-  sourceMode: z.enum(["automatic","manual"]).optional()
+  sourceMode: z.enum(["automatic","manual"]).optional(),
+  verificationKind: z.enum(["live","snapshot","manual"]).optional(),
+  verificationSessionId: z.string().optional(),
+  verifiedAt: z.string().datetime().optional()
 });
