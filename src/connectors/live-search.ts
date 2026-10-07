@@ -5,13 +5,13 @@ export type SearchSupplierId="dentaltix"|"dentalcost"|"dvd-dental"|"proclinic"|"
 
 const configs:Record<SearchSupplierId,{origin:string;home:string;templates:string[]}>={
   dentaltix:{origin:"https://www.dentaltix.com",home:"https://www.dentaltix.com/es",templates:[
-    "https://www.dentaltix.com/es/search?q={q}","https://www.dentaltix.com/es/search?text={q}","https://www.dentaltix.com/es/search?search_query={q}"
+    "https://www.dentaltix.com/es/search-results?q={q}"
   ]},
   dentalcost:{origin:"https://www.dentalcost.es",home:"https://www.dentalcost.es/",templates:[
-    "https://www.dentalcost.es/search?controller=search&s={q}","https://www.dentalcost.es/buscar?controller=search&s={q}","https://www.dentalcost.es/catalogsearch/result/?q={q}"
+    "https://www.dentalcost.es/buscar?s={q}","https://www.dentalcost.es/?controller=search&search_query={q}"
   ]},
   "dvd-dental":{origin:"https://www.dvd-dental.com",home:"https://www.dvd-dental.com/",templates:[
-    "https://www.dvd-dental.com/search?controller=search&s={q}","https://www.dvd-dental.com/buscar?controller=search&s={q}"
+    "https://www.dvd-dental.com/search.php?search_query={q}"
   ]},
   proclinic:{origin:"https://www.proclinic.es",home:"https://www.proclinic.es/tienda/",templates:[
     "https://www.proclinic.es/tienda/catalogsearch/result/?q={q}","https://www.proclinic.es/tienda/search?q={q}","https://www.proclinic.es/tienda/buscar?q={q}"
@@ -26,7 +26,7 @@ const configs:Record<SearchSupplierId,{origin:string;home:string;templates:strin
     "https://www.brokerdental.es/catalogsearch/result/?q={q}","https://www.brokerdental.es/search?controller=search&s={q}"
   ]},
   ortolan:{origin:"https://ortolan.es",home:"https://ortolan.es/es/",templates:[
-    "https://ortolan.es/es/buscar?controller=search&s={q}","https://ortolan.es/es/search?controller=search&s={q}"
+    "https://ortolan.es/es/busqueda?controller=search&s={q}"
   ]}
 };
 
@@ -71,7 +71,7 @@ async function trySearchRequest(
   maxResults:number,
   init:RequestInit={}
 ){
-  const headers={...((init.headers as Record<string,string>|undefined)??{}),"user-agent":"DentalPrice/0.4 (+https://github.com/avancedental74/dental-price; live federated search)",accept:"text/html,application/xhtml+xml"};
+  const headers={...((init.headers as Record<string,string>|undefined)??{}),"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36",accept:"text/html,application/xhtml+xml"};
   const response=await fetchImpl(url,{...init,headers,redirect:"follow"});
   if(!response.ok)throw new Error("HTTP "+response.status);
   const html=await response.text();
@@ -119,7 +119,7 @@ async function searchViaSitemap(cfg:{origin:string},query:string,fetchImpl:typeo
   const locs:string[]=[];
   for(const sitemap of candidates){
     try{
-      const response=await fetchImpl(sitemap,{headers:{"user-agent":"DentalPrice/0.4","accept":"application/xml,text/xml,text/plain"}});
+      const response=await fetchImpl(sitemap,{headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36","accept":"application/xml,text/xml,text/plain"}});
       if(!response.ok)continue;
       const xml=await response.text();
       const $=cheerio.load(xml,{xmlMode:true});
@@ -128,7 +128,7 @@ async function searchViaSitemap(cfg:{origin:string},query:string,fetchImpl:typeo
       if(child.length){
         for(const childUrl of child){
           try{
-            const cr=await fetchImpl(childUrl,{headers:{"user-agent":"DentalPrice/0.4","accept":"application/xml,text/xml,text/plain"}});
+            const cr=await fetchImpl(childUrl,{headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36","accept":"application/xml,text/xml,text/plain"}});
             if(!cr.ok)continue;
             const cx=cheerio.load(await cr.text(),{xmlMode:true});
             locs.push(...cx("loc").toArray().map(x=>cx(x).text().trim()).filter(Boolean));
