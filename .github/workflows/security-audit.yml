@@ -24,3 +24,4 @@ jobs:
         run: npm audit --omit=dev --audit-level=high
       - name: Critical full-tree audit
         run: npm audit --audit-level=critical
+# hardened-toolchain-trigger
