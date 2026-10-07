@@ -70,3 +70,15 @@ El estado real y las limitaciones verificadas están en `docs/HARDENING_STATUS.m
 ## Principio no negociable
 
 No se inventan equivalencias, IVA, portes, stock ni precios. Un dato incompleto puede mostrarse, pero no ganar la comparación.
+
+## Búsqueda en vivo
+
+La comparación interactiva usa un backend serverless separado del snapshot programado.
+
+- Cada búsqueda genera un `sessionId` nuevo.
+- Solo ofertas obtenidas y verificadas dentro de ese mismo `sessionId` pueden ganar.
+- `current-prices.json` es snapshot/histórico y nunca sustituye a una consulta live.
+- Si el backend live no está configurado o falla, la aplicación muestra los snapshots como referencia pero no declara ganador.
+- Backend previsto: Cloudflare Workers en plan gratuito, reutilizando los mismos conectores y reglas de matching del repositorio.
+- El frontend lee el endpoint desde `VITE_LIVE_API_URL`.
+- El despliegue del Worker usa `.github/workflows/deploy-live-api.yml` y requiere los secrets `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID`.
