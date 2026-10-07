@@ -1,14 +1,20 @@
 # Dental Price
 
-Comparador privado de precios de suministros dentales para proveedores que venden y entregan en España.
+Comparador de coste efectivo de suministros dentales para proveedores que venden y entregan en España.
 
 ## Estado
 
-**MVP endurecido y desplegado en GitHub Pages.** El motor de matching, pricing, histórico, anomalías, score, validación y seguridad está operativo.
+**MVP endurecido, desplegado y con comparación automática real entre proveedores.**
 
-- Dentaltix: 13 variantes Filtek Supreme XTE verificadas automáticamente.
-- Proclinic y Dental Ibérica: sus webs rechazan GitHub Actions; se usa verificación manual segura en el navegador.
-- Las ofertas manuales se guardan solo en `localStorage`, exigen URL del proveedor + referencia de fabricante coincidente y conservan histórico local.
+Estado verificado el 07/10/2026:
+
+- **43 ofertas automáticas EXACT y normales** en el último refresh publicado.
+- **Dentaltix: 19 ofertas automáticas**: 13 Filtek Supreme XTE, 4 tallas de guantes Santex y 2 referencias Peeso 28 mm.
+- **DentalCost: 24 ofertas automáticas** Filtek Supreme XTE.
+- Para referencias compartidas, Dentaltix y DentalCost compiten con precio + IVA + portes + umbral de envío + stock.
+- **DVD Dental**: página pública accesible, pero la resolución variante→SKU/precio no es fiable desde automatización; se usa snapshot manual seguro.
+- **Proclinic y Dental Ibérica**: GitHub Actions recibe HTTP 405; se usa snapshot manual seguro.
+- Las ofertas manuales se guardan solo en `localStorage`, exigen dominio del proveedor + referencia de fabricante coincidente y conservan histórico local.
 - CI completo y auditoría de dependencias con severidad `high` en verde.
 
 ## Objetivo
@@ -35,11 +41,13 @@ La fuente de verdad del proyecto está en `docs/DENTAL_PRICE_MASTER_SPEC.md`.
 
 El estado real y las limitaciones verificadas están en `docs/HARDENING_STATUS.md`.
 
-## Proveedores MVP
+## Proveedores
 
-1. Dentaltix — automatización pública parcial y validada.
-2. Proclinic — snapshot manual local mientras el acceso automatizado siga rechazado.
-3. Dental Ibérica — snapshot manual local mientras el acceso automatizado siga rechazado.
+1. Dentaltix — automatización pública activa.
+2. DentalCost — automatización pública activa.
+3. DVD Dental — conector/health + snapshot manual local mientras no haya datos de variante fiables.
+4. Proclinic — snapshot manual local mientras el acceso automatizado siga rechazado.
+5. Dental Ibérica — snapshot manual local mientras el acceso automatizado siga rechazado.
 
 ## Principio no negociable
 
