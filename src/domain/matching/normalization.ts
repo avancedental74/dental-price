@@ -52,7 +52,6 @@ export function normalizeToken(value: string): string {
 export function normalizeManufacturer(value?: string): string | undefined {
   if (!value) return undefined;
   const v = normalizeToken(value);
-  if (v === "3m" || v === "solventum") return "solventum";
   return v;
 }
 
