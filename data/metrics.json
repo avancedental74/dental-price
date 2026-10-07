@@ -1,14 +1,15 @@
 {
-  "generatedAt": "2026-10-07T12:38:09.057Z",
-  "verifiedOffers": 93,
+  "generatedAt": "2026-10-07T13:23:41.029Z",
+  "verifiedOffers": 94,
   "purchasableOffers": 83,
-  "unavailableOffers": 10,
+  "unavailableOffers": 11,
   "lowStockOffers": 11,
   "productsWithTwoOrMoreVerifiedSuppliers": 37,
   "productsWithTwoOrMorePurchasableSuppliers": 34,
-  "automaticSuppliers": 2,
+  "automaticSuppliers": 3,
   "supplierOfferCounts": {
     "dentalcost": 51,
-    "dentaltix": 42
+    "dentaltix": 42,
+    "dvd-dental": 1
   }
 }
