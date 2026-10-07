@@ -182,18 +182,29 @@ describe("Dentaltix connector", () => {
     expect(offers[0].quantity).toBe(4);
     expect(offers[0].presentation).toBe("Jeringa");
   });
-  it("parses Nuxt variant references for dynamically discovered products",()=>{
+  it("parses only Nuxt variants belonging to the dynamically discovered product",()=>{
     const payload=[
-      {manRef:1,sku:2,name:3,type:4,price:5},
+      {slug:1,mainVar:2,variations:3},
+      "demo",
+      {manRef:4,sku:5,name:6,type:7,price:8},
+      {selected:2},
       "4910A3B",
       "053M4910A3B",
       "Filtek Supreme XTE A3 Body",
       "1 Jer. de 3 gr - A3 Body",
-      {sales:6,recommended:7},
-      {value:8},
-      {value:9},
+      {sales:9,recommended:10},
+      {value:11},
+      {value:12},
       44.9,
-      64.14
+      64.14,
+      {manRef:14,sku:15,name:16,type:17,price:18},
+      "UNRELATED-REF",
+      "UNRELATED-SKU",
+      "Recommended unrelated product",
+      "1 Jer. de 2 gr",
+      {sales:19},
+      {value:20},
+      9.99
     ];
     const html=`<html><body><h1>Filtek Supreme XTE</h1><script type="application/json" data-nuxt-data="nuxt-app">${JSON.stringify(payload)}</script></body></html>`;
     const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo"));
@@ -204,5 +215,6 @@ describe("Dentaltix connector", () => {
     expect(exact?.shade).toBe("A3");
     expect(exact?.variant).toBe("Body");
     expect(exact?.productUrl).toContain("sku=053M4910A3B");
+    expect(offers.some(o=>o.manufacturerReference==="UNRELATED-REF")).toBe(false);
   });
 });
