@@ -159,7 +159,7 @@ export function App(){
         <div className="search-help"><span>Prueba con</span><button onClick={()=>void runFederatedSearch("41294")}>41294</button><button onClick={()=>void runFederatedSearch("Filtek Supreme A3")}>Filtek Supreme A3</button><button onClick={()=>void runFederatedSearch("Peeso nº3")}>Peeso nº3</button></div>
       </div>
       <div className="trust-row">
-        <span><b>8</b> proveedores objetivo</span>
+        <span><b>5 live + 3 protegidos</b> proveedores objetivo</span>
         <span><b>Live</b> precio y stock al consultar</span>
         <span><b>Exact</b> variantes separadas</span>
       </div>
