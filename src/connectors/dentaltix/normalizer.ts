@@ -68,7 +68,7 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
     rawName: variant.title,
     normalizedName: normalizeName([raw.title, variant.title, raw.manufacturer ?? ""].join(" ")),
     productUrl: variant.productUrl,
-    presentation: inferPresentation(variant.title) ?? byRef.presentation,
+    presentation: inferPresentation(variant.title) ?? inferPresentation(raw.title) ?? byRef.presentation,
     quantity: q.quantity ?? byRef.quantity,
     unit: q.unit ?? byRef.unit,
     packCount: q.packCount ?? byRef.packCount,
