@@ -35,4 +35,18 @@ describe("basket optimizer",()=>{
   const result=optimizeBasket([{product:a,quantity:1,offers:[grossOnly]}]);
   expect(result.total).toBeNull();
  });
+ it("handles an 18-line three-supplier basket without cartesian explosion",()=>{
+  const items=Array.from({length:18},(_,i)=>{
+    const p=product("p"+i,"R"+i);
+    return {product:p,quantity:1,offers:[
+      offer("x","R"+i,10,1000),
+      offer("y","R"+i,12,1000),
+      offer("z","R"+i,13,1000)
+    ]};
+  });
+  const result=optimizeBasket(items);
+  expect(result.total).toBe(186);
+  expect(result.assignments.every(x=>x.supplierId==="x")).toBe(true);
+  expect(result.combinationsEvaluated).toBeLessThan(250000);
+ });
 });
