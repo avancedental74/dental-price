@@ -568,5 +568,65 @@
     "supplierId": "dentalcost",
     "url": "https://www.dentalcost.es/adhesivos/227-adper-scotchbond-1xt-adhesivo-reposicion-6ml.html",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "scotchbond-universal-plus-41294",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/scotchbond-universal-plus-adhesivo-universal-radiopaco?sku=41294",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "scotchbond-universal-plus-41294",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/adhesivos/8100-scotchbond-adhesivo-universal-plus-reposicion-5ml-3m-espe.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "relyx-universal-56971",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/relyx-universal-cemento-resina-universal-reposicion?sku=56971",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "relyx-universal-56971",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/varios-cementos-de-resina/8955-relyx-universal-cemento-de-resina-reposicion-jeringa-34g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "relyx-universal-56972",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/relyx-universal-cemento-resina-universal-reposicion?sku=56972",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "relyx-universal-56972",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/varios-cementos-de-resina/8955-relyx-universal-cemento-de-resina-reposicion-jeringa-34g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "relyx-universal-56973",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/relyx-universal-cemento-resina-universal-reposicion?sku=56973",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "relyx-universal-56973",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/varios-cementos-de-resina/8955-relyx-universal-cemento-de-resina-reposicion-jeringa-34g-3m.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "relyx-universal-56974",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/3m/relyx-universal-cemento-resina-universal-reposicion?sku=56974",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "relyx-universal-56974",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/varios-cementos-de-resina/8955-relyx-universal-cemento-de-resina-reposicion-jeringa-34g-3m.html",
+    "acquisitionMode": "direct"
   }
 ]
