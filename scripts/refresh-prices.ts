@@ -17,6 +17,12 @@ type Seed={productId:string;supplierId:string;url:string;acquisitionMode?:"direc
 type ConnectorStatus={supplierId:string;productId?:string;status:"green"|"amber"|"red";checkedAt:string;message:string};
 const readJson=async <T>(p:string):Promise<T>=>JSON.parse(await readFile(p,"utf8")) as T;
 const sleep=(ms:number)=>new Promise(resolve=>setTimeout(resolve,ms));
+const timedFetch:typeof fetch=async(input,init={})=>{
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),15000);
+  try{return await fetch(input,{...init,signal:controller.signal});}
+  finally{clearTimeout(timer);}
+};
 
 const products=await readJson<CanonicalProduct[]>("data/products.json");
 const seeds=await readJson<Seed[]>("data/supplier-seeds.json");
@@ -26,11 +32,11 @@ const productMap=new Map(products.map(p=>[p.id,p]));
 const statuses:ConnectorStatus[]=[];
 
 async function fetchPage(seed:Seed):Promise<SupplierOffer[]>{
-  if(seed.supplierId==="dentaltix") return (await fetchDentaltixProduct(seed.url)).offers;
-  if(seed.supplierId==="proclinic") return (await fetchProclinicProduct(seed.url)).offers;
-  if(seed.supplierId==="dental-iberica") return (await fetchDentalIbericaProduct(seed.url)).offers;
-  if(seed.supplierId==="dentalcost") return (await fetchDentalCostProduct(seed.url)).offers;
-  if(seed.supplierId==="dvd-dental") return (await fetchDvdProduct(seed.url)).offers;
+  if(seed.supplierId==="dentaltix") return (await fetchDentaltixProduct(seed.url,timedFetch)).offers;
+  if(seed.supplierId==="proclinic") return (await fetchProclinicProduct(seed.url,timedFetch)).offers;
+  if(seed.supplierId==="dental-iberica") return (await fetchDentalIbericaProduct(seed.url,timedFetch)).offers;
+  if(seed.supplierId==="dentalcost") return (await fetchDentalCostProduct(seed.url,timedFetch)).offers;
+  if(seed.supplierId==="dvd-dental") return (await fetchDvdProduct(seed.url,timedFetch)).offers;
   throw new Error("Unsupported supplier "+seed.supplierId);
 }
 
