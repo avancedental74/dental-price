@@ -2,8 +2,8 @@
   "version": 2,
   "status": "verified-seed",
   "verifiedAt": "2026-10-07",
-  "caseCount": 30,
-  "notes": "30 manually curated real-reference validation cases plus negative controls. Expand categories before production sign-off.",
+  "caseCount": 36,
+  "notes": "Curated real-reference validation cases across composites, profilaxis and endodontics, plus negative controls. Continue expanding categories before production sign-off.",
   "cases": [
     {
       "id": "xte-01",
@@ -918,6 +918,174 @@
       },
       "evidence": [
         "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer"
+      ]
+    },
+    {
+      "id": "air-31",
+      "expected": "EXACT",
+      "canonical": {
+        "manufacturer": "Acteon",
+        "family": "AIR-N-GO Classic",
+        "variant": "Limón",
+        "presentation": "Frasco",
+        "quantity": 250,
+        "unit": "g",
+        "packCount": 4,
+        "manufacturerReference": "F10251"
+      },
+      "offer": {
+        "supplierId": "dental-iberica",
+        "manufacturer": "ACTEON",
+        "manufacturerReference": "F10251",
+        "normalizedName": "bicarbonato air n go classic 4 x 250 g limon",
+        "variant": "Limón",
+        "presentation": "Frasco",
+        "quantity": 250,
+        "unit": "g",
+        "packCount": 4
+      },
+      "evidence": [
+        "https://dentaliberica.com/es/bicarbonato-air-n-go-classic-4-x-250-g-surtido"
+      ]
+    },
+    {
+      "id": "air-32",
+      "expected": "EXACT",
+      "canonical": {
+        "manufacturer": "Acteon",
+        "family": "AIR-N-GO Classic",
+        "variant": "Cola",
+        "presentation": "Frasco",
+        "quantity": 250,
+        "unit": "g",
+        "packCount": 4,
+        "manufacturerReference": "F10253"
+      },
+      "offer": {
+        "supplierId": "dental-iberica",
+        "manufacturer": "ACTEON",
+        "manufacturerReference": "F10253",
+        "normalizedName": "bicarbonato air n go classic 4 x 250 g cola",
+        "variant": "Cola",
+        "presentation": "Frasco",
+        "quantity": 250,
+        "unit": "g",
+        "packCount": 4
+      },
+      "evidence": [
+        "https://dentaliberica.com/es/bicarbonato-air-n-go-classic-4-x-250-g-surtido"
+      ]
+    },
+    {
+      "id": "air-33",
+      "expected": "EXACT",
+      "canonical": {
+        "manufacturer": "Acteon",
+        "family": "AIR-N-GO Classic",
+        "variant": "Menta",
+        "presentation": "Frasco",
+        "quantity": 250,
+        "unit": "g",
+        "packCount": 4,
+        "manufacturerReference": "F10250"
+      },
+      "offer": {
+        "supplierId": "dental-iberica",
+        "manufacturer": "ACTEON",
+        "manufacturerReference": "F10250",
+        "normalizedName": "bicarbonato air n go classic 4 x 250 g menta",
+        "variant": "Menta",
+        "presentation": "Frasco",
+        "quantity": 250,
+        "unit": "g",
+        "packCount": 4
+      },
+      "evidence": [
+        "https://dentaliberica.com/es/bicarbonato-air-n-go-classic-4-x-250-g-surtido"
+      ]
+    },
+    {
+      "id": "peeso-34",
+      "expected": "EXACT",
+      "canonical": {
+        "manufacturer": "Dentsply Maillefer",
+        "family": "Peeso",
+        "variant": "No1",
+        "presentation": "Caja",
+        "quantity": 28,
+        "unit": "mm",
+        "packCount": 6,
+        "manufacturerReference": "A000923000100"
+      },
+      "offer": {
+        "supplierId": "dental-iberica",
+        "manufacturer": "DENTSPLY MAILLEFER",
+        "manufacturerReference": "A000923000100",
+        "normalizedName": "fresa largo peeso 28mm 6 uds no1",
+        "variant": "No1",
+        "presentation": "Caja",
+        "quantity": 28,
+        "unit": "mm",
+        "packCount": 6
+      },
+      "evidence": [
+        "https://dentaliberica.com/es/fresa-largo-peeso-28mm-6-uds"
+      ]
+    },
+    {
+      "id": "peeso-35",
+      "expected": "EXACT",
+      "canonical": {
+        "manufacturer": "Dentsply Maillefer",
+        "family": "Peeso",
+        "variant": "No2",
+        "presentation": "Caja",
+        "quantity": 28,
+        "unit": "mm",
+        "packCount": 6,
+        "manufacturerReference": "A000923000200"
+      },
+      "offer": {
+        "supplierId": "dental-iberica",
+        "manufacturer": "DENTSPLY MAILLEFER",
+        "manufacturerReference": "A000923000200",
+        "normalizedName": "fresa largo peeso 28mm 6 uds no2",
+        "variant": "No2",
+        "presentation": "Caja",
+        "quantity": 28,
+        "unit": "mm",
+        "packCount": 6
+      },
+      "evidence": [
+        "https://dentaliberica.com/es/fresa-largo-peeso-28mm-6-uds"
+      ]
+    },
+    {
+      "id": "peeso-36",
+      "expected": "EXACT",
+      "canonical": {
+        "manufacturer": "Dentsply Maillefer",
+        "family": "Peeso",
+        "variant": "No3",
+        "presentation": "Caja",
+        "quantity": 28,
+        "unit": "mm",
+        "packCount": 6,
+        "manufacturerReference": "A000923000300"
+      },
+      "offer": {
+        "supplierId": "dental-iberica",
+        "manufacturer": "DENTSPLY MAILLEFER",
+        "manufacturerReference": "A000923000300",
+        "normalizedName": "fresa largo peeso 28mm 6 uds no3",
+        "variant": "No3",
+        "presentation": "Caja",
+        "quantity": 28,
+        "unit": "mm",
+        "packCount": 6
+      },
+      "evidence": [
+        "https://dentaliberica.com/es/fresa-largo-peeso-28mm-6-uds"
       ]
     }
   ]
