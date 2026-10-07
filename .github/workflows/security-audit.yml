@@ -25,3 +25,5 @@ jobs:
       - name: Full-tree high audit
         run: npm audit --audit-level=high
 # hardened-toolchain-trigger
+
+# verify-vite-8.3.3
