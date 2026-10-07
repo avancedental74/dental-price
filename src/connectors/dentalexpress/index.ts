@@ -6,7 +6,7 @@ import { knowledgeForReference } from "../../domain/catalog";
 const USER_AGENT="DentalPrice/0.2 (+https://github.com/avancedental74/dental-price; single-user price research)";
 function euro(v?:string){if(!v)return undefined;const n=Number(v.replace(/\s/g,"").replace(/€/g,"").replace(/\./g,"").replace(",",".").replace(/[^0-9.]/g,""));return Number.isFinite(n)?n:undefined;}
 function stock(text:string):StockStatus{if(/agotado|no disponible|sin stock/i.test(text))return"unavailable";if(/pocas unidades|últimas unidades/i.test(text))return"low_stock";if(/disponib|stock|24-48|entrega/i.test(text))return"in_stock";return"unknown";}
-function jsonLd($:cheerio.CheerioAPI){const out:any[]=[];$('script[type="application/ld+json"]').each((_,el)=>{try{const x=JSON.parse($(el).text());if(Array.isArray(x))out.push(...x);else if(x?.["@graph"])out.push(...x["@graph"]);else out.push(x);}catch{}});return out;}
+function jsonLd($:cheerio.CheerioAPI){const out:any[]=[];$('script[type="application/ld+json"]').each((_,el)=>{try{const x=JSON.parse($(el).text());if(Array.isArray(x))out.push(...x);else if(x?.["@graph"])out.push(...x["@graph"]);else out.push(x);}catch{ /* optional structured metadata */ }});return out;}
 export async function fetchDentalExpressProduct(productUrl:string,fetchImpl:typeof fetch=fetch):Promise<{offers:SupplierOffer[]}>{
  const response=await fetchImpl(productUrl,{headers:{"user-agent":USER_AGENT,accept:"text/html,application/xhtml+xml"}});
  if(!response.ok)throw new Error("Dental Express HTTP "+response.status);
