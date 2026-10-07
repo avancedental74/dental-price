@@ -35,7 +35,6 @@ const deniedParts=["/login","/registro","/cart","/carrito","/checkout","/contact
 function scoreLink(text:string,href:string,query:string):number{
   const q=normalizeName(query),hay=normalizeName(text+" "+href);
   const compact=normalizeReference(query)??"";
-  const compact=normalizeReference(query)??"";
   const normalizedHay=normalizeReference(hay)??"";
   let score=0;
   if(compact&&normalizedHay.includes(compact))score+=12;
