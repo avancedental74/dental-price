@@ -7,7 +7,7 @@ const STORAGE_KEY="dental-price:manual-offers:v1";
 const HISTORY_KEY="dental-price:manual-history:v1";
 
 export interface ManualOfferInput {
-  supplierId:"proclinic"|"dental-iberica";
+  supplierId:"proclinic"|"dental-iberica"|"dvd-dental";
   productUrl:string;
   manufacturerReference:string;
   price:number;
@@ -54,7 +54,7 @@ export function buildManualOffer(product:CanonicalProduct,input:ManualOfferInput
   const url=new URL(input.productUrl);
   if(url.protocol!=="https:"&&url.protocol!=="http:") throw new Error("La URL debe ser http/https");
   const hostname=url.hostname.toLowerCase().replace(/^www\./,"");
-  const allowed=input.supplierId==="proclinic" ? hostname==="proclinic.es" || hostname.endsWith(".proclinic.es") : hostname==="dentaliberica.com" || hostname.endsWith(".dentaliberica.com");
+  const allowed=input.supplierId==="proclinic" ? hostname==="proclinic.es" || hostname.endsWith(".proclinic.es") : input.supplierId==="dental-iberica" ? hostname==="dentaliberica.com" || hostname.endsWith(".dentaliberica.com") : hostname==="dvd-dental.com" || hostname.endsWith(".dvd-dental.com");
   if(!allowed) throw new Error("La URL no pertenece al proveedor seleccionado");
   if(normalizeReference(input.manufacturerReference)!==normalizeReference(product.manufacturerReference)) throw new Error("La referencia de fabricante no coincide con el producto seleccionado");
   const offer:SupplierOffer={
