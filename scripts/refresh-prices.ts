@@ -54,7 +54,7 @@ for(const seed of seeds){
   if(!product) continue;
   const checkedAt=new Date().toISOString();
   if(seed.acquisitionMode==="manual_verification"){
-    statuses.push({supplierId:seed.supplierId,productId:seed.productId,status:"amber",checkedAt,message:"Automatic public access is unavailable; manual verification is required"});
+    statuses.push({supplierId:seed.supplierId,productId:seed.productId,status:"amber",checkedAt,message:seed.supplierId==="dvd-dental"?"Variant-specific automatic data is not reliably exposed; manual verification is required":"Automatic public access is unavailable; manual verification is required"});
     continue;
   }
   const key=seed.supplierId+"|"+seed.url;
