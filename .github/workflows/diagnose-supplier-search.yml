@@ -140,3 +140,11 @@ jobs:
             "https://dentaliberica.com/index.php?controller=search&s=Filtek&ajax=1"
           ]) await probe("dentaliberica-api",url);
           NODE
+      - name: Probe unseeded product name across live suppliers
+        run: |
+          BASE="https://dental-price-live.avance-dental74.workers.dev/search-supplier"
+          for supplier in dentaltix dentalcost dentalexpress ortolan dvd-dental; do
+            echo "### UNSEEDED $supplier"
+            curl --max-time 25 --silent --show-error --get "$BASE"               --data-urlencode "supplier=$supplier"               --data-urlencode "q=Tetric EvoCeram"               --data-urlencode "sessionId=unseeded-name-test" || true
+            echo
+          done
