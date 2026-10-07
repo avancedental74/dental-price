@@ -110,7 +110,7 @@ async function searchViaDetectedForm(cfg:{origin:string;home:string},query:strin
         ?await trySearchRequest(target,query,cfg.origin,fetchImpl,maxResults,{method:"POST",headers:{"content-type":"application/x-www-form-urlencoded"},body:params.toString()})
         :await trySearchRequest(target+(target.includes("?")?"&":"?")+params.toString(),query,cfg.origin,fetchImpl,maxResults);
       if(result.urls.length)return {urls:result.urls,searchUrl:target};
-    }catch{}
+    }catch{ /* ignored: fallback path continues */ }
   }
   return {urls:[] as string[]};
 }
@@ -133,11 +133,11 @@ async function searchViaSitemap(cfg:{origin:string},query:string,fetchImpl:typeo
             if(!cr.ok)continue;
             const cx=cheerio.load(await cr.text(),{xmlMode:true});
             locs.push(...cx("loc").toArray().map(x=>cx(x).text().trim()).filter(Boolean));
-          }catch{}
+          }catch{ /* ignored: fallback path continues */ }
         }
       }else locs.push(...top);
       if(locs.length)break;
-    }catch{}
+    }catch{ /* ignored: fallback path continues */ }
   }
   return [...new Set(locs)]
     .map(url=>({url,score:scoreLink(url,url,query)}))
