@@ -82,3 +82,38 @@ jobs:
           console.log("DVD KLEVU API HTTP",r.status);
           console.log(text.slice(0,20000));
           NODE
+      - name: Probe remaining supplier search paths
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const tests={
+            proclinic:[
+              "https://www.proclinic.es/tienda/catalogsearch/result/?q=Scotchbond%20Universal%20Plus",
+              "https://www.proclinic.es/tienda/search?q=Scotchbond%20Universal%20Plus",
+              "https://www.proclinic.es/tienda/buscar?q=Scotchbond%20Universal%20Plus"
+            ],
+            dentaliberica:[
+              "https://dentaliberica.com/?s=Filtek%20Z250&post_type=product",
+              "https://dentaliberica.com/es/busqueda?controller=search&s=Filtek%20Z250",
+              "https://dentaliberica.com/search?controller=search&s=Filtek%20Z250"
+            ],
+            broker:[
+              "https://www.brokerdental.es/catalogsearch/result/?q=Scotchbond",
+              "https://www.brokerdental.es/search?controller=search&s=Scotchbond",
+              "https://www.brokerdental.es/?s=Scotchbond&post_type=product"
+            ]
+          };
+          for(const [supplier,urls] of Object.entries(tests)){
+            console.log("\n### REMAINING",supplier);
+            for(const url of urls){
+              try{
+                const r=await fetch(url,{redirect:"follow",headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36","accept":"text/html,application/xhtml+xml"}});
+                const html=await r.text();
+                const $=cheerio.load(html);
+                const candidates=$("a[href]").toArray().map(a=>({href:$(a).attr("href"),text:$(a).text().replace(/\s+/g," ").trim()}))
+                  .filter(x=>/scotch|filtek|z250/i.test((x.text||"")+" "+(x.href||""))).slice(0,12);
+                console.log(JSON.stringify({url,status:r.status,final:r.url,len:html.length,title:$("title").text().trim(),candidates},null,2));
+              }catch(e){console.log(JSON.stringify({url,error:e.message}));}
+            }
+          }
+          NODE
