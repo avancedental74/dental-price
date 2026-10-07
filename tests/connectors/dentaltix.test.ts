@@ -182,4 +182,27 @@ describe("Dentaltix connector", () => {
     expect(offers[0].quantity).toBe(4);
     expect(offers[0].presentation).toBe("Jeringa");
   });
+  it("parses Nuxt variant references for dynamically discovered products",()=>{
+    const payload=[
+      {manRef:1,sku:2,name:3,type:4,price:5},
+      "4910A3B",
+      "053M4910A3B",
+      "Filtek Supreme XTE A3 Body",
+      "1 Jer. de 3 gr - A3 Body",
+      {sales:6,recommended:7},
+      {value:8},
+      {value:9},
+      44.9,
+      64.14
+    ];
+    const html=`<html><body><h1>Filtek Supreme XTE</h1><script type="application/json" data-nuxt-data="nuxt-app">${JSON.stringify(payload)}</script></body></html>`;
+    const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo"));
+    const exact=offers.find(o=>o.manufacturerReference==="4910A3B");
+    expect(exact?.supplierSku).toBe("053M4910A3B");
+    expect(exact?.salePrice).toBe(44.9);
+    expect(exact?.regularPrice).toBe(64.14);
+    expect(exact?.shade).toBe("A3");
+    expect(exact?.variant).toBe("Body");
+    expect(exact?.productUrl).toContain("sku=053M4910A3B");
+  });
 });
