@@ -9,8 +9,8 @@ import {
 } from "../../src/domain/matching/normalization";
 
 describe("normalization", () => {
-  it("maps 3M and Solventum to the same manufacturer", () => {
-    expect(normalizeManufacturer("3M")).toBe("solventum");
+  it("normalizes manufacturer names without inventing corporate equivalence", () => {
+    expect(normalizeManufacturer("3M")).toBe("3m");
     expect(normalizeManufacturer("Solventum")).toBe("solventum");
   });
 
