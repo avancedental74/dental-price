@@ -16,57 +16,17 @@ jobs:
           node-version: "22.13.1"
           cache: npm
       - run: npm ci
-      - name: Inspect real search responses
-        run: |
-          node --input-type=module <<'NODE'
-          import * as cheerio from "cheerio";
-          const tests={
-            dentaltix:"https://www.dentaltix.com/es/search-results?q=4910A3B",
-            dentalcost:"https://www.dentalcost.es/buscar?s=4910A3B",
-            dvd:"https://www.dvd-dental.com/search.php?search_query=4910A3B",
-            dentalexpress:"https://dentalexpress.es/catalogsearch/result/?q=41294",
-            ortolan:"https://ortolan.es/es/busqueda?controller=search&s=Tetric%20EvoCeram"
-          };
-          for(const [name,url] of Object.entries(tests)){
-            console.log("\n### "+name+" "+url);
-            try{
-              const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36","accept":"text/html,application/xhtml+xml"}});
-              const html=await r.text();
-              console.log("HTTP",r.status,"final",r.url,"len",html.length);
-              const $=cheerio.load(html);
-              const anchors=$("a[href]").toArray().map(el=>({href:$(el).attr("href"),text:$(el).text().replace(/\s+/g," ").trim()})).filter(x=>x.text||x.href);
-              console.log("MATCHING ANCHORS",JSON.stringify(anchors.filter(x=>/4910|filtek|41294|scotch|tetric|evoceram/i.test((x.text||"")+" "+(x.href||""))).slice(0,20),null,2));
-              const scripts=$("script").toArray().map(el=>$(el).text()).filter(Boolean);
-              const snippets=[...html.matchAll(/.{0,180}(?:4910A3B|41294|Tetric|EvoCeram|search-results|algolia|autocomplete|klevu|search_query|products).{0,300}/gi)].slice(0,30).map(m=>m[0].replace(/\s+/g," "));
-              console.log("SNIPPETS",JSON.stringify(snippets,null,2));
-              console.log("SCRIPT COUNT",scripts.length);
-              if(name==="dentaltix"){
-                const refs=[...new Set(html.match(/(?:4910|4911)[A-Z0-9.-]*/gi)??[])];
-                console.log("DENTALTIX REFERENCE TOKENS",JSON.stringify(refs.slice(0,200),null,2));
-                for(const token of refs.slice(0,20)){
-                  const pos=html.toUpperCase().indexOf(token.toUpperCase());
-                  console.log("CTX",token,html.slice(Math.max(0,pos-500),pos+900).replace(/\s+/g," "));
-                }
-                const mv=html.indexOf('\"mainVar\"');
-                console.log("MAINVAR CONTEXT",mv>=0?html.slice(mv-300,mv+3500).replace(/\s+/g," "):"none");
-              }
-            }catch(e){console.log("ERROR",e.message);}
-          }
-          NODE
-      - name: Inspect Dentaltix parsed variants
-        run: |
-          npx tsx -e 'import { fetchDentaltixProduct } from "./src/connectors/dentaltix/index.ts"; (async()=>{ const r=await fetchDentaltixProduct("https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer"); console.log("DIRECT DENTALTIX PARSER"); console.log(JSON.stringify(r.offers.map(o=>({ref:o.manufacturerReference,sku:o.supplierSku,name:o.rawName,price:o.salePrice??o.regularPrice,variant:o.variant,shade:o.shade})).slice(0,120),null,2)); })().catch(e=>{console.error(e);process.exit(1);});'
       - name: Probe deployed dynamic supplier endpoints
         run: |
           BASE="https://dental-price-live.avance-dental74.workers.dev/search-supplier"
           probe() {
-            supplier="
-      - name: Inspect Dentaltix parsed variants
-        run: |
-          npx tsx -e 'import { fetchDentaltixProduct } from "./src/connectors/dentaltix/index.ts"; (async()=>{ const r=await fetchDentaltixProduct("https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer"); console.log("DIRECT DENTALTIX PARSER"); console.log(JSON.stringify(r.offers.map(o=>({ref:o.manufacturerReference,sku:o.supplierSku,name:o.rawName,price:o.salePrice??o.regularPrice,variant:o.variant,shade:o.shade})).slice(0,120),null,2)); })().catch(e=>{console.error(e);process.exit(1);});'
-"; query="$2"
+            supplier="$1"
+            query="$2"
             echo "### LIVE $supplier :: $query"
-            curl --max-time 20 --silent --show-error --get "$BASE"               --data-urlencode "supplier=$supplier"               --data-urlencode "q=$query"               --data-urlencode "sessionId=diagnostic-live" || true
+            curl --max-time 20 --silent --show-error --get "$BASE" \
+              --data-urlencode "supplier=$supplier" \
+              --data-urlencode "q=$query" \
+              --data-urlencode "sessionId=diagnostic-live" || true
             echo
           }
           probe dentaltix "4910A3B"
