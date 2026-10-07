@@ -26,6 +26,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          VITE_BASE: /
       - name: Ensure Cloudflare Pages project exists
         run: |
           npx --yes wrangler@4.45.0 pages project create dental-price-web --production-branch main || true
