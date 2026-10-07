@@ -1,7 +1,7 @@
 import type { CanonicalProduct, FreshnessStatus, SupplierOffer } from "../../types/domain";
 import { matchOfferToProduct } from "../matching/matcher";
 import { calculatePricing } from "../pricing";
-import type { ComparisonResult, MatchedSupplierOffer } from "./types";
+import type { ComparisonOptions, ComparisonResult, MatchedSupplierOffer } from "./types";
 
 export function getFreshnessStatus(offer: SupplierOffer, now = new Date()): FreshnessStatus {
   const observed = new Date(offer.observedAt);
@@ -29,9 +29,17 @@ function shippingPolicyFresh(item:MatchedSupplierOffer,now=new Date()):boolean{
   return (now.getTime()-observed)/86400000 <= 30;
 }
 
-function rankingEligible(item: MatchedSupplierOffer): boolean {
+function belongsToRequiredLiveSession(item:MatchedSupplierOffer,options:ComparisonOptions):boolean{
+  if(!options.requiredLiveSessionId) return true;
+  return item.offer.verificationKind==="live" &&
+    item.offer.verificationSessionId===options.requiredLiveSessionId &&
+    Boolean(item.offer.verifiedAt);
+}
+
+function rankingEligible(item: MatchedSupplierOffer, options:ComparisonOptions): boolean {
   const stockEligible=item.offer.stockStatus==="in_stock" || item.offer.stockStatus==="low_stock";
   return (
+    belongsToRequiredLiveSession(item,options) &&
     item.match.status === "EXACT" &&
     item.offer.sourceStatus === "normal" &&
     stockEligible &&
@@ -46,7 +54,8 @@ function rankingEligible(item: MatchedSupplierOffer): boolean {
 export function compareSupplierOffers(
   product: CanonicalProduct,
   offers: SupplierOffer[],
-  quantity = 1
+  quantity = 1,
+  options:ComparisonOptions={}
 ): ComparisonResult {
   const matches = offers.map((offer): MatchedSupplierOffer => {
     const match = matchOfferToProduct(product, offer);
@@ -55,7 +64,7 @@ export function compareSupplierOffers(
       catch { return null; }
     })();
     const item: MatchedSupplierOffer = { product, offer, match, pricing, eligibleForRanking: false };
-    item.eligibleForRanking = rankingEligible(item);
+    item.eligibleForRanking = rankingEligible(item,options);
     return item;
   });
 
