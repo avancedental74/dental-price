@@ -42,7 +42,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      - name: Smoke test live API
+      - name: Smoke test dynamic search API
         if: steps.cloudflare.outputs.configured == 'true'
         run: |
           sleep 4
@@ -56,6 +56,5 @@ jobs:
             if [ "$code" != "200" ]; then exit 1; fi
           }
           check health "https://dental-price-live.avance-dental74.workers.dev/health"
-          check live "https://dental-price-live.avance-dental74.workers.dev/live-prices?productId=scotchbond-universal-plus-41294"
           check search "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentaltix&sessionId=smoke-search"
-          node -e 'const fs=require("fs"); const h=JSON.parse(fs.readFileSync("/tmp/health.json")); const live=JSON.parse(fs.readFileSync("/tmp/live.json")); const search=JSON.parse(fs.readFileSync("/tmp/search.json")); if(!h.ok||!live.sessionId||!Array.isArray(live.offers)||search.sessionId!=="smoke-search"||!Array.isArray(search.offers)||search.offers.length<1) process.exit(1); console.log(JSON.stringify({health:h,live:{offers:live.offers.length,errors:live.errors},search:{supplier:search.supplierId,offers:search.offers.length,error:search.error,source:search.discoveredFrom}},null,2));'
+          node -e 'const fs=require("fs"); const h=JSON.parse(fs.readFileSync("/tmp/health.json")); const search=JSON.parse(fs.readFileSync("/tmp/search.json")); if(!h.ok||h.searchMode!=="dynamic-per-supplier"||search.sessionId!=="smoke-search"||!Array.isArray(search.offers)||search.offers.length<1) process.exit(1); console.log(JSON.stringify({health:h,search:{supplier:search.supplierId,offers:search.offers.length,error:search.error,source:search.discoveredFrom,refs:search.offers.map(o=>o.manufacturerReference)}},null,2));'
