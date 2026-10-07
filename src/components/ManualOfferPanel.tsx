@@ -14,7 +14,9 @@ export function ManualOfferPanel({product,offers,onChange,onRecord}:{product:Can
   const [stockStatus,setStockStatus]=useState<StockStatus>("in_stock");
   const [shippingCost,setShippingCost]=useState("");
   const [shippingVatRate,setShippingVatRate]=useState("21");
+  const [shippingVatIncluded,setShippingVatIncluded]=useState(false);
   const [freeShippingThreshold,setFreeShippingThreshold]=useState("");
+  const [freeShippingThresholdBasis,setFreeShippingThresholdBasis]=useState<"net"|"gross">("net");
   const [message,setMessage]=useState<string|null>(null);
 
   useEffect(()=>{setMessage(null);},[product?.id]);
@@ -29,10 +31,10 @@ export function ManualOfferPanel({product,offers,onChange,onRecord}:{product:Can
         vatRate:vatStatus==="unknown"||vatRate===""?undefined:Number(vatRate),
         stockStatus,
         shippingCost:shippingCost===""?undefined:Number(shippingCost),
-        shippingCostVatIncluded:false,
-        shippingVatRate:shippingCost===""||shippingVatRate===""?undefined:Number(shippingVatRate),
+        shippingCostVatIncluded,
+        shippingVatRate:shippingCost===""||shippingVatIncluded||shippingVatRate===""?undefined:Number(shippingVatRate),
         freeShippingThreshold:freeShippingThreshold===""?undefined:Number(freeShippingThreshold),
-        freeShippingThresholdBasis:"net"
+        freeShippingThresholdBasis
       });
       onChange(upsertManualOffer(offers,next));
       onRecord(next);
@@ -51,9 +53,11 @@ export function ManualOfferPanel({product,offers,onChange,onRecord}:{product:Can
       <label>IVA<select value={vatStatus} onChange={e=>setVatStatus(e.target.value as VatStatus)}><option value="excluded">No incluido</option><option value="included">Incluido</option><option value="unknown">No confirmado</option></select></label>
       <label>IVA %<input min="0" step="0.01" type="number" disabled={vatStatus==="unknown"} value={vatRate} onChange={e=>setVatRate(e.target.value)}/></label>
       <label>Stock<select value={stockStatus} onChange={e=>setStockStatus(e.target.value as StockStatus)}><option value="in_stock">Disponible</option><option value="low_stock">Pocas unidades</option><option value="backorder">Bajo pedido</option><option value="unavailable">Agotado</option><option value="unknown">No confirmado</option></select></label>
-      <label>Portes sin IVA (€)<input min="0" step="0.01" type="number" value={shippingCost} onChange={e=>setShippingCost(e.target.value)} placeholder="Déjalo vacío si no lo sabes"/></label>
-      <label>IVA portes %<input min="0" step="0.01" type="number" value={shippingVatRate} onChange={e=>setShippingVatRate(e.target.value)}/></label>
+      <label>Portes (€)<input min="0" step="0.01" type="number" value={shippingCost} onChange={e=>setShippingCost(e.target.value)} placeholder="Déjalo vacío si no lo sabes"/></label>
+      <label>Portes incluyen IVA<select value={shippingVatIncluded?"yes":"no"} onChange={e=>setShippingVatIncluded(e.target.value==="yes")}><option value="no">No</option><option value="yes">Sí</option></select></label>
+      <label>IVA portes %<input min="0" step="0.01" type="number" disabled={shippingVatIncluded} value={shippingVatRate} onChange={e=>setShippingVatRate(e.target.value)}/></label>
       <label>Envío gratis desde (€)<input min="0" step="0.01" type="number" value={freeShippingThreshold} onChange={e=>setFreeShippingThreshold(e.target.value)} placeholder="Opcional"/></label>
+      <label>Base del umbral<select value={freeShippingThresholdBasis} onChange={e=>setFreeShippingThresholdBasis(e.target.value as "net"|"gross")}><option value="net">Antes de IVA</option><option value="gross">IVA incluido</option></select></label>
       <button type="submit">Guardar oferta verificada</button>
     </form>
     {message&&<p className="manual-message">{message}</p>}
