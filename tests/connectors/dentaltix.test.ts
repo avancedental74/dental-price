@@ -53,6 +53,20 @@ describe("Dentaltix connector", () => {
     expect(selected?.quantity).toBe(3);
   });
 
+  it("normalizes Peeso 28 mm x 6 without confusing length and pack", () => {
+    const html=`<html><body>
+      <h1>Fresas endodoncia largo PEESO 28mm (6 uds.)</h1>
+      <div>Marca: Dentsply</div>
+      <div class="product-variation" data-sku="A1908113" data-manufacturer-reference="A000923000200">Nº2 28mm 6 unidades 32,61 € 22,83 € En stock</div>
+    </body></html>`;
+    const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/demo-peeso"));
+    expect(offers[0].presentation).toBe("Caja");
+    expect(offers[0].quantity).toBe(28);
+    expect(offers[0].unit).toBe("mm");
+    expect(offers[0].packCount).toBe(6);
+    expect(offers[0].variant).toBe("No2");
+  });
+
   it("preserves glove variants as distinct references and normalizes box quantity safely", () => {
     const raw = parseDentaltixProductHtml(gloves, "https://www.dentaltix.com/demo-gloves");
     expect(raw.variants).toHaveLength(3);
