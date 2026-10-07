@@ -4,7 +4,7 @@ Fecha: 2026-10-07
 
 ## Estado real
 
-La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **93 ofertas automáticas**, **109 observaciones históricas** y **0 falsos EXACT** en validación.
+La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **94 ofertas verificadas automáticamente**, con **84 ofertas comprables** en el último snapshot y **0 falsos EXACT** en validación.
 
 ## Cobertura automática actual
 
@@ -69,7 +69,7 @@ Automatización operativa. Las fichas públicas exponen referencias de fabricant
 
 ### DVD Dental
 
-La ficha pública y el health check son accesibles. La web expone IDs internos de variante y un endpoint público de atributos, pero las pruebas reproducibles desde GitHub Actions devuelven el SKU/precio base en lugar del SKU/precio específico de la variante seleccionada. Para evitar falsos EXACT, las variantes DVD se mantienen en `manual_verification`.
+La automatización sigue siendo parcial. La ficha simple Scotchbond Universal Plus `41294` ya está validada automáticamente con ref. fabricante, SKU DVD, precio, IVA, stock y política de portes. Las páginas de variantes complejas continúan en `manual_verification` mientras no exista una resolución variante→SKU/precio reproducible y segura.
 
 La interfaz admite snapshots DVD verificados manualmente y exige:
 - dominio `dvd-dental.com`;
@@ -106,7 +106,7 @@ Si una fuente no puede verificarse automáticamente, Dental Price debe mostrar a
 4. Dentaltix y DentalCost deben ampliar progresivamente categorías y referencias, priorizando familias compartidas con referencia de fabricante idéntica. Filtek Universal Restorative ya aporta 9 referencias comparables entre ambos; `6555XW` permanece solo en Dentaltix mientras DentalCost no la publique. AIR-N-GO en DentalCost quedó fuera de la automatización porque esa ficha devuelve HTTP 404 desde GitHub Actions aunque sea visible públicamente.
 5. Opportunity Score necesita más días de histórico real para ser estadísticamente útil.
 6. Precios negociados, facturas e inventario interno están fuera del V1 público.
-7. Optimización matemática de cesta multi-proveedor queda para la siguiente fase.
+7. El Basket Optimizer V1 ya está implementado; falta validarlo con cestas reales más grandes y ampliar cobertura de proveedores/productos.
 
 ## Seguridad de dependencias
 
@@ -114,3 +114,17 @@ Si una fuente no puede verificarse automáticamente, Dental Price debe mostrar a
 - Vite 8.3.3.
 - Auditoría de producción y auditoría completa con umbral `high` en verde.
 - CI ejecuta typecheck, lint, tests, validación de datos y build.
+
+
+## Endurecimiento posterior a auditoría crítica
+
+- `current-prices.json` se reconstruye desde cero en cada refresh; un fallo actual no conserva un precio antiguo como vigente.
+- `connector-status.json` separa `verificationStatus`, `matchStatus` y `purchasable`.
+- `data/metrics.json` publica cobertura real: ofertas verificadas, comprables, stock, productos con ≥2 proveedores y proveedores automáticos.
+- Último snapshot verificado: 94 ofertas, 84 comprables, 10 agotadas, 11 con stock bajo, 37 productos con ≥2 proveedores verificados y 34 con ≥2 proveedores comprables.
+- Políticas de transporte externalizadas en `data/supplier-policies.json`.
+- Registry central de referencias elimina reglas duplicadas de producto en conectores.
+- Búsqueda ambigua ya no selecciona silenciosamente el primer resultado.
+- Promociones visibles se estructuran; promociones cruzadas a otro producto quedan informativas.
+- Basket Optimizer V1 cobra portes una sola vez por proveedor y aplica los umbrales de forma conservadora.
+- La validación incluye el fixture manual y regresiones sobre todo el catálogo canónico para referencia propia y referencia contradictoria.
