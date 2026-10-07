@@ -53,6 +53,7 @@ export function normalizeManufacturer(value?: string): string | undefined {
   if (!value) return undefined;
   const v = normalizeToken(value);
   if (/^dentsply(?: maillefer| sirona)?$/.test(v) || v==="maillefer") return "dentsply";
+  if (v==="acteon" || v==="satelec" || v==="acteon satelec" || v==="satelec acteon") return "acteon";
   return v;
 }
 
