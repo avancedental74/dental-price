@@ -412,5 +412,17 @@
     "supplierId": "dentaltix",
     "url": "https://www.dentaltix.com/es/alba/guantes-nitrilo-negro-sin-polvo-examen-dental?sku=DTX-A003673",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "peeso-no1",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/dentsply/fresas-endodoncia-largo-peeso-28mm-6u?sku=A1908112",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "peeso-no2",
+    "supplierId": "dentaltix",
+    "url": "https://www.dentaltix.com/es/dentsply/fresas-endodoncia-largo-peeso-28mm-6u?sku=A1908113",
+    "acquisitionMode": "direct"
   }
 ]
