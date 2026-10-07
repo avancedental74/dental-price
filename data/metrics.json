@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-10-07T12:15:00.000Z",
+  "verifiedOffers": 93,
+  "purchasableOffers": 83,
+  "unavailableOffers": 10,
+  "lowStockOffers": 11,
+  "productsWithTwoOrMoreAutomaticSuppliers": 37,
+  "automaticSuppliers": 2,
+  "supplierOfferCounts": {
+    "dentalcost": 51,
+    "dentaltix": 42
+  }
+}
