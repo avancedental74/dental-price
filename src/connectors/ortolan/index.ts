@@ -14,6 +14,29 @@ export async function fetchOrtolanProduct(productUrl:string,fetchImpl:typeof fet
  const html=await response.text(),$=cheerio.load(html),body=$("body").text().replace(/\s+/g," ").trim();
  const title=$("h1").first().text().replace(/\s+/g," ").trim()||"Producto Ortolan";
  const brand=$(".product-manufacturer,.manufacturer-name").first().text().replace(/\s+/g," ").trim()||undefined;
+ const structuredItems=[...html.matchAll(/"item_id":"([^"]+)","item_name":"([^"]+)"[^{}]{0,500}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,500}?"item_variant":"([^"]*)"/g)];
+ if(structuredItems.length){
+   const seen=new Set<string>();
+   const offers:SupplierOffer[]=[];
+   for(const match of structuredItems){
+     const supplierSku=match[1],itemName=match[2],price=Number(match[3]),itemVariant=match[4];
+     if(!supplierSku||!itemName||!Number.isFinite(price)||price<=0)continue;
+     const key=supplierSku+"|"+itemVariant;
+     if(seen.has(key))continue;
+     seen.add(key);
+     const combined=(itemName+" "+itemVariant).replace(/\\u([0-9a-f]{4})/gi,(_,h)=>String.fromCharCode(parseInt(h,16)));
+     const mx=metrics(combined);
+     const shade=combined.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?)\b/i)?.[1]?.replace(",",".").toUpperCase();
+     offers.push({
+       supplierId:"ortolan",supplierSku,manufacturer:brand,rawName:combined,normalizedName:normalizeName([title,combined,brand??""].join(" ")),productUrl,
+       presentation:/jeringa/i.test(combined)?"Jeringa":/cavifill|capsul|cápsul/i.test(combined)?"Cápsulas":undefined,
+       quantity:mx.quantity,unit:mx.unit,packCount:mx.packCount,shade,
+       stockStatus:stock(body),regularPrice:price,salePrice:price,vatStatus:"excluded",currency:"EUR",deliveryEstimate:"24/48 h Península",
+       observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"
+     });
+   }
+   if(offers.length)return {offers};
+ }
  const rows:string[]=[];
  $("table tr").each((_,el)=>{const t=$(el).text().replace(/\s+/g," ").trim();if(/€/.test(t))rows.push(t);});
  if(!rows.length)rows.push(body);
