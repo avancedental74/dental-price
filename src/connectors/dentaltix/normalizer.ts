@@ -46,20 +46,22 @@ function inferVariant(value: string): string | undefined {
   return undefined;
 }
 
-function filtek4910FromRef(ref?:string): {presentation?:string;quantity?:number;unit?:string;packCount?:number;variant?:string;shade?:string} {
-  const match=ref?.match(/^4910([A-Z]+\d(?:\.5)?)([BDE])$/i);
-  if(!match) return {};
-  const opacity=match[2].toUpperCase();
-  return {
-    presentation:"Jeringa",quantity:3,unit:"g",packCount:1,
-    variant:opacity==="B"?"Body":opacity==="D"?"Dentin":"Enamel",
-    shade:match[1].toUpperCase()
-  };
+function filtekFromRef(ref?:string): {presentation?:string;quantity?:number;unit?:string;packCount?:number;variant?:string;shade?:string} {
+  const xte=ref?.match(/^4910([A-Z]+\d(?:\.5)?)([BDE])$/i);
+  if(xte){
+    const opacity=xte[2].toUpperCase();
+    return {presentation:"Jeringa",quantity:3,unit:"g",packCount:1,variant:opacity==="B"?"Body":opacity==="D"?"Dentin":"Enamel",shade:xte[1].toUpperCase()};
+  }
+  const z250Syringe=ref?.match(/^6020([A-Z]\d(?:\.5)?)$/i);
+  if(z250Syringe) return {presentation:"Jeringa",quantity:4,unit:"g",packCount:1,shade:z250Syringe[1].toUpperCase()};
+  const z250Capsule=ref?.match(/^6021([A-Z]\d(?:\.5)?|UD)$/i);
+  if(z250Capsule) return {presentation:"Cápsulas",quantity:0.2,unit:"g",packCount:20,variant:"Capsule",shade:z250Capsule[1].toUpperCase()};
+  return {};
 }
 
 function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw): SupplierOffer {
   const q = inferQuantity(variant.title);
-  const byRef=filtek4910FromRef(variant.manufacturerReference);
+  const byRef=filtekFromRef(variant.manufacturerReference);
   return {
     supplierId: "dentaltix",
     supplierSku: variant.supplierSku,
@@ -96,7 +98,7 @@ function variantToOffer(raw: DentaltixProductRaw, variant: DentaltixVariantRaw):
 export function normalizeDentaltix(raw: DentaltixProductRaw): SupplierOffer[] {
   if (raw.variants.length) return raw.variants.map(v => variantToOffer(raw, v)).filter(o => o.regularPrice > 0 || (o.salePrice ?? 0) > 0);
   const q = inferQuantity(raw.title);
-  const byRef=filtek4910FromRef(raw.pageManufacturerReference);
+  const byRef=filtekFromRef(raw.pageManufacturerReference);
   const single: SupplierOffer = {
     supplierId: "dentaltix",
     supplierSku: raw.pageSupplierSku,
