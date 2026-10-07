@@ -886,5 +886,11 @@
     "supplierId": "dentalcost",
     "url": "https://www.dentalcost.es/composites-universales/281-filtek-z250-composite-universal-20-capsulas-reposicion-020gr.html",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "peeso-no3",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/fresas-endodoncia/5513-fresa-ensanchadora-peeso-largo-28mm-6-uds.html",
+    "acquisitionMode": "direct"
   }
 ]
