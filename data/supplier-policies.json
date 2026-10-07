@@ -31,5 +31,29 @@
     "freeShippingThresholdBasis": "net",
     "observedAt": "2026-10-07T13:45:29.775Z",
     "sourceUrl": "https://www.dvd-dental.com/guia-compra/"
+  },
+  {
+    "supplierId": "proclinic",
+    "zone": "ES_PENINSULA",
+    "shippingCost": 6,
+    "shippingCostVatIncluded": false,
+    "shippingVatRate": 21,
+    "freeShippingThreshold": 110,
+    "freeShippingThresholdBasis": "net",
+    "observedAt": "2026-10-07T16:20:00.000Z",
+    "sourceUrl": "https://www.proclinic.es/tienda/envio"
+  },
+  {
+    "supplierId": "dentalexpress",
+    "zone": "ES_PENINSULA",
+    "shippingCost": 7,
+    "shippingCostVatIncluded": false,
+    "shippingVatRate": 21,
+    "freeShippingThreshold": 90,
+    "freeShippingThresholdBasis": "net",
+    "smallOrderThreshold": 30,
+    "smallOrderSurcharge": 3,
+    "observedAt": "2026-10-07T16:20:00.000Z",
+    "sourceUrl": "https://dentalexpress.es/condiciones-de-venta/"
   }
 ]
