@@ -105,19 +105,19 @@ function groupDynamicOffers(offers:SupplierOffer[]):DynamicGroup[]{
     const group=map.get(key)??[]; group.push(offer); map.set(key,group);
   }
   return [...map.entries()].map(([key,group])=>{
-    const representative=group.find(o=>o.manufacturerReference)??group[0];
+    const representative=group.find(o=>o.manufacturerReference)??group[0]!;
     const product:CanonicalProduct={
       id:"live-"+safeId(key),
       productName:representative.rawName,
       category:"Búsqueda live",
-      manufacturer:representative.manufacturer,
+      manufacturer:representative.manufacturer??"Desconocido",
       manufacturerReference:representative.manufacturerReference,
       family:representative.rawName,
       normalizedName:representative.normalizedName||normalizeName(representative.rawName),
-      presentation:representative.presentation,
-      quantity:representative.quantity,
-      unit:representative.unit,
-      packCount:representative.packCount,
+      presentation:representative.presentation??"No confirmada",
+      quantity:representative.quantity??1,
+      unit:representative.unit??"ud",
+      packCount:representative.packCount??1,
       variant:representative.variant,
       shade:representative.shade,
       active:true
