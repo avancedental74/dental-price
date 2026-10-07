@@ -86,8 +86,9 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
     if(new URL(url).origin!==new URL(origin).origin)return;
     if(url===base||url.endsWith("/")||isSearchOrNavigationUrl(url,base))return;
     const isProductResult=productUrls.has(url);
-    if(origin.includes("ortolan.es")&&!isProductResult)return;
-    const score=scoreLink(text,url,query)+(isProductResult?8:0);
+    const baseScore=scoreLink(text,url,query);
+    if(origin.includes("ortolan.es")&&(!isProductResult||baseScore<2))return;
+    const score=baseScore+(isProductResult?8:0);
     if(score<2)return;
     const previous=found.get(url);
     if(!previous||score>previous.score)found.set(url,{url,score});
