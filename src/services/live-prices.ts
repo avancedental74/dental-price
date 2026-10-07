@@ -37,7 +37,8 @@ interface SupplierSearchResponse {
   error?:string|null;
 }
 
-const suppliers=["dentaltix","dentalcost","dvd-dental","proclinic","dental-iberica","dentalexpress","brokerdental","ortolan"];
+export const liveAutomaticSuppliers=["dentaltix","dentalcost","dvd-dental","dentalexpress","ortolan"] as const;
+export const browserVerificationSuppliers=["proclinic","dental-iberica","brokerdental"] as const;
 
 function apiBase(){
   const raw=import.meta.env.VITE_LIVE_API_URL as string|undefined;
@@ -49,17 +50,66 @@ function safeId(value:string){
   return normalizeName(value).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,80)||String(Date.now());
 }
 
+const weakTokens=new Set(["de","del","la","el","para","con","sin","the","and","plus","producto","dental","unidad","unidades"]);
+
+function nameTokens(offer:SupplierOffer){
+  return new Set(
+    normalizeName([offer.rawName,offer.manufacturer??""].join(" "))
+      .split(" ")
+      .filter(token=>token.length>=2&&!weakTokens.has(token))
+  );
+}
+
+function tokenSimilarity(a:SupplierOffer,b:SupplierOffer){
+  const aa=nameTokens(a),bb=nameTokens(b);
+  if(!aa.size||!bb.size)return 0;
+  let intersection=0;
+  for(const token of aa)if(bb.has(token))intersection++;
+  return intersection/Math.min(aa.size,bb.size);
+}
+
+function criticalCompatible(a:SupplierOffer,b:SupplierOffer){
+  if(a.presentation&&b.presentation&&normalizeName(a.presentation)!==normalizeName(b.presentation))return false;
+  if(a.unit&&b.unit&&normalizeName(a.unit)!==normalizeName(b.unit))return false;
+  if(typeof a.quantity==="number"&&typeof b.quantity==="number"&&Math.abs(a.quantity-b.quantity)>0.001)return false;
+  if(typeof a.packCount==="number"&&typeof b.packCount==="number"&&a.packCount!==b.packCount)return false;
+  if(a.shade&&b.shade&&normalizeName(a.shade)!==normalizeName(b.shade))return false;
+  if(a.variant&&b.variant&&normalizeName(a.variant)!==normalizeName(b.variant))return false;
+  return true;
+}
+
 function groupOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
-  const map=new Map<string,SupplierOffer[]>();
-  for(const offer of offers){
-    const ref=normalizeReference(offer.manufacturerReference);
-    const fallback=normalizeName(offer.rawName).replace(/\b(?:oferta|promo|promocion)\b/g,"").trim().slice(0,100);
-    const key=ref?"ref:"+ref:"name:"+fallback;
-    const current=map.get(key)??[];
-    current.push(offer);
-    map.set(key,current);
+  const buckets:Array<{key:string;offers:SupplierOffer[]}>=[];
+
+  for(const offer of offers.filter(o=>Boolean(normalizeReference(o.manufacturerReference)))){
+    const ref=normalizeReference(offer.manufacturerReference)!;
+    const existing=buckets.find(bucket=>bucket.key==="ref:"+ref);
+    if(existing)existing.offers.push(offer);
+    else buckets.push({key:"ref:"+ref,offers:[offer]});
   }
-  return [...map.entries()].map(([key,group])=>{
+
+  for(const offer of offers.filter(o=>!normalizeReference(o.manufacturerReference))){
+    const candidates=buckets
+      .map(bucket=>{
+        const representative=bucket.offers[0]!;
+        return {bucket,score:criticalCompatible(offer,representative)?tokenSimilarity(offer,representative):0};
+      })
+      .filter(x=>x.score>=0.72)
+      .sort((a,b)=>b.score-a.score);
+
+    const unambiguous=candidates[0]&&(!candidates[1]||candidates[0].score-candidates[1].score>=0.08);
+    if(unambiguous){
+      candidates[0].bucket.offers.push(offer);
+      continue;
+    }
+
+    const fallback=normalizeName(offer.rawName).replace(/\b(?:oferta|promo|promocion)\b/g,"").trim().slice(0,100);
+    const existing=buckets.find(bucket=>bucket.key==="name:"+fallback);
+    if(existing)existing.offers.push(offer);
+    else buckets.push({key:"name:"+fallback,offers:[offer]});
+  }
+
+  return buckets.map(({key,offers:group})=>{
     const representative=group.find(o=>o.manufacturerReference)??group[0]!;
     const product:CanonicalProduct={
       id:"live-"+safeId(key),
@@ -97,7 +147,7 @@ export async function searchLiveCatalog(query:string):Promise<LiveCatalogSearchR
   const base=apiBase();
   const sessionId=crypto.randomUUID();
   const requestedAt=new Date().toISOString();
-  const settled=await Promise.all(suppliers.map(async supplierId=>{
+  const settled=await Promise.all(liveAutomaticSuppliers.map(async supplierId=>{
     try{
       const url=base+"/search-supplier?q="+encodeURIComponent(query)+"&supplier="+encodeURIComponent(supplierId)+"&sessionId="+encodeURIComponent(sessionId);
       const response=await fetch(url,{method:"GET",headers:{accept:"application/json"},cache:"no-store"});
