@@ -3,14 +3,15 @@ import type { PriceObservation } from "../../src/domain/history";
 import { opportunityFromHistory } from "../../src/domain/opportunity/from-history";
 
 function obs(price:number,date:string):PriceObservation{
-  return {id:date,productId:"p",supplierId:"s",supplierSku:"sku",observedAt:date,lastSeenAt:date,seenCount:1,regularPrice:price,effectivePrice:price,stockStatus:"in_stock",sourceUrl:"https://example.com"};
+  return {id:date,productId:"p",supplierId:"s",supplierSku:"sku",observedAt:date,lastSeenAt:date,seenCount:1,requestedQuantity:1,regularPrice:price,effectiveUnitCost:price,effectiveTotalCost:price,stockStatus:"in_stock",sourceUrl:"https://example.com"};
 }
 
 describe("opportunityFromHistory",()=>{
   it("derives a positive score from a cheap current observation",()=>{
     const h=[
-      obs(50,"2026-08-01T00:00:00.000Z"),
-      obs(48,"2026-08-25T00:00:00.000Z"),
+      obs(50,"2026-07-01T00:00:00.000Z"),
+      obs(49,"2026-07-25T00:00:00.000Z"),
+      obs(48,"2026-08-15T00:00:00.000Z"),
       obs(46,"2026-09-10T00:00:00.000Z"),
       obs(36,"2026-10-06T00:00:00.000Z")
     ];
