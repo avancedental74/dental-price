@@ -72,7 +72,7 @@ function createOffer(raw: ProclinicProductRaw, item?: ProclinicVariantRaw): Supp
     freeShippingThresholdBasis:"net",
     deliveryZone:"ES_PENINSULA",
     deliveryEstimate:raw.rawStockText,
-    observedAt:new Date().toISOString(), sourceStatus:"normal"
+    observedAt:new Date().toISOString(), sourceStatus:"normal", sourceMode:"automatic"
   };
 }
 
