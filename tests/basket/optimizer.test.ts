@@ -18,4 +18,21 @@ describe("basket optimizer",()=>{
   const result=optimizeBasket([{product:a,quantity:1,offers:[bad]}]);
   expect(result.total).toBeNull(); expect(result.missingProductIds).toEqual(["a"]);
  });
+ it("does not globalize a line-level free-shipping promotion across the whole supplier order",()=>{
+  const a=product("a","A"), b=product("b","B");
+  const promo={...offer("x","A",20,100),promotion:{type:"free_shipping" as const,description:"Envío gratis"}};
+  const result=optimizeBasket([
+   {product:a,quantity:1,offers:[promo]},
+   {product:b,quantity:1,offers:[offer("x","B",20,100)]}
+  ]);
+  expect(result.total).toBe(46);
+  expect(result.suppliers[0].shipping).toBe(6);
+ });
+
+ it("rejects net-threshold basket math when net amount cannot be derived safely",()=>{
+  const a=product("a","A");
+  const grossOnly={...offer("x","A",50,100),vatStatus:"included" as const,vatRate:undefined,freeShippingThresholdBasis:"net" as const};
+  const result=optimizeBasket([{product:a,quantity:1,offers:[grossOnly]}]);
+  expect(result.total).toBeNull();
+ });
 });
