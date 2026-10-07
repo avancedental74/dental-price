@@ -2,26 +2,31 @@
   {
     "productId": "filtek-xte-4910a3b",
     "supplierId": "dentaltix",
-    "url": "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer?sku=053M4910A3B"
+    "url": "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer?sku=053M4910A3B",
+    "acquisitionMode": "direct"
   },
   {
     "productId": "filtek-xte-4910b2b",
     "supplierId": "proclinic",
-    "url": "https://www.proclinic.es/tienda/filtek-supreme-xte-jeringa-b2-body.html"
+    "url": "https://www.proclinic.es/tienda/filtek-supreme-xte-jeringa-b2-body.html",
+    "acquisitionMode": "manual_verification"
   },
   {
     "productId": "filtek-z250-6021a3",
     "supplierId": "dental-iberica",
-    "url": "https://dentaliberica.com/es/filtek-z250-capsula-20-x-02-g"
+    "url": "https://dentaliberica.com/es/filtek-z250-capsula-20-x-02-g",
+    "acquisitionMode": "manual_verification"
   },
   {
     "productId": "air-n-go-f10251",
     "supplierId": "dental-iberica",
-    "url": "https://dentaliberica.com/es/bicarbonato-air-n-go-classic-4-x-250-g-surtido"
+    "url": "https://dentaliberica.com/es/bicarbonato-air-n-go-classic-4-x-250-g-surtido",
+    "acquisitionMode": "manual_verification"
   },
   {
     "productId": "peeso-no2",
     "supplierId": "dental-iberica",
-    "url": "https://dentaliberica.com/es/fresa-largo-peeso-28mm-6-uds"
+    "url": "https://dentaliberica.com/es/fresa-largo-peeso-28mm-6-uds",
+    "acquisitionMode": "manual_verification"
   }
 ]
