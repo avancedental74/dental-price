@@ -1,0 +1,1 @@
+export { extractPromotionFromText } from "./extract";
