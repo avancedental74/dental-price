@@ -58,6 +58,9 @@ function filtekFromRef(ref?:string): {presentation?:string;quantity?:number;unit
   const z250Capsule=ref?.match(/^6021([A-Z]\d(?:\.5)?|UD)$/i);
   if(z250Capsule) return {presentation:"Cápsulas",quantity:0.2,unit:"g",packCount:20,variant:"Capsule",shade:z250Capsule[1].toUpperCase()};
   if(ref==="4242") return {presentation:"Frasco",quantity:6,unit:"ml",packCount:1};
+  if(ref==="41294") return {presentation:"Frasco",quantity:5,unit:"ml",packCount:1};
+  const relyx:Record<string,string>={"56971":"Translucido","56972":"A1","56973":"AO3","56974":"WO"};
+  if(ref && relyx[ref]) return {presentation:"Jeringa",quantity:3.4,unit:"g",packCount:1,shade:relyx[ref]};
   return {};
 }
 
