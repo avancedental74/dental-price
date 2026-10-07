@@ -39,4 +39,20 @@ describe("manual supplier offers",()=>{
     expect(result).toHaveLength(1);
     expect(result[0].regularPrice).toBe(49);
   });
+  it("supports gross shipping thresholds in manual verification",()=>{
+    const offer=buildManualOffer(product,{
+      supplierId:"dvd-dental",
+      productUrl:"https://www.dvd-dental.com/producto",
+      manufacturerReference:"4910B2B",
+      price:50,
+      vatStatus:"included",
+      stockStatus:"in_stock",
+      shippingCost:7.26,
+      shippingCostVatIncluded:true,
+      freeShippingThreshold:110,
+      freeShippingThresholdBasis:"gross"
+    });
+    expect(offer.shippingCostVatIncluded).toBe(true);
+    expect(offer.freeShippingThresholdBasis).toBe("gross");
+  });
 });
