@@ -146,6 +146,34 @@ async function searchViaDetectedForm(cfg:{origin:string;home:string},query:strin
   return {urls:[] as string[]};
 }
 
+async function searchDvdKlevu(query:string,fetchImpl:typeof fetch,maxResults:number){
+  const endpoint="https://eucs34v2.ksearchnet.com/cs/v2/search";
+  const apiKey="klevu-174436997355118006";
+  const body={
+    context:{apiKeys:[apiKey]},
+    recordQueries:[{
+      id:"productSearch",
+      typeOfRequest:"SEARCH",
+      settings:{query:{term:query},limit:maxResults,typeOfRecords:["KLEVU_PRODUCT"]}
+    }]
+  };
+  const response=await fetchImpl(endpoint,{
+    method:"POST",
+    headers:{"content-type":"application/json","accept":"application/json"},
+    body:JSON.stringify(body)
+  });
+  if(!response.ok)throw new Error("KLEVU_HTTP_"+response.status);
+  const data=await response.json() as {
+    queryResults?:Array<{records?:Array<{url?:string;name?:string;sku?:string;["nº_pieza_fabricante"]?:string}>}>
+  };
+  const records=data.queryResults?.flatMap(x=>x.records??[])??[];
+  const urls=records
+    .filter(record=>record.url&&scoreLink([record.name,record.sku,record["nº_pieza_fabricante"]].filter(Boolean).join(" "),record.url,query)>=2)
+    .map(record=>record.url!)
+    .slice(0,maxResults);
+  return [...new Set(urls)];
+}
+
 async function searchViaSitemap(cfg:{origin:string},query:string,fetchImpl:typeof fetch,maxResults:number){
   const candidates=[cfg.origin+"/sitemap.xml",cfg.origin+"/sitemap_index.xml"];
   const locs:string[]=[];
@@ -186,6 +214,14 @@ export async function discoverSupplierProductUrls(
 ):Promise<{urls:string[];searchUrl?:string;error?:string}>{
   const cfg=configs[supplierId];
   let lastError="";
+  if(supplierId==="dvd-dental"){
+    try{
+      const urls=await searchDvdKlevu(query,fetchImpl,maxResults);
+      return urls.length?{urls,searchUrl:"klevu"}:{urls:[],error:"Sin resultados en DVD"};
+    }catch(error){
+      return {urls:[],error:error instanceof Error?error.message:"KLEVU_SEARCH_ERROR"};
+    }
+  }
   for(const template of cfg.templates){
     const searchUrl=template.replace("{q}",encodeURIComponent(query));
     try{
