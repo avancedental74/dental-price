@@ -66,4 +66,16 @@ describe("Pricing Engine",()=>{
     expect(p.shippingCost).toBeNull();
     expect(p.warnings).toContain("Transporte no confirmado");
   });
+  it("does not apply an expired promotion",()=>{
+    const o={...baseOffer,promotion:{type:"buy_x_get_y" as const,description:"3+1",minQty:3,freeQty:1,validUntil:"2020-01-01"}};
+    const result=calculatePricing(o,{requestedQuantity:4,includeVat:true});
+    expect(result.paidUnits).toBe(4);
+    expect(result.warnings).toContain("Promoción caducada");
+  });
+
+  it("applies a still-valid promotion",()=>{
+    const o={...baseOffer,promotion:{type:"buy_x_get_y" as const,description:"3+1",minQty:3,freeQty:1,validUntil:"2999-01-01"}};
+    const result=calculatePricing(o,{requestedQuantity:4,includeVat:true});
+    expect(result.paidUnits).toBe(3);
+  });
 });
