@@ -98,4 +98,24 @@ describe("Dentaltix connector", () => {
     expect(selected?.packCount).toBe(1);
     expect(selected?.shade).toBe("A3");
   });
+  it("keeps Adper Scotchbond bottle separate from kit", () => {
+    const html=`<html><body>
+      <h1>Adper Scotchbond 1XT: Adhesivo Monocomponente - Solventum</h1>
+      <p><span>Marca:</span><a>Solventum</a></p>
+      <p><span>Referencia:</span><strong>053M4242</strong></p>
+      <p><span>Ref. Fabricante:</span><span>4242</span></p>
+      <span>177,00 €</span><span>123,90 €</span>
+      <div>Precio IVA incluido (10%) 136,29 €</div>
+      <div>EN STOCK.</div>
+      <div data-testid="variation-cards-label">Tipo: <b>1 Bote de 6 gr</b></div>
+      <button data-variation-id="kit"><span>KIT</span><span>189,90 €</span></button>
+    </body></html>`;
+    const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo?sku=053M4242"));
+    const selected=offers.find(o=>o.manufacturerReference==="4242");
+    expect(selected?.presentation).toBe("Frasco");
+    expect(selected?.quantity).toBe(6);
+    expect(selected?.unit).toBe("g");
+    expect(selected?.packCount).toBe(1);
+    expect(selected?.manufacturerReference).not.toBe("4241");
+  });
 });
