@@ -118,4 +118,36 @@ describe("Dentaltix connector", () => {
     expect(selected?.packCount).toBe(1);
     expect(selected?.manufacturerReference).not.toBe("4241");
   });
+  it("normalizes Scotchbond Universal Plus 41294 as one 5 ml bottle",()=>{
+    const html=`<html><body>
+      <h1>Scotchbond Universal Plus: Adhesivo Universal Radiopaco - Solventum</h1>
+      <p><span>Marca:</span><a>Solventum</a></p>
+      <p><span>Referencia:</span><strong>41294</strong></p>
+      <p><span>Ref. Fabricante:</span><span>41294</span></p>
+      <span>114,14 €</span><span>79,90 €</span><div>Precio IVA incluido (10%) 87,89 €</div><div>EN STOCK.</div>
+      <div data-testid="variation-cards-label">Tipo: <b>1 Bote de 5 ml</b></div>
+    </body></html>`;
+    const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo?sku=41294"));
+    const offer=offers.find(o=>o.manufacturerReference==="41294");
+    expect(offer?.presentation).toBe("Frasco");
+    expect(offer?.quantity).toBe(5);
+    expect(offer?.unit).toBe("ml");
+    expect(offer?.packCount).toBe(1);
+  });
+
+  it("normalizes RelyX Universal shades from exact references",()=>{
+    const html=`<html><body>
+      <h1>RelyX Universal: Cemento de Resina Universal - Solventum</h1>
+      <p><span>Marca:</span><a>Solventum</a></p>
+      <div class="product-variation" data-sku="56972" data-manufacturer-reference="56972">Jeringa - 3,4 gr - A1 191,29 € 133,90 € En stock</div>
+      <div class="product-variation" data-sku="56973" data-manufacturer-reference="56973">Jeringa - 3,4 gr - A3 Opaco 191,29 € 133,90 € En stock</div>
+    </body></html>`;
+    const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo"));
+    const a1=offers.find(o=>o.manufacturerReference==="56972");
+    const ao3=offers.find(o=>o.manufacturerReference==="56973");
+    expect(a1?.quantity).toBe(3.4);
+    expect(a1?.unit).toBe("g");
+    expect(a1?.shade).toBe("A1");
+    expect(ao3?.shade).toBe("AO3");
+  });
 });
