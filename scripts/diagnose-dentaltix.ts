@@ -4,7 +4,7 @@ const html=await response.text();
 const normalized=html.replace(/\s+/g," ");
 const needles=["4910A3B","053M4910A3B","44.90","44,90","36.90","36,90","Variants & quick order","Ref. fabricante","Manuf. ref.","Precio recomendado","Recommended price"];
 console.log(JSON.stringify({status:response.status,length:html.length,finalUrl:response.url,contains:Object.fromEntries(needles.map(n=>[n,normalized.includes(n)]))},null,2));
-for(const needle of ["4910A3B","053M4910A3B"]){
+for(const needle of ["4910A3B","053M4910A3B","44,90","A3 Body","Tipo:","Type:"]){
   const i=normalized.indexOf(needle);
   if(i>=0) console.log("\nSNIPPET "+needle+"\n"+normalized.slice(Math.max(0,i-500),i+1000));
 }
