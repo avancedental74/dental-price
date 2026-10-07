@@ -28,7 +28,8 @@ type Metrics={
   purchasableOffers:number;
   unavailableOffers:number;
   lowStockOffers:number;
-  productsWithTwoOrMoreAutomaticSuppliers:number;
+  productsWithTwoOrMoreVerifiedSuppliers:number;
+  productsWithTwoOrMorePurchasableSuppliers:number;
   automaticSuppliers:number;
   supplierOfferCounts:Record<string,number>;
 };
@@ -142,11 +143,16 @@ for(const seed of seeds){
 current.sort((a,b)=>a.supplierId.localeCompare(b.supplierId)||(a.manufacturerReference??"").localeCompare(b.manufacturerReference??""));
 
 const automaticSupplierIds=new Set(current.filter(o=>o.sourceMode==="automatic").map(o=>o.supplierId));
-const productSupplierMap=new Map<string,Set<string>>();
+const verifiedSupplierMap=new Map<string,Set<string>>();
+const purchasableSupplierMap=new Map<string,Set<string>>();
 for(const status of statuses){
   if(status.verificationStatus!=="verified"||!status.productId) continue;
-  const set=productSupplierMap.get(status.productId)??new Set<string>();
-  set.add(status.supplierId); productSupplierMap.set(status.productId,set);
+  const verified=verifiedSupplierMap.get(status.productId)??new Set<string>();
+  verified.add(status.supplierId); verifiedSupplierMap.set(status.productId,verified);
+  if(status.purchasable){
+    const purchasable=purchasableSupplierMap.get(status.productId)??new Set<string>();
+    purchasable.add(status.supplierId); purchasableSupplierMap.set(status.productId,purchasable);
+  }
 }
 const metrics:Metrics={
   generatedAt:new Date().toISOString(),
@@ -154,7 +160,8 @@ const metrics:Metrics={
   purchasableOffers:statuses.filter(s=>s.verificationStatus==="verified"&&s.purchasable).length,
   unavailableOffers:current.filter(o=>o.stockStatus==="unavailable").length,
   lowStockOffers:current.filter(o=>o.stockStatus==="low_stock").length,
-  productsWithTwoOrMoreAutomaticSuppliers:[...productSupplierMap.values()].filter(s=>s.size>=2).length,
+  productsWithTwoOrMoreVerifiedSuppliers:[...verifiedSupplierMap.values()].filter(s=>s.size>=2).length,
+  productsWithTwoOrMorePurchasableSuppliers:[...purchasableSupplierMap.values()].filter(s=>s.size>=2).length,
   automaticSuppliers:automaticSupplierIds.size,
   supplierOfferCounts:current.reduce<Record<string,number>>((acc,o)=>(acc[o.supplierId]=(acc[o.supplierId]??0)+1,acc),{})
 };
