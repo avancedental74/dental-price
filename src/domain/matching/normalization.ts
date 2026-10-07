@@ -52,6 +52,7 @@ export function normalizeToken(value: string): string {
 export function normalizeManufacturer(value?: string): string | undefined {
   if (!value) return undefined;
   const v = normalizeToken(value);
+  if (/^dentsply(?: maillefer| sirona)?$/.test(v) || v==="maillefer") return "dentsply";
   return v;
 }
 
