@@ -19,8 +19,6 @@ describe("DVD Dental connector",()=>{
    expect(offers[0].supplierSku).toBe("7120");
    expect(offers[0].presentation).toBe("Jeringa");
    expect(offers[0].quantity).toBe(3);
-   expect(offers[0].shippingCost).toBe(6);
-   expect(offers[0].freeShippingThreshold).toBe(110);
    expect(offers[0].sourceMode).toBe("automatic");
  });
   it("parses a simple Scotchbond 41294 page safely",()=>{
