@@ -38,7 +38,7 @@ function offer(raw:DentalCostProductRaw,v:DentalCostVariantRaw):SupplierOffer{
   return {
     supplierId:"dentalcost",supplierSku:v.supplierSku,manufacturer:raw.manufacturer,manufacturerReference:v.manufacturerReference,
     rawName:v.title||raw.title,normalizedName:normalizeName([raw.title,v.title,raw.manufacturer??""].join(" ")),productUrl:v.productUrl,
-    presentation:presentation(v.title+" "+raw.title) ?? (/^(4910|6020)/i.test(v.manufacturerReference??"")?"Jeringa":/^6021/i.test(v.manufacturerReference??"")?"Cápsulas":undefined),
+    presentation:presentation(v.title+" "+raw.title) ?? (/^(4910|6020)/i.test(v.manufacturerReference??"")?"Jeringa":/^6021/i.test(v.manufacturerReference??"")?"Cápsulas":v.manufacturerReference==="4242"?"Frasco":undefined),
     quantity:q.quantity ?? (/^6020/i.test(v.manufacturerReference??"")?4:/^6021/i.test(v.manufacturerReference??"")?0.2:undefined),
     unit:q.unit ?? (/^602[01]/i.test(v.manufacturerReference??"")?"g":undefined),
     packCount:pack(v.title+" "+raw.title) ?? (/^6021/i.test(v.manufacturerReference??"")?20:1),
