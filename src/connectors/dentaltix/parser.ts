@@ -101,14 +101,37 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
   const title = $("h1").first().text().replace(/\s+/g, " ").trim() || (typeof productLd?.name === "string" ? productLd.name : "Producto Dentaltix");
   const manufacturer = $(" .product-brand, .brand, [itemprop=\"brand\"]").first().text().replace(/\s+/g, " ").trim() || (typeof brand === "string" ? brand : typeof brand?.name === "string" ? String(brand.name) : bodyText.match(/Marca\s*:?\s*([A-Za-z0-9 .&-]+)/i)?.[1]?.trim());
   const urlSku = (() => { try { return new URL(productUrl).searchParams.get("sku") ?? undefined; } catch { return undefined; } })();
-  const pageSupplierSku = $("[data-product-sku]").first().attr("data-product-sku") ?? $("[data-sku]").first().attr("data-sku") ?? extractLabeledValue(bodyText, ["Referencia", "Ref."]) ?? urlSku;
-  const pageManufacturerReference = extractLabeledValue(bodyText, ["Ref. Fabricante", "Ref. fab.", "Manufacturer Ref.", "Manuf. ref."]) ?? (urlSku?.match(/^053M(.+)$/i)?.[1]);
+  const labelValue = (pattern: RegExp): string | undefined => {
+    let value: string | undefined;
+    $("p,div").each((_, el) => {
+      if (value) return;
+      const node=$(el);
+      const direct=node.clone().children().remove().end().text().replace(/\s+/g," ").trim();
+      const full=node.text().replace(/\s+/g," ").trim();
+      if (!pattern.test(direct) && !pattern.test(full)) return;
+      const strong=node.find("strong").first().text().trim();
+      const spans=node.find("span");
+      const candidate=strong || spans.last().text().trim();
+      if(candidate && !pattern.test(candidate)) value=candidate;
+    });
+    return value;
+  };
+  const pageSupplierSku = $("[data-product-sku]").first().attr("data-product-sku") ?? $("[data-sku]").first().attr("data-sku") ?? labelValue(/^Referencia\s*:/i) ?? urlSku;
+  const pageManufacturerReference = labelValue(/^Ref\.\s*Fabricante\s*:/i) ?? labelValue(/^Manufacturer Ref\.\s*:/i) ?? (urlSku?.match(/^053M(.+)$/i)?.[1]);
   const allPrices = [...bodyText.matchAll(/(\d{1,4}(?:[.,]\d{2})?)\s*€/g)].map(m => parseEuro(m[1])).filter((v): v is number => typeof v === "number");
-  let salePrice = typeof offers?.price === "string" || typeof offers?.price === "number" ? Number(String(offers.price).replace(",", ".")) : undefined;
+  const visiblePriceTexts: number[] = [];
+  $("span").each((_,el)=>{
+    const text=$(el).text().replace(/\s+/g," ").trim();
+    if(/^\d{1,5}(?:[.,]\d{2})\s*€$/.test(text)){
+      const value=parseEuro(text);
+      if(typeof value==="number") visiblePriceTexts.push(value);
+    }
+  });
+  const leadingPrices=visiblePriceTexts.length>=2 ? visiblePriceTexts.slice(0,2) : allPrices.slice(0,2);
+  let salePrice = leadingPrices.length>=2 ? leadingPrices[1] : leadingPrices[0];
   if (!Number.isFinite(salePrice)) salePrice = undefined;
-  if (salePrice == null && allPrices.length) salePrice = allPrices[0];
-  const recommended = bodyText.match(/Precio recomendado\s*(\d{1,4}(?:[.,]\d{2})?)\s*€/i);
-  const regularPrice = recommended ? parseEuro(recommended[1]) : allPrices.length >= 2 ? Math.max(...allPrices.slice(0, 6)) : undefined;
+  const recommended = bodyText.match(/(?:Precio recomendado|Recommended price)\s*(\d{1,4}(?:[.,]\d{2})?)\s*€/i);
+  const regularPrice = recommended ? parseEuro(recommended[1]) : leadingPrices.length>=2 ? Math.max(...leadingPrices) : salePrice;
   const vatMatch = bodyText.match(/(?:Price VAT included|Precio IVA incluido)\s*\(?\s*(\d{1,2})\s*%\s*\)?\s*€?\s*(\d{1,5}(?:[.,]\d{2})?)/i);
   const vatRate = vatMatch ? Number(vatMatch[1]) : undefined;
   const vatIncludedPrice = vatMatch ? parseEuro(vatMatch[2]) : undefined;
