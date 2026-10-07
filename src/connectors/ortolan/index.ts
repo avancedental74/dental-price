@@ -17,7 +17,6 @@ export async function fetchOrtolanProduct(productUrl:string,fetchImpl:typeof fet
  if(!rows.length)rows.push(body);
  const offers:SupplierOffer[]=[];
  for(const text of rows){
-   const supplierSku=$(text).text?.();
    const ref=text.match(/^([A-Za-z0-9.,_-]{3,40})\s+/)?.[1]||body.match(/COD:\s*([A-Za-z0-9.,_-]+)/i)?.[1];
    const mfg=text.match(/Ref\. fabricante\s*:?\s*([A-Za-z0-9._/-]+)/i)?.[1];
    const manufacturerReference=mfg||ref;
