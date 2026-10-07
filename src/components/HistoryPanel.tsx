@@ -2,7 +2,7 @@ import type { PriceObservation } from "../domain/history";
 import type { PriceHistoryStats } from "../domain/history";
 
 export function HistoryPanel({history,stats}:{history:PriceObservation[];stats:PriceHistoryStats}){
-  const values=history.map(h=>h.effectivePrice ?? h.salePrice ?? h.regularPrice);
+  const values=history.map(h=>h.effectiveUnitCost ?? h.salePrice ?? h.regularPrice);
   const min=Math.min(...values),max=Math.max(...values),span=max-min || 1;
   const points=values.map((v,i)=>`${(i/(Math.max(1,values.length-1)))*100},${90-((v-min)/span)*70}`).join(" ");
   return <section className="card history-card">
