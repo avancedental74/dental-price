@@ -1,0 +1,54 @@
+name: Diagnose supplier search forms
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/diagnose-supplier-search.yml"
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22.13.1"
+          cache: npm
+      - run: npm ci
+      - name: Inspect supplier search forms
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const sites={
+            dentaltix:"https://www.dentaltix.com/es",
+            dentalcost:"https://www.dentalcost.es/",
+            dvd:"https://www.dvd-dental.com/",
+            proclinic:"https://www.proclinic.es/tienda/",
+            dentaliberica:"https://dentaliberica.com/",
+            dentalexpress:"https://dentalexpress.es/",
+            broker:"https://www.brokerdental.es/",
+            ortolan:"https://ortolan.es/es/"
+          };
+          for(const [name,url] of Object.entries(sites)){
+            console.log("\n### "+name+" "+url);
+            try{
+              const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+              console.log("HTTP",r.status,"final",r.url);
+              const html=await r.text();
+              const $=cheerio.load(html);
+              const forms=[];
+              $("form").each((_,el)=>{
+                const inputs=$(el).find("input").toArray().map(i=>({
+                  name:$(i).attr("name"),id:$(i).attr("id"),type:$(i).attr("type"),placeholder:$(i).attr("placeholder"),value:$(i).attr("value")
+                }));
+                if(inputs.some(i=>/search|buscar|busca|query|keyword|producto|referencia|q\b/i.test([i.name,i.id,i.placeholder,i.type].filter(Boolean).join(" ")))){
+                  forms.push({action:$(el).attr("action"),method:$(el).attr("method"),inputs});
+                }
+              });
+              console.log(JSON.stringify(forms.slice(0,5),null,2));
+              const snippets=[...html.matchAll(/.{0,100}(?:search|buscar|busca|autocomplete|algolia).{0,180}/gi)].slice(0,12).map(m=>m[0].replace(/\s+/g," "));
+              console.log("SNIPPETS",JSON.stringify(snippets,null,2));
+            }catch(e){console.log("ERROR",e.message);}
+          }
+          NODE
