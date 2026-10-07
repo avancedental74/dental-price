@@ -16,7 +16,7 @@ function presentation(text:string):string|undefined{
   if(/caja|peeso|fresa/i.test(text)) return "Caja";
   if(/air[- ]?n[- ]?go|polvo|bicarbonato|botes?|frascos?/i.test(text)) return "Frasco";
 }
-function quantity(text:string){const m=text.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i);return m?{quantity:Number(m[1].replace(",",".")),unit:m[2].toLowerCase()==="gr"?"g":m[2].toLowerCase()}:{};}
+function quantity(text:string){const m=text.match(/(\d+(?:[.,]\d+)?)\s*(gr|g|ml|mm)\b/i);return m?{quantity:Number(m[1].replace(",",".")),unit:m[2].toLowerCase()==="gr"?"g":m[2].toLowerCase()}:{};}
 function pack(text:string):number|undefined{return Number(text.match(/(\d+)\s*(?:c[aá]psulas?|uds?|unidades|botes?|frascos?)/i)?.[1])||undefined;}
 function shade(ref?:string,text=""):string|undefined{return ref?.match(/^4910([A-Z]+\d(?:\.5)?)/i)?.[1]?.toUpperCase() ?? text.match(/:\s*([A-Z]\d(?:[,.]5)?|B\d|C\d|D\d)\b/i)?.[1]?.replace(",",".").toUpperCase();}
 function variant(ref?:string,text=""):string|undefined{
