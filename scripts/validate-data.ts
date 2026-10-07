@@ -45,6 +45,23 @@ for(const seed of seeds){
   if(!ids.has(seed.productId)) throw new Error("Supplier seed references unknown product: "+seed.productId);
 }
 
+
+const productByRef=new Map(products.filter(p=>p.manufacturerReference).map(p=>[String(p.manufacturerReference).replace(/[^a-z0-9]/gi,"").toUpperCase(),p]));
+const verifiedKeys=new Set(status.filter(s=>s.verificationStatus==="verified"&&s.productId).map(s=>s.supplierId+"|"+s.productId));
+for(const offer of current){
+  const ref=String(offer.manufacturerReference??"").replace(/[^a-z0-9]/gi,"").toUpperCase();
+  const product=productByRef.get(ref);
+  if(!product) throw new Error("Current offer has no canonical product: "+offer.supplierId+" "+String(offer.manufacturerReference));
+  const key=offer.supplierId+"|"+product.id;
+  if(!verifiedKeys.has(key)) throw new Error("Current offer lacks successful verification in this snapshot: "+key);
+}
+for(const s of status.filter(x=>x.verificationStatus==="verified"&&x.productId)){
+  const product=products.find(p=>p.id===s.productId);
+  const ref=String(product?.manufacturerReference??"").replace(/[^a-z0-9]/gi,"").toUpperCase();
+  const exists=current.some(o=>o.supplierId===s.supplierId&&String(o.manufacturerReference??"").replace(/[^a-z0-9]/gi,"").toUpperCase()===ref);
+  if(!exists) throw new Error("Verified status has no current offer: "+s.supplierId+"|"+s.productId);
+}
+
 const gt=await readJson("fixtures/validation/ground-truth.json");
 if(!Array.isArray(gt.cases)||gt.cases.length<30) throw new Error("Ground truth must contain at least 30 cases");
 let mismatches=0;
