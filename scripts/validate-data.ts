@@ -9,7 +9,7 @@ const historySchema=z.array(z.object({
   id:z.string(),productId:z.string(),supplierId:z.string(),observedAt:z.string(),lastSeenAt:z.string(),seenCount:z.number().int().positive(),requestedQuantity:z.number().int().positive(),regularPrice:z.number().nonnegative(),effectiveUnitCost:z.number().positive().optional(),effectiveTotalCost:z.number().positive().optional(),stockStatus:z.string(),sourceUrl:z.string().url()
 }).passthrough());
 const statusSchema=z.array(z.object({supplierId:z.string(),status:z.enum(["green","amber","red"]),checkedAt:z.string(),message:z.string()}).passthrough());
-const seedSchema=z.array(z.object({productId:z.string(),supplierId:z.enum(["dentaltix","proclinic","dental-iberica"]),url:z.string().url()}));
+const seedSchema=z.array(z.object({productId:z.string(),supplierId:z.enum(["dentaltix","proclinic","dental-iberica","dentalcost","dvd-dental"]),url:z.string().url()}));
 
 const products=z.array(canonicalProductSchema).parse(await readJson("data/products.json"));
 const current=z.array(supplierOfferSchema).parse(await readJson("data/current-prices.json"));
