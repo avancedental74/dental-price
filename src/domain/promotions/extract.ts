@@ -1,6 +1,6 @@
 import type { Promotion } from "../../types/domain";
 
-const STOP=new Set(["composite","universal","adhesivo","cemento","reposicion","restaurador","solventum","3m","dental","producto"]);
+const STOP=new Set(["composite","universal","adhesivo","cemento","reposicion","restaurador","solventum","3m","dental","producto","filtek"]);
 function tokens(value:string):string[]{return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim().split(/\s+/).filter(t=>t.length>=3&&!STOP.has(t));}
 
 export function promotionTextMatchesProduct(promotionText:string,productTitle:string):boolean{
@@ -8,6 +8,7 @@ export function promotionTextMatchesProduct(promotionText:string,productTitle:st
   const title=tokens(productTitle);
   if(!title.length) return false;
   const hits=title.filter(t=>p.has(t));
+  if(title[0] && p.has(title[0])) return true;
   return hits.length>=Math.min(2,title.length);
 }
 
