@@ -29,6 +29,7 @@ describe("DentalCost connector",()=>{
    expect(offers[0].supplierId).toBe("dentalcost");
    expect(offers[0].salePrice).toBe(47.86);
    expect(offers[0].shade).toBe("A3");
+   expect(offers[0].presentation).toBe("Jeringa");
    expect(offers[0].variant).toBe("Body");
    expect(offers[0].stockStatus).toBe("in_stock");
    expect(offers[0].shippingCost).toBe(5.8);
