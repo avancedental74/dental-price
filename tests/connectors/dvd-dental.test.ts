@@ -39,6 +39,8 @@ describe("DVD Dental connector",()=>{
     expect(offers[0].quantity).toBe(5);
     expect(offers[0].unit).toBe("ml");
     expect(offers[0].stockStatus).toBe("in_stock");
+    expect(offers[0].promotion?.type).toBe("other");
+    expect(offers[0].promotion?.description).toContain("Filtek Easy Match");
     expect(offers[0].regularPrice).toBe(85.9);
     expect(offers[0].vatRate).toBe(10);
   });
@@ -64,8 +66,6 @@ describe("DVD Dental connector",()=>{
     expect(offers[0].quantity).toBe(5);
     expect(offers[0].unit).toBe("ml");
     expect(offers[0].stockStatus).toBe("in_stock");
-    expect(offers[0].promotion?.type).toBe("other");
-    expect(offers[0].promotion?.description).toContain("Filtek Easy Match");
     expect(offers[0].regularPrice).toBe(79.85);
     expect(offers[0].vatRate).toBe(10);
   });
