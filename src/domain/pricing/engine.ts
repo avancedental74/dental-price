@@ -96,7 +96,9 @@ function shippingCentsFor(offer:SupplierOffer,netCents:number,grossCents:number,
     if(comparable>=thresholdCents) return 0;
   }
   if(typeof offer.shippingCost!=="number") return null;
-  const shippingCents=toCents(offer.shippingCost);
+  let shippingCents=toCents(offer.shippingCost);
+  const smallComparable=(offer.freeShippingThresholdBasis ?? "net")==="net"?netCents:grossCents;
+  if(typeof offer.smallOrderThreshold==="number" && typeof offer.smallOrderSurcharge==="number" && smallComparable<toCents(offer.smallOrderThreshold)) shippingCents+=toCents(offer.smallOrderSurcharge);
   if(offer.shippingCostVatIncluded!==false) return shippingCents;
   if(typeof offer.shippingVatRate==="number") return shippingCents+Math.round(shippingCents*(offer.shippingVatRate/100));
   return null;
