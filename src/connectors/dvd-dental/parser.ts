@@ -6,7 +6,9 @@ const clean=(v:string)=>v.replace(/\s+/g," ").trim();
 export function parseDvdProductHtml(html:string,productUrl:string):DvdProductRaw{
  const $=cheerio.load(html), body=clean($("body").text());
  const title=clean($("h1").first().text())||"Producto DVD Dental";
- const manufacturer=clean($("h2").first().text())||undefined;
+ const manufacturer=clean($(".manufacturer-name,.product-manufacturer,[itemprop=brand]").first().text())
+   || body.match(/\b(SOLVENTUM|3M ESPE|DENTSPLY SIRONA|IVOCLAR|KERR|KULZER|GC|VOCO)\b/i)?.[1]
+   || undefined;
  const variants:DvdVariantRaw[]=[]; const seen=new Set<string>();
  $("table tr").each((_,el)=>{
    const cells=$(el).find("td").map((__,c)=>clean($(c).text())).get();
