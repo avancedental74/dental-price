@@ -20,6 +20,15 @@ function hasIncompleteEconomicData(item: MatchedSupplierOffer): boolean {
   ));
 }
 
+function shippingPolicyFresh(item:MatchedSupplierOffer,now=new Date()):boolean{
+  if(item.offer.sourceMode!=="automatic") return true;
+  if(typeof item.offer.shippingCost!=="number" && typeof item.offer.freeShippingThreshold!=="number") return false;
+  if(!item.offer.shippingPolicyObservedAt) return false;
+  const observed=new Date(item.offer.shippingPolicyObservedAt).getTime();
+  if(Number.isNaN(observed)) return false;
+  return (now.getTime()-observed)/86400000 <= 30;
+}
+
 function rankingEligible(item: MatchedSupplierOffer): boolean {
   const stockEligible=item.offer.stockStatus==="in_stock" || item.offer.stockStatus==="low_stock";
   return (
@@ -29,7 +38,8 @@ function rankingEligible(item: MatchedSupplierOffer): boolean {
     getFreshnessStatus(item.offer) !== "stale" &&
     item.pricing !== null &&
     item.pricing.effectiveTotalCost > 0 &&
-    !hasIncompleteEconomicData(item)
+    !hasIncompleteEconomicData(item) &&
+    shippingPolicyFresh(item)
   );
 }
 
