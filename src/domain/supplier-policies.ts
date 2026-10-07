@@ -8,6 +8,8 @@ export interface SupplierPolicy {
   shippingVatRate:number;
   freeShippingThreshold:number;
   freeShippingThresholdBasis:ShippingThresholdBasis;
+  smallOrderThreshold?:number;
+  smallOrderSurcharge?:number;
   observedAt:string;
   sourceUrl:string;
 }
@@ -21,6 +23,8 @@ export function applySupplierPolicy(offer:SupplierOffer,policy?:SupplierPolicy):
     shippingVatRate:policy.shippingVatRate,
     freeShippingThreshold:policy.freeShippingThreshold,
     freeShippingThresholdBasis:policy.freeShippingThresholdBasis,
+    smallOrderThreshold:policy.smallOrderThreshold,
+    smallOrderSurcharge:policy.smallOrderSurcharge,
     shippingPolicyObservedAt:policy.observedAt,
     shippingPolicySourceUrl:policy.sourceUrl,
     deliveryZone:policy.zone
