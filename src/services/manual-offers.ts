@@ -7,7 +7,7 @@ const STORAGE_KEY="dental-price:manual-offers:v1";
 const HISTORY_KEY="dental-price:manual-history:v1";
 
 export interface ManualOfferInput {
-  supplierId:"proclinic"|"dental-iberica"|"dvd-dental";
+  supplierId:"proclinic"|"dental-iberica"|"dvd-dental"|"dentalexpress"|"brokerdental"|"ortodonland";
   productUrl:string;
   manufacturerReference:string;
   price:number;
@@ -48,14 +48,23 @@ export function saveManualOffers(offers:SupplierOffer[]):void{
   window.localStorage.setItem(STORAGE_KEY,JSON.stringify(offers));
 }
 
+function allowedHostname(supplierId:ManualOfferInput["supplierId"],hostname:string):boolean{
+  if(supplierId==="proclinic") return hostname==="proclinic.es" || hostname.endsWith(".proclinic.es");
+  if(supplierId==="dental-iberica") return hostname==="dentaliberica.com" || hostname.endsWith(".dentaliberica.com");
+  if(supplierId==="dvd-dental") return hostname==="dvd-dental.com" || hostname.endsWith(".dvd-dental.com");
+  if(supplierId==="dentalexpress") return hostname==="dentalexpress.es" || hostname.endsWith(".dentalexpress.es");
+  if(supplierId==="brokerdental") return hostname==="brokerdental.es" || hostname.endsWith(".brokerdental.es");
+  if(supplierId==="ortodonland") return true;
+  return false;
+}
+
 export function buildManualOffer(product:CanonicalProduct,input:ManualOfferInput):SupplierOffer{
   if(!product.manufacturerReference) throw new Error("El producto no tiene referencia de fabricante");
   if(!Number.isFinite(input.price)||input.price<=0) throw new Error("El precio debe ser mayor que cero");
   const url=new URL(input.productUrl);
   if(url.protocol!=="https:"&&url.protocol!=="http:") throw new Error("La URL debe ser http/https");
   const hostname=url.hostname.toLowerCase().replace(/^www\./,"");
-  const allowed=input.supplierId==="proclinic" ? hostname==="proclinic.es" || hostname.endsWith(".proclinic.es") : input.supplierId==="dental-iberica" ? hostname==="dentaliberica.com" || hostname.endsWith(".dentaliberica.com") : hostname==="dvd-dental.com" || hostname.endsWith(".dvd-dental.com");
-  if(!allowed) throw new Error("La URL no pertenece al proveedor seleccionado");
+  if(!allowedHostname(input.supplierId,hostname)) throw new Error("La URL no pertenece al proveedor seleccionado");
   if(normalizeReference(input.manufacturerReference)!==normalizeReference(product.manufacturerReference)) throw new Error("La referencia de fabricante no coincide con el producto seleccionado");
   const offer:SupplierOffer={
     supplierId:input.supplierId,
