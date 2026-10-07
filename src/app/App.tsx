@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import type { CanonicalProduct, SupplierOffer } from "../types/domain";
 import { compareSupplierOffers } from "../domain/comparison";
 import { getFreshnessStatus } from "../domain/comparison/compare";
-import { calculateHistoryStats } from "../domain/history";
+import { appendObservation, calculateHistoryStats, type PriceObservation } from "../domain/history";
 import { opportunityFromHistory } from "../domain/opportunity";
+import { calculatePricing } from "../domain/pricing";
 import { normalizeName, normalizeReference } from "../domain/matching/normalization";
 import { ComparisonTable } from "../components/ComparisonTable";
 import { ConnectorStatusPanel } from "../components/ConnectorStatusPanel";
@@ -14,7 +15,7 @@ import { SearchBar } from "../components/SearchBar";
 import { WinnerCard } from "../components/WinnerCard";
 import { ManualOfferPanel } from "../components/ManualOfferPanel";
 import { loadPublicData, type PublicData } from "../services/public-data";
-import { loadManualOffers, saveManualOffers } from "../services/manual-offers";
+import { loadManualHistory, loadManualOffers, saveManualHistory, saveManualOffers } from "../services/manual-offers";
 
 function findProduct(products:CanonicalProduct[],query:string):CanonicalProduct|undefined{
   const q=normalizeName(query);
@@ -40,6 +41,7 @@ export function App(){
   const [selected,setSelected]=useState<CanonicalProduct|null>(null);
   const [query,setQuery]=useState("");
   const [manualOffers,setManualOffers]=useState<SupplierOffer[]>(()=>loadManualOffers());
+  const [manualHistory,setManualHistory]=useState<PriceObservation[]>(()=>loadManualHistory());
 
   useEffect(()=>{
     loadPublicData().then(d=>{setData(d);setSelected(d.products[0]??null);}).catch(e=>setError(e instanceof Error?e.message:"Error cargando datos"));
@@ -58,7 +60,7 @@ export function App(){
 
   const comparison=useMemo(()=>selected?compareSupplierOffers(selected,candidates,quantity):null,[selected,candidates,quantity]);
   const winner=comparison?.ranked[0];
-  const history=useMemo(()=>data&&selected&&winner?data.history.filter(h=>h.productId===selected.id&&h.requestedQuantity===quantity&&h.supplierId===winner.offer.supplierId):[],[data,selected,quantity,winner]);
+  const history=useMemo(()=>data&&selected&&winner?[...data.history,...manualHistory].filter(h=>h.productId===selected.id&&h.requestedQuantity===quantity&&h.supplierId===winner.offer.supplierId):[],[data,selected,quantity,winner,manualHistory]);
   const stats=useMemo(()=>calculateHistoryStats(history),[history]);
   const score=useMemo(()=>opportunityFromHistory(history,{
     isFresh:winner?getFreshnessStatus(winner.offer)==="fresh":false,
@@ -69,6 +71,18 @@ export function App(){
   const onManualOffersChange=(next:SupplierOffer[])=>{
     setManualOffers(next);
     saveManualOffers(next);
+  };
+  const onManualObservation=(offer:SupplierOffer)=>{
+    if(!selected) return;
+    let unitCost:number|undefined,totalCost:number|undefined;
+    try{
+      const pricing=calculatePricing(offer,{requestedQuantity:quantity,includeVat:true});
+      const incomplete=pricing.warnings.some(w=>w.includes("no confirmado")||w.includes("desconocida"));
+      if(!incomplete){unitCost=pricing.effectiveUnitCost;totalCost=pricing.effectiveTotalCost;}
+    }catch{ /* invalid economic data remains non-rankable and history keeps raw fields */ }
+    const next=appendObservation(manualHistory,selected.id,offer,unitCost,totalCost,quantity).history;
+    setManualHistory(next);
+    saveManualHistory(next);
   };
 
   const onSearch=(q:string)=>{
@@ -99,7 +113,7 @@ export function App(){
     {winner && <WinnerCard item={winner}/>} 
     {comparison && <ComparisonTable items={comparison.matches}/>} 
     {selected && <HistoryPanel history={history} stats={stats}/>} 
-    <ManualOfferPanel product={selected} offers={manualOffers} onChange={onManualOffersChange}/>
+    <ManualOfferPanel product={selected} offers={manualOffers} onChange={onManualOffersChange} onRecord={onManualObservation}/>
     <ConnectorStatusPanel items={data.connectors}/>
     <footer>Mejor precio encontrado entre los proveedores consultados · España peninsular · Nunca se inventan IVA, portes ni equivalencias.</footer>
   </main>;
