@@ -4,6 +4,8 @@ import type { PriceObservation } from "../src/domain/history";
 import { fetchDentaltixProduct } from "../src/connectors/dentaltix";
 import { fetchProclinicProduct } from "../src/connectors/proclinic";
 import { fetchDentalIbericaProduct } from "../src/connectors/dental-iberica";
+import { fetchDentalCostProduct } from "../src/connectors/dentalcost";
+import { fetchDvdProduct } from "../src/connectors/dvd-dental";
 import { normalizeReference } from "../src/domain/matching/normalization";
 import { analyzeOfferAnomaly } from "../src/domain/anomaly";
 import { matchOfferToProduct } from "../src/domain/matching/matcher";
@@ -27,6 +29,8 @@ async function fetchPage(seed:Seed):Promise<SupplierOffer[]>{
   if(seed.supplierId==="dentaltix") return (await fetchDentaltixProduct(seed.url)).offers;
   if(seed.supplierId==="proclinic") return (await fetchProclinicProduct(seed.url)).offers;
   if(seed.supplierId==="dental-iberica") return (await fetchDentalIbericaProduct(seed.url)).offers;
+  if(seed.supplierId==="dentalcost") return (await fetchDentalCostProduct(seed.url)).offers;
+  if(seed.supplierId==="dvd-dental") return (await fetchDvdProduct(seed.url)).offers;
   throw new Error("Unsupported supplier "+seed.supplierId);
 }
 
