@@ -124,7 +124,7 @@ export function App(){
       const pricing=calculatePricing(offer,{requestedQuantity:quantity,includeVat:true});
       const incomplete=pricing.warnings.some(w=>w.includes("no confirmado")||w.includes("desconocida"));
       if(!incomplete){unitCost=pricing.effectiveUnitCost;totalCost=pricing.effectiveTotalCost;}
-    }catch{}
+    }catch{ /* incomplete manual economics stay non-rankable */ }
     const tagged={...offer,verificationKind:"manual" as const};
     const next=appendObservation(manualHistory,selected.id,tagged,unitCost,totalCost,quantity).history;
     setManualHistory(next);
