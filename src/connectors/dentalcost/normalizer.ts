@@ -35,6 +35,7 @@ function variant(ref?:string,text=""):string|undefined{
 }
 function offer(raw:DentalCostProductRaw,v:DentalCostVariantRaw):SupplierOffer{
   const q=quantity(v.title+" "+raw.title);
+  const adper4242=v.manufacturerReference==="4242";
   const isAdper4242=v.manufacturerReference==="4242";
   return {
     supplierId:"dentalcost",supplierSku:v.supplierSku,manufacturer:raw.manufacturer,manufacturerReference:v.manufacturerReference,
