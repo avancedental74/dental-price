@@ -2,7 +2,7 @@ import type { MatchedSupplierOffer } from "../domain/comparison/types";
 import { getFreshnessStatus } from "../domain/comparison/compare";
 const names:Record<string,string>={
   "dentaltix":"Dentaltix","proclinic":"Proclinic","dental-iberica":"Dental Ibérica","dentalcost":"DentalCost","dvd-dental":"DVD Dental",
-  "dentalexpress":"Dental Express","brokerdental":"Broker Dental","ortodonland":"Ortodonland"
+  "dentalexpress":"Dental Express","brokerdental":"Broker Dental","ortolan":"Ortolan Dental"
 };
 
 function eligibilityLabel(item:MatchedSupplierOffer):string{
