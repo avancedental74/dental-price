@@ -36,8 +36,9 @@ function offer(supplierId:string, price:number, overrides:Partial<SupplierOffer>
     shade:"A3",
     stockStatus:"in_stock",
     regularPrice:price,
-    vatStatus:"unknown",
+    vatStatus:"included",
     currency:"EUR",
+    shippingCost:0,
     observedAt:new Date().toISOString(),
     sourceStatus:"normal",
     ...overrides
