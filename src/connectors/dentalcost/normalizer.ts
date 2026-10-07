@@ -33,17 +33,24 @@ function variant(ref?:string,text=""):string|undefined{
   if(s==="D"||/dentina/i.test(text)) return "Dentin";
   if(s==="E"||/esmalte/i.test(text)) return "Enamel";
 }
+function knownPackage(ref?:string):{presentation?:string;quantity?:number;unit?:string;packCount?:number;shade?:string}{
+  if(ref==="4242") return {presentation:"Frasco",quantity:6,unit:"ml",packCount:1};
+  if(ref==="41294") return {presentation:"Frasco",quantity:5,unit:"ml",packCount:1};
+  const relyx:Record<string,string>={"56971":"Translucido","56972":"A1","56973":"AO3","56974":"WO"};
+  if(ref && relyx[ref]) return {presentation:"Jeringa",quantity:3.4,unit:"g",packCount:1,shade:relyx[ref]};
+  return {};
+}
 function offer(raw:DentalCostProductRaw,v:DentalCostVariantRaw):SupplierOffer{
   const q=quantity(v.title+" "+raw.title);
-  const isAdper4242=v.manufacturerReference==="4242";
+  const known=knownPackage(v.manufacturerReference);
   return {
     supplierId:"dentalcost",supplierSku:v.supplierSku,manufacturer:raw.manufacturer,manufacturerReference:v.manufacturerReference,
     rawName:v.title||raw.title,normalizedName:normalizeName([raw.title,v.title,raw.manufacturer??""].join(" ")),productUrl:v.productUrl,
-    presentation:isAdper4242?"Frasco":presentation(v.title+" "+raw.title) ?? (/^(4910|6020)/i.test(v.manufacturerReference??"")?"Jeringa":/^6021/i.test(v.manufacturerReference??"")?"Cápsulas":undefined),
-    quantity:isAdper4242?6:(q.quantity ?? (/^6020/i.test(v.manufacturerReference??"")?4:/^6021/i.test(v.manufacturerReference??"")?0.2:undefined)),
-    unit:isAdper4242?"ml":(q.unit ?? (/^602[01]/i.test(v.manufacturerReference??"")?"g":undefined)),
-    packCount:isAdper4242?1:(pack(v.title+" "+raw.title) ?? (/^6021/i.test(v.manufacturerReference??"")?20:1)),
-    variant:variant(v.manufacturerReference,v.title+" "+raw.title),shade:shade(v.manufacturerReference,v.title),
+    presentation:known.presentation ?? presentation(v.title+" "+raw.title) ?? (/^(4910|6020)/i.test(v.manufacturerReference??"")?"Jeringa":/^6021/i.test(v.manufacturerReference??"")?"Cápsulas":undefined),
+    quantity:known.quantity ?? q.quantity ?? (/^6020/i.test(v.manufacturerReference??"")?4:/^6021/i.test(v.manufacturerReference??"")?0.2:undefined),
+    unit:known.unit ?? q.unit ?? (/^602[01]/i.test(v.manufacturerReference??"")?"g":undefined),
+    packCount:known.packCount ?? pack(v.title+" "+raw.title) ?? (/^6021/i.test(v.manufacturerReference??"")?20:1),
+    variant:variant(v.manufacturerReference,v.title+" "+raw.title),shade:known.shade ?? shade(v.manufacturerReference,v.title),
     stockStatus:stock(v.stockText),rawStockText:v.stockText,
     regularPrice:v.price??raw.regularPrice??raw.salePrice??0,salePrice:v.price??raw.salePrice,
     vatStatus:typeof raw.vatRate==="number"?"excluded":"unknown",vatRate:raw.vatRate,currency:"EUR",
