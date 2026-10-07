@@ -424,5 +424,41 @@
     "supplierId": "dentaltix",
     "url": "https://www.dentaltix.com/es/dentsply/fresas-endodoncia-largo-peeso-28mm-6u?sku=A1908113",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "peeso-no1",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/fresas-endodoncia/5513-fresa-ensanchadora-peeso-largo-28mm-6-uds.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "peeso-no2",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/fresas-endodoncia/5513-fresa-ensanchadora-peeso-largo-28mm-6-uds.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10251",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/polvo-aeropulidores/4155-air-n-go-classic-polvo-aeropulidor-4-botes-250gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10252",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/polvo-aeropulidores/4155-air-n-go-classic-polvo-aeropulidor-4-botes-250gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10254",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/polvo-aeropulidores/4155-air-n-go-classic-polvo-aeropulidor-4-botes-250gr.html",
+    "acquisitionMode": "direct"
+  },
+  {
+    "productId": "air-n-go-f10255",
+    "supplierId": "dentalcost",
+    "url": "https://www.dentalcost.es/polvo-aeropulidores/4155-air-n-go-classic-polvo-aeropulidor-4-botes-250gr.html",
+    "acquisitionMode": "direct"
   }
 ]
