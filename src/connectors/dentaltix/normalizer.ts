@@ -19,12 +19,14 @@ function inferPresentation(value: string): string | undefined {
 }
 
 function inferQuantity(value: string): { quantity?: number; unit?: string; packCount?: number } {
-  const pack = value.match(/(?:caja de\s*)?(\d+)\s*(?:uds?|unidades|caps?\.?)/i);
+  const units = value.match(/(?:caja de\s*)?(\d+)\s*(?:uds?|unidades)\b/i);
+  const capsules = value.match(/(?:caja de\s*)?(\d+)\s*(?:caps?\.?|c[aá]psulas?)\b/i);
   const metric = value.match(/(?:de\s*)?(\d+(?:[.,]\d+)?)\s*(gr|g|ml)\b/i);
+  if (units && !metric) return { quantity:Number(units[1]), unit:"ud", packCount:1 };
   return {
     quantity: metric ? Number(metric[1].replace(",", ".")) : undefined,
     unit: metric ? (metric[2].toLowerCase() === "gr" ? "g" : metric[2].toLowerCase()) : undefined,
-    packCount: pack ? Number(pack[1]) : metric ? 1 : undefined
+    packCount: capsules ? Number(capsules[1]) : metric ? 1 : undefined
   };
 }
 
@@ -33,6 +35,8 @@ function inferShade(value: string): string | undefined {
 }
 
 function inferVariant(value: string): string | undefined {
+  const size=value.match(/(?:talla\s*:?\s*|\b)(XS|XL|XXL|S|M|L)\b/i)?.[1]?.toUpperCase();
+  if(size) return size;
   if (/\bbody\b/i.test(value)) return "Body";
   if (/\bdentina\b|\bdentin\b|\bdentine\b/i.test(value)) return "Dentin";
   if (/\besmalte\b|\benamel\b|\bglaze\b/i.test(value)) return "Enamel";
