@@ -137,7 +137,8 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>supplierOfferSchema.safeParse(o).success);
     return {offers,error:offers.length?null:"Sin coincidencias verificables",discoveredFrom:"klevu"};
   }
-  const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,3);
+  const candidateLimit=(supplierId==="dentaltix"||supplierId==="dentalcost")?1:3;
+  const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
   if(!discovered.urls.length)return {offers:[] as SupplierOffer[],error:discovered.error??"Sin resultados",discoveredFrom:discovered.searchUrl};
   const pages=await Promise.all(discovered.urls.map(async productUrl=>{
     try{return await fetchSupplierUrl(supplierId,productUrl,fetchImpl);}
