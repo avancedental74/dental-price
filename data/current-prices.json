@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "supplierId": "dentaltix",
+    "supplierSku": "053M4910A3B",
+    "manufacturer": "Solventum",
+    "manufacturerReference": "4910A3B",
+    "rawName": "1 Jer. de 3 gr - Color: A3 Body",
+    "normalizedName": "filtek supreme xte composite restaurador universal - solventum 1 jer. de 3 g - color a3 body solventum",
+    "productUrl": "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer?sku=053M4910A3B",
+    "presentation": "Jeringa",
+    "quantity": 3,
+    "unit": "g",
+    "packCount": 1,
+    "variant": "Body",
+    "shade": "A3",
+    "stockStatus": "in_stock",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 32 min.",
+    "regularPrice": 64.14,
+    "salePrice": 44.9,
+    "vatStatus": "excluded",
+    "vatRate": 10,
+    "currency": "EUR",
+    "shippingCost": 4.95,
+    "shippingCostVatIncluded": false,
+    "shippingVatRate": 21,
+    "freeShippingThreshold": 100,
+    "freeShippingThresholdBasis": "net",
+    "deliveryZone": "ES_PENINSULA",
+    "observedAt": "2026-10-07T10:29:47.407Z",
+    "sourceStatus": "normal"
+  }
+]

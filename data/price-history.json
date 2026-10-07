@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "id": "filtek-xte-4910a3b::dentaltix::053M4910A3B::1::2026-10-07T10:29:47.407Z",
+    "productId": "filtek-xte-4910a3b",
+    "supplierId": "dentaltix",
+    "supplierSku": "053M4910A3B",
+    "observedAt": "2026-10-07T10:29:47.407Z",
+    "lastSeenAt": "2026-10-07T10:29:47.407Z",
+    "seenCount": 1,
+    "requestedQuantity": 1,
+    "regularPrice": 64.14,
+    "salePrice": 44.9,
+    "effectiveUnitCost": 55.38,
+    "effectiveTotalCost": 55.38,
+    "stockStatus": "in_stock",
+    "shippingCost": 4.95,
+    "presentation": "Jeringa",
+    "quantity": 3,
+    "unit": "g",
+    "packCount": 1,
+    "sourceUrl": "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer?sku=053M4910A3B"
+  }
+]
