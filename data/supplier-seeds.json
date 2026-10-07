@@ -748,5 +748,11 @@
     "supplierId": "dentalcost",
     "url": "https://www.dentalcost.es/composites-universales/8951-filtek-composite-universal-restorative-jeringa-reposicion-4-g-3m.html",
     "acquisitionMode": "direct"
+  },
+  {
+    "productId": "scotchbond-universal-plus-41294",
+    "supplierId": "dvd-dental",
+    "url": "https://www.dvd-dental.com/adhesivo-scotchbond-universal-plus-5ml/",
+    "acquisitionMode": "direct"
   }
 ]
