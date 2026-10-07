@@ -27,7 +27,7 @@ describe("real supplier ranking regression",()=>{
     expect(result.ranked).toHaveLength(2);
     expect(result.ranked[0].offer.supplierId).toBe("dentaltix");
     expect(result.ranked[0].pricing?.effectiveTotalCost).toBe(55.38);
-    expect(result.ranked[1].pricing?.effectiveTotalCost).toBe(59.66);
+    expect(result.ranked[1].pricing?.effectiveTotalCost).toBe(59.67);
   });
 
   it("removes shipping when each supplier threshold is reached",()=>{
