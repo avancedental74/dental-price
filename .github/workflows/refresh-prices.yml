@@ -1,0 +1,41 @@
+name: Refresh public prices
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+  push:
+    paths:
+      - ".github/workflows/refresh-prices.yml"
+      - "scripts/refresh-prices.ts"
+      - "data/supplier-seeds.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-public-prices
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.13.1"
+      - run: npm install
+      - run: npm run refresh
+      - run: npm run validate:data
+      - name: Commit changed public data
+        run: |
+          if git diff --quiet -- data public/data; then
+            echo "No data changes"
+            exit 0
+          fi
+          git config user.name "dental-price-bot"
+          git config user.email "dental-price-bot@users.noreply.github.com"
+          git add data public/data
+          git commit -m "data: refresh public supplier prices"
+          git push
