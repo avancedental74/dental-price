@@ -70,6 +70,24 @@ describe("DentalCost connector",()=>{
     expect(offer?.packCount).toBe(1);
     expect(offer?.shade).toBe("A3");
   });
+  it("normalizes Filtek Z250 6021 capsules as 20 x 0.2 g and not as syringes",()=>{
+    const z250Caps=`<html><body>
+      <h1>Filtek Z250 Composite Universal 20 Cápsulas Reposición 0,20gr. 3M Espe</h1>
+      <div>Solventum Precio sin IVA 63,17 € Precio con IVA (10%) 69,49 €</div>
+      <div>Filtek Z250 Composite Universal 20 Cápsulas Reposición 0,20gr. 3M Espe: A3
+      Ref: 02813M2 Ref fabricante: 6021A3 Disponibilidad: 11uds 63,17 €</div>
+    </body></html>`;
+    const offers=normalizeDentalCost(parseDentalCostProductHtml(z250Caps,"https://www.dentalcost.es/composites-universales/281-demo.html"));
+    const offer=offers.find(o=>o.manufacturerReference==="6021A3");
+    expect(offer?.presentation).toBe("Cápsulas");
+    expect(offer?.quantity).toBe(0.2);
+    expect(offer?.unit).toBe("g");
+    expect(offer?.packCount).toBe(20);
+    expect(offer?.variant).toBe("Capsule");
+    expect(offer?.shade).toBe("A3");
+    expect(offer?.stockStatus).toBe("in_stock");
+  });
+
   it("normalizes Adper Scotchbond 1XT 4242 as a 6 ml bottle",()=>{
     const adper=`<html><body>
       <h1>Adper Scotchbond 1XT Adhesivo Reposición 6ml. 3M Espe</h1>
