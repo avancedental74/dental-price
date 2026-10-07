@@ -12,7 +12,7 @@ function normalizeStock(value?: string): StockStatus {
 
 function inferPresentation(value: string): string | undefined {
   if (/jeringa|\bjer\.|\bsyr\.?\b|syringe/i.test(value)) return "Jeringa";
-  if (/\bcap\.|cápsul|capsul/i.test(value)) return "Cápsulas";
+  if (/\bcap\.|\bcaps?\.?\b|cápsul|capsul/i.test(value)) return "Cápsulas";
   if (/caja/i.test(value)) return "Caja";
   if (/kit/i.test(value)) return "Kit";
   return undefined;
