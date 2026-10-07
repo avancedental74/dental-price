@@ -4,11 +4,11 @@ const STOP=new Set(["composite","universal","adhesivo","cemento","reposicion","r
 function tokens(value:string):string[]{return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim().split(/\s+/).filter(t=>t.length>=3&&!STOP.has(t));}
 
 export function promotionTextMatchesProduct(promotionText:string,productTitle:string):boolean{
-  const p=new Set(tokens(promotionText));
+  const localBlock=promotionText.slice(0,220);
+  const p=new Set(tokens(localBlock));
   const title=tokens(productTitle);
   if(!title.length) return false;
   const hits=title.filter(t=>p.has(t));
-  if(title[0] && p.has(title[0])) return true;
   return hits.length>=Math.min(2,title.length);
 }
 
