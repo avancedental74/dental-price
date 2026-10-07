@@ -3,7 +3,7 @@ import type { BasketOptimizationResult } from "../domain/basket";
 
 export interface BasketUiItem { product:CanonicalProduct; quantity:number; }
 
-export function BasketPanel({items,result,onChangeQuantity,onRemove}:{items:BasketUiItem[];result:BasketOptimizationResult|null;onChangeQuantity:(id:string,q:number)=>void;onRemove:(id:string)=>void}){
+export function BasketPanel({items,result,error,onChangeQuantity,onRemove}:{items:BasketUiItem[];result:BasketOptimizationResult|null;error:string|null;onChangeQuantity:(id:string,q:number)=>void;onRemove:(id:string)=>void}){
   if(!items.length) return null;
   return <section className="card">
     <div className="section-head"><div><p className="eyebrow">CESTA OPTIMIZADA</p><h3>Compra conjunta</h3></div><span>{items.length} productos</span></div>
@@ -14,7 +14,8 @@ export function BasketPanel({items,result,onChangeQuantity,onRemove}:{items:Bask
         <button type="button" onClick={()=>onRemove(item.product.id)}>Quitar</button>
       </div>
     )}</div>
-    {!result?.total && <p className="manual-note">No se puede optimizar todavía: falta al menos una oferta comprable para {result?.missingProductIds.length??0} producto(s).</p>}
+    {error && <p className="manual-note">{error}</p>}
+    {!error && !result?.total && <p className="manual-note">No se puede optimizar todavía: falta al menos una oferta comprable para {result?.missingProductIds.length??0} producto(s).</p>}
     {result?.total!=null && <>
       <div className="basket-total"><span>Coste total optimizado</span><strong>{result.total.toFixed(2)} €</strong></div>
       <div className="basket-suppliers">{result.suppliers.map(s=><div key={s.supplierId}><strong>{s.supplierId}</strong><span>{s.lines} líneas · mercancía {s.merchandiseGross.toFixed(2)} € · portes {s.shipping.toFixed(2)} € · <b>{s.total.toFixed(2)} €</b></span></div>)}</div>
