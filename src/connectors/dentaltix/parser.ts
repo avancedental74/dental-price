@@ -8,16 +8,6 @@ function parseEuro(value?: string): number | undefined {
   return Number.isFinite(number) ? number : undefined;
 }
 
-function extractLabeledValue(bodyText: string, labels: string[]): string | undefined {
-  for (const label of labels) {
-    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(escaped + "\\s*:?\\s*([A-Za-z0-9._/-]+)", "i");
-    const match = bodyText.match(regex);
-    if (match?.[1]) return match[1].trim();
-  }
-  return undefined;
-}
-
 function stockFromText(value?: string): string | undefined {
   if (!value) return undefined;
   const normalized = value.replace(/\s+/g, " ").trim();
@@ -97,7 +87,6 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
   const jsonLd = parseJsonLd($);
   const productLd = jsonLd.find(item => item["@type"] === "Product");
   const brand = productLd?.brand as Record<string, unknown> | string | undefined;
-  const offers = productLd?.offers as Record<string, unknown> | undefined;
   const title = $("h1").first().text().replace(/\s+/g, " ").trim() || (typeof productLd?.name === "string" ? productLd.name : "Producto Dentaltix");
   const manufacturer = $(" .product-brand, .brand, [itemprop=\"brand\"]").first().text().replace(/\s+/g, " ").trim() || (typeof brand === "string" ? brand : typeof brand?.name === "string" ? String(brand.name) : bodyText.match(/Marca\s*:?\s*([A-Za-z0-9 .&-]+)/i)?.[1]?.trim());
   const urlSku = (() => { try { return new URL(productUrl).searchParams.get("sku") ?? undefined; } catch { return undefined; } })();
