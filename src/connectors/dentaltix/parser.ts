@@ -94,6 +94,21 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
   const vatRate = vatMatch ? Number(vatMatch[1]) : undefined;
   const vatIncludedPrice = vatMatch ? parseEuro(vatMatch[2]) : undefined;
   const stockMatch = bodyText.match(/(Solo quedan[^.]+\.|En stock[^.]+\.|Entrega[^.]+\.|No disponible[^.]*\.?)/i)?.[1];
+  const parsedVariants = extractVariants($, productUrl);
+  if (!parsedVariants.length && pageManufacturerReference) {
+    const selectedType = bodyText.match(/(?:Type|Tipo)\s*:\s*([^€]{3,80}?)(?=\s+\d{1,4}(?:[.,]\d{2})?\s*€|\s+IN STOCK|\s+En stock|$)/i)?.[1]?.trim();
+    if (selectedType) {
+      parsedVariants.push({
+        title: selectedType,
+        supplierSku: pageSupplierSku,
+        manufacturerReference: pageManufacturerReference,
+        regularPrice,
+        salePrice,
+        rawStockText: stockFromText(stockMatch),
+        productUrl
+      });
+    }
+  }
   return {
     title,
     manufacturer: manufacturer || undefined,
@@ -105,6 +120,6 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
     vatRate,
     rawStockText: stockFromText(stockMatch),
     productUrl,
-    variants: extractVariants($, productUrl)
+    variants: parsedVariants
   };
 }
