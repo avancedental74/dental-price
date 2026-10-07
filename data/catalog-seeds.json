@@ -1,0 +1,20 @@
+[
+  {
+    "productId": "filtek-xte-a3-body-3g",
+    "supplierId": "dentaltix",
+    "manufacturerReference": "4910A3B",
+    "url": "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer"
+  },
+  {
+    "productId": "filtek-xte-a3-body-3g",
+    "supplierId": "proclinic",
+    "manufacturerReference": "4910A3B",
+    "url": "https://www.proclinic.es/tienda/filtek-supreme-xte-jeringa-b2-body.html"
+  },
+  {
+    "productId": "filtek-z250-a3-caps-20",
+    "supplierId": "dental-iberica",
+    "manufacturerReference": "6021A3",
+    "url": "https://dentaliberica.com/es/filtek-z250-capsula-20-x-02-g"
+  }
+]
