@@ -17,6 +17,8 @@ import { WinnerCard } from "../components/WinnerCard";
 import { ManualOfferPanel } from "../components/ManualOfferPanel";
 import { SearchCandidates } from "../components/SearchCandidates";
 import { MetricsPanel } from "../components/MetricsPanel";
+import { BasketPanel, type BasketUiItem } from "../components/BasketPanel";
+import { optimizeBasket } from "../domain/basket";
 import { loadPublicData, type PublicData } from "../services/public-data";
 import { loadManualHistory, loadManualOffers, saveManualHistory, saveManualOffers } from "../services/manual-offers";
 
@@ -29,6 +31,7 @@ export function App(){
   const [searchCandidates,setSearchCandidates]=useState<ProductSearchResult[]>([]);
   const [manualOffers,setManualOffers]=useState<SupplierOffer[]>(()=>loadManualOffers());
   const [manualHistory,setManualHistory]=useState<PriceObservation[]>(()=>loadManualHistory());
+  const [basket,setBasket]=useState<BasketUiItem[]>([]);
 
   useEffect(()=>{
     loadPublicData().then(d=>{setData(d);setSelected(d.products[0]??null);}).catch(e=>setError(e instanceof Error?e.message:"Error cargando datos"));
@@ -46,6 +49,15 @@ export function App(){
   },[data,selected,manualOffers]);
 
   const comparison=useMemo(()=>selected?compareSupplierOffers(selected,candidates,quantity):null,[selected,candidates,quantity]);
+  const allOffers=useMemo(()=>data?[...data.offers,...manualOffers]:manualOffers,[data,manualOffers]);
+  const basketResult=useMemo(()=>{
+    if(!data||!basket.length) return null;
+    return optimizeBasket(basket.map(item=>({
+      product:item.product,
+      quantity:item.quantity,
+      offers:allOffers.filter(o=>normalizeReference(o.manufacturerReference)===normalizeReference(item.product.manufacturerReference))
+    })));
+  },[data,basket,allOffers]);
   const winner=comparison?.ranked[0];
   const history=useMemo(()=>data&&selected&&winner?[...data.history,...manualHistory].filter(h=>h.productId===selected.id&&h.requestedQuantity===quantity&&h.supplierId===winner.offer.supplierId):[],[data,selected,quantity,winner,manualHistory]);
   const stats=useMemo(()=>calculateHistoryStats(history),[history]);
@@ -84,6 +96,16 @@ export function App(){
       setSelected(null);
     }
   };
+  const addSelectedToBasket=()=>{
+    if(!selected) return;
+    setBasket(items=>{
+      const existing=items.find(x=>x.product.id===selected.id);
+      return existing ? items.map(x=>x.product.id===selected.id?{...x,quantity:x.quantity+quantity}:x) : [...items,{product:selected,quantity}];
+    });
+  };
+  const changeBasketQuantity=(id:string,q:number)=>setBasket(items=>items.map(x=>x.product.id===id?{...x,quantity:q}:x));
+  const removeBasketItem=(id:string)=>setBasket(items=>items.filter(x=>x.product.id!==id));
+
   const onSelectCandidate=(id:string)=>{
     if(!data) return;
     setSelected(data.products.find(p=>p.id===id)??null);
@@ -107,12 +129,13 @@ export function App(){
     <SearchCandidates items={searchCandidates} onSelect={onSelectCandidate}/>
     {!selected && searchCandidates.length===0 && query && <section className="card"><p className="eyebrow">SIN COINCIDENCIA</p><h2>No hay un producto del catálogo que coincida suficientemente con “{query}”.</h2><p>No se inventan equivalencias. Prueba con nombre, referencia de fabricante o EAN.</p></section>}
 
-    {selected && <section className="product-head card"><div><p className="eyebrow">PRODUCTO CANÓNICO</p><h2>{selected.family}{selected.shade?` · ${selected.shade}`:""}{selected.variant?` ${selected.variant}`:""}</h2><p>{selected.presentation} {selected.quantity} {selected.unit} · Ref. {selected.manufacturerReference??"—"}</p></div><span className="query-chip">{query||selected.normalizedName}</span></section>}
+    {selected && <section className="product-head card"><div><p className="eyebrow">PRODUCTO CANÓNICO</p><h2>{selected.family}{selected.shade?` · ${selected.shade}`:""}{selected.variant?` ${selected.variant}`:""}</h2><p>{selected.presentation} {selected.quantity} {selected.unit} · Ref. {selected.manufacturerReference??"—"}</p></div><div className="product-actions"><span className="query-chip">{query||selected.normalizedName}</span><button type="button" onClick={addSelectedToBasket}>Añadir {quantity} a cesta</button></div></section>}
 
     {selected && !winner && <section className="card"><p className="eyebrow">COMPARACIÓN</p><h2>Aún no hay una oferta elegible como ganadora.</h2><p>Puede deberse a falta de IVA/portes confirmados, datos antiguos, stock no disponible, anomalías o matching insuficiente.</p></section>}
     {winner && <WinnerCard item={winner}/>} 
     {comparison && <ComparisonTable items={comparison.matches}/>} 
     {selected && <HistoryPanel history={history} stats={stats}/>} 
+    <BasketPanel items={basket} result={basketResult} onChangeQuantity={changeBasketQuantity} onRemove={removeBasketItem}/>
     <ManualOfferPanel product={selected} offers={manualOffers} onChange={onManualOffersChange} onRecord={onManualObservation}/>
     <ConnectorStatusPanel items={data.connectors}/>
     <footer>Mejor precio encontrado entre los proveedores consultados · España peninsular · Nunca se inventan IVA, portes ni equivalencias.</footer>
