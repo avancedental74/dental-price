@@ -59,4 +59,8 @@ jobs:
           console.log("DVD HTTP",r.status,"LEN",html.length);
           const patterns=[/klevu.{0,500}/gi,/apiKey.{0,300}/gi,/searchUrl.{0,300}/gi,/cloudSearchUrl.{0,300}/gi,/restapi.{0,300}/gi];
           for(const re of patterns)console.log(String(re),JSON.stringify((html.match(re)||[]).slice(0,20),null,2));
+          const optionStart=html.indexOf("var options");
+          console.log("DVD KLEVU OPTIONS",optionStart>=0?html.slice(optionStart,optionStart+3000).replace(/\s+/g," "):"none");
+          const searchEndpoint=html.match(/search\s*:\s*['"]([^'"]*ksearchnet[^'"]*)['"]/i)?.[1];
+          console.log("DVD KLEVU ENDPOINT",searchEndpoint||"none");
           NODE
