@@ -40,3 +40,4 @@ jobs:
           git commit -m "data: update connector health"
           git pull --rebase origin main
           git push origin HEAD:main
+# manual-current-state-trigger
