@@ -36,5 +36,19 @@ export function parseDentalCostProductHtml(html:string,productUrl:string):Dental
       productUrl
     });
   }
+
+  const mainSku=body.match(/(?:Referencia|Ref):\s*([A-Za-z0-9._/-]+)/i)?.[1];
+  const mainManufacturerRef=body.match(/Ref\.?\s*Fabricante:\s*([A-Za-z0-9._/-]+)/i)?.[1];
+  if(mainManufacturerRef && mainManufacturerRef!=="0" && !seen.has(mainManufacturerRef) && salePrice){
+    const stockText=body.match(/Disponibilidad:\s*([^€]{1,120}?)(?=\s+(?:Ref:|Más info|DESCRIPCIÓN|CARACTERISTICAS|CONTENIDO|$))/i)?.[1];
+    variants.push({
+      title,
+      supplierSku:mainSku,
+      manufacturerReference:mainManufacturerRef,
+      stockText:stockText?clean(stockText):undefined,
+      price:salePrice,
+      productUrl
+    });
+  }
   return {title,manufacturer:manufacturer||undefined,vatRate,regularPrice,salePrice,variants,productUrl};
 }
