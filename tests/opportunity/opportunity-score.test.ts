@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import { calculateOpportunityScore } from "../../src/domain/opportunity";
 
 const base={
-  currentPrice:40,average30d:45,average90d:46,min90d:38,max90d:55,historicalMin:35,historicalMax:60,observations30d:4,observations90d:8,observationsTotal:12
+  currentPrice:40,average30d:45,average90d:46,min90d:38,max90d:55,historicalMin:35,historicalMax:60,observations30d:4,observations90d:8,observationsTotal:12,coverageDays30:28,coverageDays90:60,coverageDaysTotal:90
 };
 
 describe("Opportunity Score",()=>{
   it("returns insufficient when history is too short",()=>{
-    const r=calculateOpportunityScore({stats:{...base,observationsTotal:2},currentPrice:40,isFresh:true,inStock:true,hasActivePromotion:false});
+    const r=calculateOpportunityScore({stats:{...base,observationsTotal:2,coverageDaysTotal:10,coverageDays90:10},currentPrice:40,isFresh:true,inStock:true,hasActivePromotion:false});
     expect(r.score).toBeNull();
     expect(r.label).toBe("insuficiente");
   });
