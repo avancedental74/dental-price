@@ -48,7 +48,7 @@ function variantToOffer(raw:DentaltixProductRaw,variant:DentaltixVariantRaw):Sup
     regularPrice:variant.regularPrice??variant.salePrice??raw.regularPrice??raw.salePrice??0,
     salePrice:variant.salePrice??raw.salePrice,
     vatStatus:typeof raw.vatRate==="number"?"excluded":"unknown",vatRate:raw.vatRate,currency:"EUR",
-    promotion:extractPromotionFromText(variant.title+" "+raw.title),
+    promotion:extractPromotionFromText([variant.title,raw.title,raw.promotionText??""].join(" ")),
     observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"
   };
 }
@@ -64,7 +64,7 @@ export function normalizeDentaltix(raw:DentaltixProductRaw):SupplierOffer[]{
     stockStatus:normalizeStock(raw.rawStockText),rawStockText:raw.rawStockText,
     regularPrice:raw.regularPrice??raw.salePrice??0,salePrice:raw.salePrice,
     vatStatus:typeof raw.vatRate==="number"?"excluded":"unknown",vatRate:raw.vatRate,currency:"EUR",
-    promotion:extractPromotionFromText(raw.title),
+    promotion:extractPromotionFromText([raw.title,raw.promotionText??""].join(" ")),
     observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"
   };
   return single.regularPrice>0||(single.salePrice??0)>0?[single]:[];
