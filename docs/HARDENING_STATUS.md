@@ -4,20 +4,22 @@ Fecha: 2026-10-07
 
 ## Estado real
 
-La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **74 ofertas automáticas**, **88 observaciones históricas** y **0 falsos EXACT** en validación.
+La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **93 ofertas automáticas**, **109 observaciones históricas** y **0 falsos EXACT** en validación.
 
 ## Cobertura automática actual
 
-- **Dentaltix: 32 ofertas verdes / EXACT**
+- **Dentaltix: 42 ofertas verdes / EXACT**
   - 13 variantes Filtek Supreme XTE.
+  - 10 variantes Filtek Universal Restorative jeringa de 4 g.
   - 7 variantes Filtek Z250 jeringa de 4 g.
   - 4 variantes RelyX Universal.
   - Scotchbond Universal Plus `41294`.
   - Adper Scotchbond 1XT `4242`.
   - 4 tallas de guantes Santex nitrilo negro: XS, S, M y L.
   - 2 referencias Peeso 28 mm: Nº1 y Nº2.
-- **DentalCost: 42 ofertas verdes / EXACT**
+- **DentalCost: 51 ofertas verdes / EXACT**
   - 24 variantes Filtek Supreme XTE Body, Dentin y Enamel.
+  - 9 variantes Filtek Universal Restorative jeringa de 4 g; `6555XW` no aparece en la ficha pública actual.
   - 10 variantes Filtek Z250 jeringa de 4 g.
   - 4 variantes RelyX Universal.
   - Scotchbond Universal Plus `41294`.
@@ -63,7 +65,7 @@ Ejemplos verificados:
 
 ### DentalCost
 
-Automatización operativa. Las fichas públicas exponen referencias de fabricante, referencia del depósito, stock y precio por variante. Se han validado 24 variantes Filtek Supreme XTE, 10 Filtek Z250 jeringa, 4 RelyX Universal, Scotchbond Universal Plus 41294, Adper Scotchbond 1XT 4242 y 2 referencias Peeso 28 mm. El transporte se modela como 5,80 € antes de IVA y envío gratuito desde 120 € IVA incluido. En determinadas fichas simples, como Adper 4242 y Scotchbond Universal Plus 41294, el parser obtiene identidad y precio exactos pero no stock fiable; esas ofertas no pueden ganar el ranking hasta confirmar stock.
+Automatización operativa. Las fichas públicas exponen referencias de fabricante, referencia del depósito, stock y precio por variante. Se han validado 24 variantes Filtek Supreme XTE, 10 Filtek Z250 jeringa, 4 RelyX Universal, Scotchbond Universal Plus 41294, Adper Scotchbond 1XT 4242 y 2 referencias Peeso 28 mm. El transporte se modela como 5,80 € antes de IVA y envío gratuito desde 120 € IVA incluido. El parser de fichas simples recupera identidad, precio y stock. En el último refresh Adper 4242 y Scotchbond Universal Plus 41294 quedaron con stock confirmado y pueden competir en el ranking.
 
 ### DVD Dental
 
@@ -101,7 +103,7 @@ Si una fuente no puede verificarse automáticamente, Dental Price debe mostrar a
 1. No existe discovery arbitrario de todo el catálogo; la búsqueda opera sobre catálogo canónico curado.
 2. Proclinic y Dental Ibérica requieren API/feed/autorización o verificación manual.
 3. DVD requiere una vía fiable para resolver variante→SKU/precio antes de volver a automatización.
-4. Dentaltix y DentalCost deben ampliar progresivamente categorías y referencias, priorizando familias compartidas con referencia de fabricante idéntica. AIR-N-GO en DentalCost quedó fuera de la automatización porque esa ficha devuelve HTTP 404 desde GitHub Actions aunque sea visible públicamente.
+4. Dentaltix y DentalCost deben ampliar progresivamente categorías y referencias, priorizando familias compartidas con referencia de fabricante idéntica. Filtek Universal Restorative ya aporta 9 referencias comparables entre ambos; `6555XW` permanece solo en Dentaltix mientras DentalCost no la publique. AIR-N-GO en DentalCost quedó fuera de la automatización porque esa ficha devuelve HTTP 404 desde GitHub Actions aunque sea visible públicamente.
 5. Opportunity Score necesita más días de histórico real para ser estadísticamente útil.
 6. Precios negociados, facturas e inventario interno están fuera del V1 público.
 7. Optimización matemática de cesta multi-proveedor queda para la siguiente fase.
