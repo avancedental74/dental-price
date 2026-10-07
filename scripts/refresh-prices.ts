@@ -11,7 +11,7 @@ import { appendObservation } from "../src/domain/history";
 import { supplierOfferSchema } from "../src/domain/schemas";
 
 type Seed={productId:string;supplierId:string;url:string};
-type PriceEntry={productId:string;offer:SupplierOffer;matchStatus:string;matchScore:number};
+type PriceEntry={productId:string;offer:SupplierOffer;matchStatus:string;matchScore:number;collectionMode?:"automatic"|"manual_verified"|"last_known"};
 
 async function json<T>(path:string):Promise<T>{ return JSON.parse(await readFile(path,"utf8")) as T; }
 const sleep=(ms:number)=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -19,6 +19,8 @@ const sleep=(ms:number)=>new Promise(resolve=>setTimeout(resolve,ms));
 const products=await json<CanonicalProduct[]>("data/products.json");
 const seeds=await json<Seed[]>("data/supplier-seeds.json");
 let history=await json<PriceObservation[]>("data/price-history.json");
+let previousCurrent:{generatedAt:string|null;entries:PriceEntry[]}={generatedAt:null,entries:[]};
+try{ previousCurrent=await json("data/current-prices.json"); }catch{}
 const productMap=new Map(products.map(p=>[p.id,p]));
 
 const uniquePages=[...new Map(seeds.map(s=>[s.supplierId+"|"+s.url,s])).values()];
@@ -40,12 +42,15 @@ for(const page of uniquePages){
     pageResults.set(key,offers);
     status[page.supplierId]={status:offers.length?"green":"amber",checkedAt,message:offers.length+" offer(s) parsed"};
   }catch(error){
-    status[page.supplierId]={status:"red",checkedAt,message:error instanceof Error?error.message:"Unknown error"};
+    const message=error instanceof Error?error.message:"Unknown error";
+    failedPageKeys.add(key);
+    status[page.supplierId]={status:message.includes("HTTP 405")?"amber":"red",checkedAt,message:message.includes("HTTP 405")?"Automated access unavailable (HTTP 405); retaining last verified snapshot":message};
   }
   await sleep(1200);
 }
 
 const entries:PriceEntry[]=[];
+const failedPageKeys=new Set<string>();
 for(const seed of seeds){
   const product=productMap.get(seed.productId);
   if(!product) continue;
@@ -65,7 +70,7 @@ for(const seed of seeds){
   );
   const offer=applyAnomalyStatus(best.offer,previous);
   supplierOfferSchema.parse(offer);
-  entries.push({productId:product.id,offer,matchStatus:best.match.status,matchScore:best.match.score});
+  entries.push({productId:product.id,offer,matchStatus:best.match.status,matchScore:best.match.score,collectionMode:"automatic"});
 
   let effectiveUnitCost: number|undefined;
   let effectiveTotalCost: number|undefined;
@@ -75,6 +80,13 @@ for(const seed of seeds){
     if(!incomplete){ effectiveUnitCost=pricing.effectiveUnitCost; effectiveTotalCost=pricing.effectiveTotalCost; }
   }catch{}
   history=appendObservation(history,product.id,offer,effectiveUnitCost,effectiveTotalCost,1).history;
+}
+
+for(const seed of seeds){
+  const pageKey=seed.supplierId+"|"+seed.url;
+  if(!failedPageKeys.has(pageKey)) continue;
+  const old=previousCurrent.entries.find(e=>e.productId===seed.productId && e.offer.supplierId===seed.supplierId);
+  if(old && !entries.some(e=>e.productId===old.productId && e.offer.supplierId===old.offer.supplierId)) entries.push({...old,collectionMode:"last_known"});
 }
 
 const generatedAt=new Date().toISOString();
