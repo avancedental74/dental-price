@@ -7,6 +7,7 @@ export interface DentalCostVariantRaw {
   stockText?:string;
   price?:number;
   productUrl:string;
+  promotionText?:string;
 }
 export interface DentalCostProductRaw {
   title:string;
