@@ -3,5 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/dental-price/"
+  base: process.env.VITE_BASE ?? "/dental-price/"
 });
