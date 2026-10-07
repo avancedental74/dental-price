@@ -132,7 +132,7 @@ export function App(){
   const onManualObservation=(offer:SupplierOffer)=>{
     if(!selected)return;
     let unitCost:number|undefined,totalCost:number|undefined;
-    try{const pricing=calculatePricing(offer,{requestedQuantity:quantity,includeVat:true});const incomplete=pricing.warnings.some(w=>w.includes("no confirmado")||w.includes("desconocida"));if(!incomplete){unitCost=pricing.effectiveUnitCost;totalCost=pricing.effectiveTotalCost;}}catch{}
+    try{const pricing=calculatePricing(offer,{requestedQuantity:quantity,includeVat:true});const incomplete=pricing.warnings.some(w=>w.includes("no confirmado")||w.includes("desconocida"));if(!incomplete){unitCost=pricing.effectiveUnitCost;totalCost=pricing.effectiveTotalCost;}}catch{ /* ignored: fallback path continues */ }
     const tagged={...offer,verificationKind:"manual" as const};
     const next=appendObservation(manualHistory,historyProductId??selected.id,tagged,unitCost,totalCost,quantity).history;
     setManualHistory(next);saveManualHistory(next);
