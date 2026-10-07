@@ -14,10 +14,10 @@
     "variant": "Body",
     "shade": "A3",
     "stockStatus": "in_stock",
-    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 26 min.",
+    "rawStockText": "Entrega más rápida el jueves, 8 de octubre si haces tu pedido en las próximas 2 h y 24 min.",
     "regularPrice": 64.14,
     "salePrice": 44.9,
-    "vatStatus": "included",
+    "vatStatus": "excluded",
     "vatRate": 10,
     "currency": "EUR",
     "shippingCost": 4.95,
@@ -26,7 +26,7 @@
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
     "deliveryZone": "ES_PENINSULA",
-    "observedAt": "2026-10-07T10:33:18.187Z",
+    "observedAt": "2026-10-07T10:35:53.946Z",
     "sourceStatus": "normal"
   }
 ]
