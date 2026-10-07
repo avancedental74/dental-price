@@ -64,3 +64,5 @@ jobs:
 
           echo "Could not publish refreshed data after 3 attempts"
           exit 1
+
+# verified-current-state
