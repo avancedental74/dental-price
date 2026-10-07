@@ -84,6 +84,8 @@ export interface SupplierOffer {
   shippingVatRate?: number;
   freeShippingThreshold?: number;
   freeShippingThresholdBasis?: ShippingThresholdBasis;
+  smallOrderThreshold?: number;
+  smallOrderSurcharge?: number;
   shippingPolicyObservedAt?: string;
   shippingPolicySourceUrl?: string;
   deliveryZone?: "ES_PENINSULA" | "ES_BALEARES" | "ES_CANARIAS" | "ES_CEUTA_MELILLA" | "OTHER";
