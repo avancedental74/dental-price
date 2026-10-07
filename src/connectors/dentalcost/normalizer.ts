@@ -13,12 +13,15 @@ function stock(text?:string):StockStatus{
 function presentation(text:string):string|undefined{
   if(/jeringa/i.test(text)) return "Jeringa";
   if(/c[aá]psul/i.test(text)) return "Cápsulas";
-  if(/caja/i.test(text)) return "Caja";
+  if(/caja|peeso|fresa/i.test(text)) return "Caja";
+  if(/air[- ]?n[- ]?go|polvo|bicarbonato|botes?|frascos?/i.test(text)) return "Frasco";
 }
 function quantity(text:string){const m=text.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i);return m?{quantity:Number(m[1].replace(",",".")),unit:m[2].toLowerCase()==="gr"?"g":m[2].toLowerCase()}:{};}
-function pack(text:string):number|undefined{return Number(text.match(/(\d+)\s*(?:c[aá]psulas?|uds?)/i)?.[1])||undefined;}
+function pack(text:string):number|undefined{return Number(text.match(/(\d+)\s*(?:c[aá]psulas?|uds?|unidades|botes?|frascos?)/i)?.[1])||undefined;}
 function shade(ref?:string,text=""):string|undefined{return ref?.match(/^4910([A-Z]+\d(?:\.5)?)/i)?.[1]?.toUpperCase() ?? text.match(/:\s*([A-Z]\d(?:[,.]5)?|B\d|C\d|D\d)\b/i)?.[1]?.replace(",",".").toUpperCase();}
 function variant(ref?:string,text=""):string|undefined{
+  const peeso=text.match(/(?:n[ºo°]\s*|numero\s*)([1-6])\b/i)?.[1];
+  if(peeso) return "No"+peeso;
   const s=ref?.match(/^4910.+([BDE])$/i)?.[1]?.toUpperCase();
   if(s==="B"||/body/i.test(text)) return "Body";
   if(s==="D"||/dentina/i.test(text)) return "Dentin";
