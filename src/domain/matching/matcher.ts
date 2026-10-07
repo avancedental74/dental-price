@@ -93,7 +93,7 @@ export function matchOfferToProduct(product: CanonicalProduct, offer: SupplierOf
     if (matched) rawScore += weight;
     else if (actual) {
       hardReject = true;
-      conflicts.push(label + " contradictorio");
+      conflicts.push(label === "Presentación" ? "Presentación contradictoria" : label === "Variante" ? "Variante contradictoria" : label + " contradictorio");
     }
   }
 
