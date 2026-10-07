@@ -81,8 +81,9 @@ export function parseDentaltixProductHtml(html: string, productUrl: string): Den
   const offers = productLd?.offers as Record<string, unknown> | undefined;
   const title = $("h1").first().text().replace(/\s+/g, " ").trim() || (typeof productLd?.name === "string" ? productLd.name : "Producto Dentaltix");
   const manufacturer = $(" .product-brand, .brand, [itemprop=\"brand\"]").first().text().replace(/\s+/g, " ").trim() || (typeof brand === "string" ? brand : typeof brand?.name === "string" ? String(brand.name) : bodyText.match(/Marca\s*:?\s*([A-Za-z0-9 .&-]+)/i)?.[1]?.trim());
-  const pageSupplierSku = $("[data-product-sku]").first().attr("data-product-sku") ?? $("[data-sku]").first().attr("data-sku") ?? extractLabeledValue(bodyText, ["Referencia", "Ref."]);
-  const pageManufacturerReference = extractLabeledValue(bodyText, ["Ref. Fabricante", "Ref. fab.", "Manufacturer Ref.", "Manuf. ref."]);
+  const urlSku = (() => { try { return new URL(productUrl).searchParams.get("sku") ?? undefined; } catch { return undefined; } })();
+  const pageSupplierSku = $("[data-product-sku]").first().attr("data-product-sku") ?? $("[data-sku]").first().attr("data-sku") ?? extractLabeledValue(bodyText, ["Referencia", "Ref."]) ?? urlSku;
+  const pageManufacturerReference = extractLabeledValue(bodyText, ["Ref. Fabricante", "Ref. fab.", "Manufacturer Ref.", "Manuf. ref."]) ?? (urlSku?.match(/^053M(.+)$/i)?.[1]);
   const allPrices = [...bodyText.matchAll(/(\d{1,4}(?:[.,]\d{2})?)\s*€/g)].map(m => parseEuro(m[1])).filter((v): v is number => typeof v === "number");
   let salePrice = typeof offers?.price === "string" || typeof offers?.price === "number" ? Number(String(offers.price).replace(",", ".")) : undefined;
   if (!Number.isFinite(salePrice)) salePrice = undefined;
