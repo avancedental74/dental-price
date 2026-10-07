@@ -10,26 +10,31 @@ const product:CanonicalProduct={
 
 describe("manual supplier offers",()=>{
   it("builds a traceable exact manual offer",()=>{
-    const offer=buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/producto",price:48.39,vatStatus:"excluded",vatRate:10,stockStatus:"in_stock",shippingCost:4.95,shippingVatRate:21,shippingCostVatIncluded:false});
+    const offer=buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/producto",manufacturerReference:"4910B2B",price:48.39,vatStatus:"excluded",vatRate:10,stockStatus:"in_stock",shippingCost:4.95,shippingVatRate:21,shippingCostVatIncluded:false});
     expect(offer.sourceMode).toBe("manual");
     expect(offer.manufacturerReference).toBe("4910B2B");
     expect(matchOfferToProduct(product,offer).status).toBe("EXACT");
   });
 
   it("cannot become economically complete when shipping is unknown",()=>{
-    const offer=buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/producto",price:48.39,vatStatus:"excluded",vatRate:10,stockStatus:"in_stock"});
+    const offer=buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/producto",manufacturerReference:"4910B2B",price:48.39,vatStatus:"excluded",vatRate:10,stockStatus:"in_stock"});
     const pricing=calculatePricing(offer,{requestedQuantity:1,includeVat:true});
     expect(pricing.warnings).toContain("Transporte no confirmado");
   });
 
   it("rejects zero prices and non-http URLs",()=>{
-    expect(()=>buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/producto",price:0,vatStatus:"included",stockStatus:"in_stock"})).toThrow();
-    expect(()=>buildManualOffer(product,{supplierId:"proclinic",productUrl:"javascript:alert(1)",price:10,vatStatus:"included",stockStatus:"in_stock"})).toThrow();
+    expect(()=>buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/producto",manufacturerReference:"4910B2B",price:0,vatStatus:"included",stockStatus:"in_stock"})).toThrow();
+    expect(()=>buildManualOffer(product,{supplierId:"proclinic",productUrl:"javascript:alert(1)",manufacturerReference:"4910B2B",price:10,vatStatus:"included",stockStatus:"in_stock"})).toThrow();
+  });
+
+  it("rejects a wrong supplier domain or observed manufacturer reference",()=>{
+    expect(()=>buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://example.com/producto",manufacturerReference:"4910B2B",price:10,vatStatus:"included",stockStatus:"in_stock"})).toThrow("proveedor seleccionado");
+    expect(()=>buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/producto",manufacturerReference:"4910A1B",price:10,vatStatus:"included",stockStatus:"in_stock"})).toThrow("no coincide");
   });
 
   it("upserts one offer per supplier and manufacturer reference",()=>{
-    const first=buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/a",price:50,vatStatus:"included",stockStatus:"in_stock",shippingCost:0,shippingCostVatIncluded:true});
-    const second=buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/b",price:49,vatStatus:"included",stockStatus:"in_stock",shippingCost:0,shippingCostVatIncluded:true});
+    const first=buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/a",manufacturerReference:"4910B2B",price:50,vatStatus:"included",stockStatus:"in_stock",shippingCost:0,shippingCostVatIncluded:true});
+    const second=buildManualOffer(product,{supplierId:"proclinic",productUrl:"https://www.proclinic.es/b",manufacturerReference:"4910B2B",price:49,vatStatus:"included",stockStatus:"in_stock",shippingCost:0,shippingCostVatIncluded:true});
     const result=upsertManualOffer([first],second);
     expect(result).toHaveLength(1);
     expect(result[0].regularPrice).toBe(49);
