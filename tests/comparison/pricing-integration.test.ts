@@ -7,7 +7,7 @@ const product: CanonicalProduct = {
 };
 
 function offer(id:string,price:number,extra:Partial<SupplierOffer>={}):SupplierOffer{
-  return {supplierId:id,manufacturerReference:"4910A3B",rawName:"Filtek Supreme XTE A3 Body jeringa 3 g",normalizedName:"filtek supreme xte a3 body syringe 3 g solventum",productUrl:"https://example.com/"+id,presentation:"Jeringa",quantity:3,unit:"g",packCount:1,variant:"Body",shade:"A3",stockStatus:"in_stock",regularPrice:price,vatStatus:"included",currency:"EUR",observedAt:new Date().toISOString(),sourceStatus:"normal",...extra};
+  return {supplierId:id,manufacturerReference:"4910A3B",rawName:"Filtek Supreme XTE A3 Body jeringa 3 g",normalizedName:"filtek supreme xte a3 body syringe 3 g solventum",productUrl:"https://example.com/"+id,presentation:"Jeringa",quantity:3,unit:"g",packCount:1,variant:"Body",shade:"A3",stockStatus:"in_stock",regularPrice:price,vatStatus:"included",currency:"EUR",shippingCost:0,observedAt:new Date().toISOString(),sourceStatus:"normal",...extra};
 }
 
 describe("comparison + pricing integration",()=>{
