@@ -40,9 +40,10 @@ export function compareSupplierOffers(
 ): ComparisonResult {
   const matches = offers.map((offer): MatchedSupplierOffer => {
     const match = matchOfferToProduct(product, offer);
-    let pricing = null;
-    try { pricing = calculatePricing(offer, { requestedQuantity: quantity, includeVat: true }); }
-    catch { pricing = null; }
+    const pricing = (() => {
+      try { return calculatePricing(offer, { requestedQuantity: quantity, includeVat: true }); }
+      catch { return null; }
+    })();
     const item: MatchedSupplierOffer = { product, offer, match, pricing, eligibleForRanking: false };
     item.eligibleForRanking = rankingEligible(item);
     return item;
