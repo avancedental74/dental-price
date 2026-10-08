@@ -21,12 +21,19 @@ function inferPresentation(value:string):string|undefined{
 function inferQuantity(value:string):{quantity?:number;unit?:string;packCount?:number}{
   const units=value.match(/(?:caja de\s*)?(\d+)\s*(?:uds?|unidades)\b/i);
   const capsules=value.match(/(?:caja de\s*)?(\d+)\s*(?:caps?\.?|c[aá]psulas?)\b/i);
+  const syringes=value.match(/(?:caja de\s*)?(\d+)\s*(?:jer\.?|jeringas?|syr\.?|syringes?)\b/i);
   const metric=value.match(/(?:de\s*)?(\d+(?:[.,]\d+)?)\s*(gr|g|ml|mm)\b/i);
   if(metric&&metric[2].toLowerCase()==="mm"&&units) return {quantity:Number(metric[1].replace(",",".")),unit:"mm",packCount:Number(units[1])};
   if(units&&!metric) return {quantity:Number(units[1]),unit:"ud",packCount:1};
-  return {quantity:metric?Number(metric[1].replace(",",".")):undefined,unit:metric?(metric[2].toLowerCase()==="gr"?"g":metric[2].toLowerCase()):undefined,packCount:capsules?Number(capsules[1]):metric?1:undefined};
+  return {
+    quantity:metric?Number(metric[1].replace(",",".")):undefined,
+    unit:metric?(metric[2].toLowerCase()==="gr"?"g":metric[2].toLowerCase()):undefined,
+    packCount:capsules?Number(capsules[1]):syringes?Number(syringes[1]):metric?1:undefined
+  };
 }
-function inferShade(value:string):string|undefined{return value.match(/\b(A\d(?:\.5)?|B\d(?:\.5)?|C\d(?:\.5)?|D\d(?:\.5)?)\b/i)?.[1]?.toUpperCase();}
+function inferShade(value:string):string|undefined{
+  return value.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?)\b/i)?.[1]?.replace(",",".").toUpperCase();
+}
 function inferVariant(value:string):string|undefined{
   const peeso=value.match(/(?:n[ºo°]\s*|numero\s*)([1-6])\b/i)?.[1]; if(peeso) return "No"+peeso;
   const size=value.match(/(?:talla\s*:?\s*|\b)(XS|XL|XXL|S|M|L)\b/i)?.[1]?.toUpperCase(); if(size) return size;
