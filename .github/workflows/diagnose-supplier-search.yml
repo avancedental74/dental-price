@@ -162,8 +162,9 @@ jobs:
           const names=["dentaltix","dentalcost","dentalexpress","ortolan","dvd-dental"];
           let suppliersWithOffers=0;
           for(const name of names){
-            const x=JSON.parse(fs.readFileSync("/tmp/unseeded-"+name+".json","utf8"));
-            if(!Array.isArray(x.offers)) throw new Error(name+": offers missing");
+            let x;
+            try{x=JSON.parse(fs.readFileSync("/tmp/unseeded-"+name+".json","utf8"));}catch{console.log(name,JSON.stringify({warning:"non-json response"}));continue;}
+            if(!Array.isArray(x.offers)){console.log(name,JSON.stringify({warning:"offers missing"}));continue;}
             if(x.offers.length) suppliersWithOffers++;
             for(const offer of x.offers){
               const hay=((offer.rawName||"")+" "+(offer.manufacturer||"")).toLowerCase();
@@ -508,4 +509,29 @@ jobs:
           console.log("DTX_SEARCH_HTTP",r.status,"LEN",html.length);
           console.log("DTX_SEARCH_LINKS",JSON.stringify(links,null,2));
           console.log("DTX_SEARCH_SKU_LIKE",JSON.stringify([...new Set(skuMatches)].slice(0,120),null,2));
+          NODE
+
+      - name: Inspect Dentaltix VAT metadata
+        run: |
+          node --input-type=module <<'NODE'
+          const urls=[
+            "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer?sku=053M4910A3B",
+            "https://www.dentaltix.com/es/ivoclar-vivadent/tetric-evoceram-cavifil-20-x-02gr?sku=45TE590314"
+          ];
+          for(const url of urls){
+            const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+            const html=await r.text();
+            console.log("\nDTX_VAT_URL",url,"HTTP",r.status,"LEN",html.length);
+            for(const re of [
+              /.{0,250}IVA.{0,350}/gi,
+              /.{0,250}VAT.{0,350}/gi,
+              /.{0,250}tax.{0,350}/gi,
+              /vatRate.{0,500}/gi,
+              /taxRate.{0,500}/gi,
+              /ivaRate.{0,500}/gi
+            ]){
+              const m=html.match(re)||[];
+              console.log("PATTERN",String(re),JSON.stringify(m.slice(0,30)));
+            }
+          }
           NODE
