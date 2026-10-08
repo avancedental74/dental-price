@@ -43,6 +43,10 @@ function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVaria
         const obj=entry as Record<string,unknown>;
         return "mainVar" in obj&&"variations" in obj&&"slug" in obj;
       });
+      const legacySlugRoot=roots.find(obj=>{
+        const slug=resolve(obj.slug);
+        return typeof slug==="string"&&slug.length>1&&productPath.includes(slug.toLowerCase());
+      });
       const pageTitle=normalizeForMatch($("h1").first().text());
       const productPathTokens=new Set(productPath.split(/[^a-z0-9]+/).filter(t=>t.length>=3));
       const scoredRoots=roots.map(obj=>{
@@ -58,7 +62,7 @@ function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVaria
         const score=nameTokens.length?matches/nameTokens.length:0;
         return {obj,score,matches};
       }).sort((a,b)=>b.score-a.score||b.matches-a.matches);
-      const root=scoredRoots[0]&&scoredRoots[0].matches>=2&&scoredRoots[0].score>=0.45?scoredRoots[0].obj:undefined;
+      const root=legacySlugRoot??(scoredRoots[0]&&scoredRoots[0].matches>=2&&scoredRoots[0].score>=0.45?scoredRoots[0].obj:undefined);
       if(!root) continue;
 
       const candidates:Record<string,unknown>[]=[];
