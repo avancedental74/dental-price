@@ -11,16 +11,17 @@ import { fetchDentalExpressProduct } from "../src/connectors/dentalexpress";
 import { fetchOrtolanProduct } from "../src/connectors/ortolan";
 import { fetchDentipakProduct } from "../src/connectors/dentipak";
 import { fetchDentalBoomProduct } from "../src/connectors/dentalboom";
-import { discoverSupplierProductUrls, searchDvdKlevuRecords, searchOrtolanRecords, searchDentalBoomRecords, type SearchSupplierId } from "../src/connectors/live-search";
+import { discoverSupplierProductUrls, searchDvdKlevuRecords, searchOrtolanRecords, searchDentalBoomRecords } from "../src/connectors/live-search";
+import { allSearchSupplierIds, browserProtectedSupplierIds, liveAutomaticSupplierIds, type SearchSupplierId } from "../src/connectors/live-supplier-registry";
 import { normalizeName, normalizeReference } from "../src/domain/matching/normalization";
 import { applyAnomalyStatus } from "../src/domain/anomaly";
 import type { PriceObservation } from "../src/domain/history";
 
 type Env={ALLOWED_ORIGIN?:string};
 const policyList=policies as SupplierPolicy[];
-const automaticSuppliers:SearchSupplierId[]=["dentaltix","dentalcost","dvd-dental","dentalexpress","ortolan","dentipak","dentalboom"];
-const protectedSuppliers:SearchSupplierId[]=["proclinic","dental-iberica","brokerdental"];
-const suppliers:SearchSupplierId[]=[...automaticSuppliers,...protectedSuppliers];
+const automaticSuppliers:readonly SearchSupplierId[]=liveAutomaticSupplierIds;
+const protectedSuppliers:readonly SearchSupplierId[]=browserProtectedSupplierIds;
+const suppliers:readonly SearchSupplierId[]=allSearchSupplierIds;
 
 function cors(origin:string|null,env:Env){
   const allowed=env.ALLOWED_ORIGIN??"*";
