@@ -143,11 +143,38 @@ jobs:
       - name: Probe unseeded product name across live suppliers
         run: |
           BASE="https://dental-price-live.avance-dental74.workers.dev/search-supplier"
+          rm -f /tmp/unseeded-*.json
           for supplier in dentaltix dentalcost dentalexpress ortolan dvd-dental; do
             echo "### UNSEEDED $supplier"
-            curl --max-time 25 --silent --show-error --get "$BASE"               --data-urlencode "supplier=$supplier"               --data-urlencode "q=Tetric EvoCeram"               --data-urlencode "sessionId=unseeded-name-test" || true
+            code=$(curl --max-time 25 --silent --show-error --get "$BASE" \
+              --output "/tmp/unseeded-$supplier.json" \
+              --write-out "%{http_code}" \
+              --data-urlencode "supplier=$supplier" \
+              --data-urlencode "q=Tetric EvoCeram" \
+              --data-urlencode "sessionId=unseeded-name-test" || true)
+            echo "HTTP $code"
+            cat "/tmp/unseeded-$supplier.json" || true
             echo
+            if [ "$code" != "200" ]; then exit 1; fi
           done
+          node <<'NODE'
+          const fs=require("fs");
+          const names=["dentaltix","dentalcost","dentalexpress","ortolan","dvd-dental"];
+          let suppliersWithOffers=0;
+          for(const name of names){
+            const x=JSON.parse(fs.readFileSync("/tmp/unseeded-"+name+".json","utf8"));
+            if(!Array.isArray(x.offers)) throw new Error(name+": offers missing");
+            if(x.offers.length) suppliersWithOffers++;
+            for(const offer of x.offers){
+              const hay=((offer.rawName||"")+" "+(offer.manufacturer||"")).toLowerCase();
+              if(!hay.includes("tetric")||!hay.includes("evoceram")){
+                throw new Error(name+": irrelevant offer leaked: "+(offer.rawName||""));
+              }
+            }
+            console.log(name,JSON.stringify({offers:x.offers.length,error:x.error,source:x.discoveredFrom}));
+          }
+          if(suppliersWithOffers<3) throw new Error("Expected Tetric EvoCeram offers from at least 3 live suppliers, got "+suppliersWithOffers);
+          NODE
 
       - name: Inspect current discovery ranking
         run: |
