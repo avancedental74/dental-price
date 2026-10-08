@@ -22,9 +22,9 @@ function criticalMissing(product: CanonicalProduct, offer: SupplierOffer): strin
   const missing: string[] = [];
   if (product.variant && !offer.variant) missing.push("variant");
   if (product.shade && !offer.shade) missing.push("shade");
-  if (product.presentation && !offer.presentation) missing.push("presentation");
-  if (product.quantity != null && offer.quantity == null) missing.push("quantity");
-  if (product.packCount != null && offer.packCount == null) missing.push("packCount");
+  if (product.presentation?.trim() && !offer.presentation) missing.push("presentation");
+  if (Number.isFinite(product.quantity) && product.quantity > 0 && product.unit?.trim() && offer.quantity == null) missing.push("quantity");
+  if (Number.isFinite(product.packCount) && product.packCount > 0 && offer.packCount == null) missing.push("packCount");
   return missing;
 }
 
@@ -97,23 +97,28 @@ export function matchOfferToProduct(product: CanonicalProduct, offer: SupplierOf
     }
   }
 
-  possibleScore += 10;
-  const quantityMatch = offer.quantity != null && closeNumber(product.quantity, offer.quantity) &&
-    normalizeUnit(product.unit) === normalizeUnit(offer.unit);
-  addReason(reasons, "quantity", "Cantidad", 10, quantityMatch);
-  if (quantityMatch) rawScore += 10;
-  else if (offer.quantity != null) {
-    hardReject = true;
-    conflicts.push("Cantidad o unidad incompatible");
+  const hasExpectedQuantity=Number.isFinite(product.quantity)&&product.quantity>0&&Boolean(product.unit?.trim());
+  if(hasExpectedQuantity){
+    possibleScore += 10;
+    const quantityMatch = offer.quantity != null && closeNumber(product.quantity, offer.quantity) &&
+      normalizeUnit(product.unit) === normalizeUnit(offer.unit);
+    addReason(reasons, "quantity", "Cantidad", 10, quantityMatch);
+    if (quantityMatch) rawScore += 10;
+    else if (offer.quantity != null) {
+      hardReject = true;
+      conflicts.push("Cantidad o unidad incompatible");
+    }
   }
 
-  possibleScore += 10;
-  const packMatch = offer.packCount != null && product.packCount === offer.packCount;
-  addReason(reasons, "pack_count", "Número de unidades", 10, packMatch);
-  if (packMatch) rawScore += 10;
-  else if (offer.packCount != null) {
-    hardReject = true;
-    conflicts.push("Pack incompatible");
+  if(Number.isFinite(product.packCount)&&product.packCount>0){
+    possibleScore += 10;
+    const packMatch = offer.packCount != null && product.packCount === offer.packCount;
+    addReason(reasons, "pack_count", "Número de unidades", 10, packMatch);
+    if (packMatch) rawScore += 10;
+    else if (offer.packCount != null) {
+      hardReject = true;
+      conflicts.push("Pack incompatible");
+    }
   }
 
   const score = hardReject ? 0 : Math.round((rawScore / Math.max(1, possibleScore)) * 100);
