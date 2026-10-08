@@ -4,15 +4,6 @@ import { applyAnomalyStatus } from "../domain/anomaly";
 import { normalizeName, normalizeReference } from "../domain/matching/normalization";
 import { browserProtectedSupplierIds, liveAutomaticSupplierIds } from "../connectors/live-supplier-registry";
 
-export interface LivePriceResponse {
-  productId:string;
-  sessionId:string;
-  requestedAt:string;
-  completedAt:string;
-  offers:SupplierOffer[];
-  errors:Array<{supplierId:string;message:string}>;
-}
-
 export interface LiveSearchGroup {
   id:string;
   label:string;
@@ -165,14 +156,6 @@ function groupOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     const suppliersB=new Set(b.offers.map(o=>o.supplierId)).size;
     return suppliersB-suppliersA||b.offers.length-a.offers.length;
   });
-}
-
-export async function fetchLivePrices(productId:string):Promise<LivePriceResponse>{
-  const response=await fetch(apiBase()+"/live-prices?productId="+encodeURIComponent(productId),{
-    method:"GET",headers:{accept:"application/json"},cache:"no-store"
-  });
-  if(!response.ok) throw new Error("LIVE_API_HTTP_"+response.status);
-  return response.json() as Promise<LivePriceResponse>;
 }
 
 export async function searchLiveCatalog(query:string,previousHistory:PriceObservation[]=[],sessionIdOverride?:string):Promise<LiveCatalogSearchResponse>{
