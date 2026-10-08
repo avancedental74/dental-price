@@ -148,3 +148,22 @@ jobs:
             curl --max-time 25 --silent --show-error --get "$BASE"               --data-urlencode "supplier=$supplier"               --data-urlencode "q=Tetric EvoCeram"               --data-urlencode "sessionId=unseeded-name-test" || true
             echo
           done
+
+      - name: Inspect current discovery ranking
+        run: |
+          npx tsx <<'TS'
+          import { discoverSupplierProductUrls } from "./src/connectors/live-search.ts";
+          for (const [supplier,q] of [
+            ["dentaltix","4910A3B"],
+            ["dentalcost","4910A3B"],
+            ["dentaltix","Tetric EvoCeram"],
+            ["dentalcost","Tetric EvoCeram"]
+          ] as const) {
+            try {
+              const r=await discoverSupplierProductUrls(supplier,q,fetch,5);
+              console.log("DISCOVERY",supplier,q,JSON.stringify(r));
+            } catch (e) {
+              console.log("DISCOVERY_ERR",supplier,q,e instanceof Error?e.message:String(e));
+            }
+          }
+          TS
