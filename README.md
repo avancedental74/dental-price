@@ -64,7 +64,7 @@ El estado real y las limitaciones verificadas están en `docs/HARDENING_STATUS.m
 - Promociones reales estructuradas; regalos de otro producto se muestran como informativos y no se descuentan como si fueran unidades del mismo SKU.
 - Búsqueda ambigua con selección explícita de candidatos.
 - Registry central de referencias y presentaciones.
-- Basket Optimizer V1: distribuye una cesta entre proveedores considerando promociones, IVA, portes y umbrales; usa poda y memoización en lugar de producto cartesiano y tiene regresión de 18 líneas × 3 proveedores.
+- Basket Optimizer V1: distribuye una cesta entre proveedores considerando promociones, IVA, portes y umbrales; permite **actualizar todas las líneas en vivo antes de optimizar**, reemplaza las ofertas anteriores por la nueva tanda y usa poda + memoización en lugar de producto cartesiano.
 - Validación de todo el catálogo contra referencias exactas y referencias contradictorias.
 
 ## Principio no negociable
