@@ -15,7 +15,7 @@ const supplierNames:Record<string,string>={
   brokerdental:"Broker Dental"
 };
 function SupplierRows({offers}: {offers:UniversalOffer[]}){
-  return <p className="alternatives-footnote">Si el depósito muestra varias variantes, selecciona la referencia y presentación de esta fila antes de comparar el importe con la ficha.</p><div className="table-wrap"><table className="universal-offers-table"><thead><tr>
+  return <><p className="alternatives-footnote">Si el depósito muestra varias variantes, selecciona la referencia y presentación de esta fila antes de comparar el importe con la ficha.</p><div className="table-wrap"><table className="universal-offers-table"><thead><tr>
     <th>Depósito</th><th>Precio publicado</th><th>Coste efectivo</th><th>Estado</th><th>Ficha</th>
   </tr></thead><tbody>{offers.map(o=><tr key={o.id}>
     <td><strong>{supplierNames[o.supplierId]??o.supplierId}</strong></td>
@@ -23,7 +23,7 @@ function SupplierRows({offers}: {offers:UniversalOffer[]}){
     <td>{o.effectiveTotal===undefined?"—":money(o.effectiveTotal)}</td>
     <td>{o.eligible?<span className="pill good">Verificado</span>:<small>{o.issues.join("; ")||"Pendiente de verificación"}</small>}</td>
     <td>{o.productUrl?<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Abrir ↗</a>:<span>Sin enlace verificado</span>}</td>
-  </tr>)}</tbody></table></div>;
+  </tr>)}</tbody></table></div></>;
 }
 export function UniversalSearchResults({items,query,onSelect,sessionId,searchDepth,coverage,onExpand}:{
   items:LiveSearchGroup[];query:string;sessionId:string|null;onSelect:(group:LiveSearchGroup)=>void;
