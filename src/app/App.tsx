@@ -15,7 +15,7 @@ import { ScoreBadge } from "../components/ScoreBadge";
 import { SearchBar } from "../components/SearchBar";
 import { WinnerCard } from "../components/WinnerCard";
 import { ManualOfferPanel } from "../components/ManualOfferPanel";
-import { LiveSearchCandidates } from "../components/LiveSearchCandidates";
+import { VisualSearchResults } from "../components/VisualSearchResults";
 import { MetricsPanel } from "../components/MetricsPanel";
 import { CoverageQueue } from "../components/CoverageQueue";
 import { LiveSearchStatus, type LiveSearchState } from "../components/LiveSearchStatus";
@@ -216,7 +216,7 @@ export function App(){
     </section>
 
     {liveState==="loading"&&<LiveSearchStatus state="loading" errors={[]}/>}
-    <LiveSearchCandidates items={liveGroups} onSelect={selectLiveGroup}/>
+    <VisualSearchResults key={query} items={liveGroups} query={query} onSelect={selectLiveGroup}/>
 
     {!selected&&liveGroups.length===0&&query&&liveState!=="loading"&&<section className="card empty-card">
       <span className="empty-icon">⌕</span><h2>No encontramos “{query}” ahora</h2>
