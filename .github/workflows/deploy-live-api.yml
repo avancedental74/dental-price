@@ -67,13 +67,14 @@ jobs:
           check ortolan "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=ortolan&sessionId=smoke-search"
           check ortolan_dentin "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram%20A3%2C5%20Dentina&supplier=ortolan&sessionId=smoke-search"
           check dvd "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Scotchbond%20Universal%20Plus&supplier=dvd-dental&sessionId=smoke-search"
+          check dvd_name "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=dvd-dental&sessionId=smoke-search"
           check dentipak "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=41294&supplier=dentipak&sessionId=smoke-search"
           check dentalboom "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Scotchbond%20Universal%20Plus&supplier=dentalboom&sessionId=smoke-search"
           node <<'NODE'
           const fs=require("fs");
           const h=JSON.parse(fs.readFileSync("/tmp/health.json"));
           if(!h.ok||h.searchMode!=="dynamic-per-supplier") process.exit(1);
-          for(const name of ["dentaltix","dentaltix_name","dentalcost","dentalexpress","ortolan","dvd","dentipak","dentalboom"]){
+          for(const name of ["dentaltix","dentaltix_name","dentalcost","dentalexpress","ortolan","dvd","dvd_name","dentipak","dentalboom"]){
             const x=JSON.parse(fs.readFileSync("/tmp/"+name+".json"));
             console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,noMatch:x.noMatch,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
             if(x.sessionId!=="smoke-search"||!Array.isArray(x.offers)||x.error) process.exit(1);
@@ -81,7 +82,7 @@ jobs:
             // product page exposes no product-scoped price. Never make the smoke test
             // reward the old unsafe whole-page price fallback.
             if(name!=="dentalexpress"&&x.offers.length<1) process.exit(1);
-            if(name==="dentaltix_name"&&!x.offers.every(o=>{
+            if((name==="dentaltix_name"||name==="dvd_name")&&!x.offers.every(o=>{
               const hay=((o.rawName||"")+" "+(o.manufacturer||"")).toLowerCase();
               return hay.includes("tetric")&&hay.includes("evoceram");
             })) process.exit(1);
