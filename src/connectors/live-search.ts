@@ -48,51 +48,57 @@ function isSearchOrNavigationUrl(url:string,base:string):boolean{
   }catch{return true;}
 }
 
+// Search aliases are lexical only. They do not establish product equivalence.
+function searchWords(value:string):string{
+  return normalizeName(value)
+    .replace(/\b(\d+(?:[.,]\d+)?)\s*(?:gr|g)\b/g,"$1 g")
+    .replace(/\b(\d+(?:[.,]\d+)?)\s*(?:mililitros?|ml)\b/g,"$1 ml")
+    .replace(/\bcomposites\b/g,"composite")
+    .replace(/\b(?:resina compuesta|resinas compuestas)\b/g,"composite")
+    .replace(/\brestaurador universal\b/g,"restorative universal")
+    .replace(/\bdentina\b/g,"dentin")
+    .replace(/\besmalte\b/g,"enamel")
+    .replace(/\s+/g," ").trim();
+}
+
 export function scoreLink(text:string,href:string,query:string):number{
-  // Search-only formatting: keep manufacturer/model/shade tokens intact while
-  // treating common quantity spellings as the same request.
-  const searchText=(value:string)=>normalizeName(value)
-    .replace(/(\\d+(?:[.,]\\d+)?)\\s*(?:gramos?|grs?|gr|g)\\b/g,"$1 g")
-    .replace(/(\\d+(?:[.,]\\d+)?)\\s*(?:mililitros?|ml)\\b/g,"$1 ml")
-    .replace(/\\bcomposites\\b/g,"composite")
-    .replace(/\\s+/g," ").trim();
-  const q=searchText(query);
+  const q=searchWords(query);
+  if(!q)return 0;
   let hrefIdentity=href;
   try{
     const u=new URL(href);
-    // Search engines often echo the user's query in every result URL.
-    // Scoring query/hash would make every unrelated result look relevant.
+    // Do not score echoed query string or hash fragments.
     hrefIdentity=u.origin+u.pathname;
-  }catch{ /* non-URL strings are scored as provided */ }
-  const hay=searchText(text+" "+hrefIdentity);
+  }catch{/* Keep literal input for non-URL fixture strings. */}
+  const hay=searchWords(text+" "+hrefIdentity);
+  const words=hay.split(/[^a-z0-9.]+/).filter(Boolean);
+  const wordSet=new Set(words);
+  const tokens=[...new Set(q.split(" ").filter(t=>t.length>=2))];
   const compact=normalizeReference(query)??"";
   const normalizedHay=normalizeReference(hay)??"";
-  let score=0;
-  const tokens=[...new Set(q.split(" ").filter(t=>t.length>=2))];
-  // An alphanumeric reference/model must be a complete identifier, not a prefix.
-  // Accept adjacent URL separators, but reject extra letters or digits.
+  const isCode=tokens.length===1&&compact.length>=4&&/\d/.test(compact);
+  // A code cannot be accepted merely because it is a prefix of another SKU.
   const exactCode=(value:string)=>new RegExp("(^|[^a-z0-9])"+value.toLowerCase()+"(?=$|[^a-z0-9])").test(hay);
-  if(tokens.length===1&&compact.length>=4&&/\d/.test(compact)&&!exactCode(compact))return 0;
-  // Decimal shade A3.5 is not shade A3.
-  const requestedShade=q.match(/\ba\d(?:\.\d)?\b/i)?.[0];
-  if(requestedShade&&!requestedShade.includes(".")&&new RegExp("(^|[^a-z0-9])"+requestedShade+"\\.\\d","i").test(hay))return 0;
-  if(compact&&normalizedHay.includes(compact))score+=12;
-  // Match whole normalized tokens: Z250 must not match Z2500 and A3 must not match A3.5.
-  // Boundaries are spaces after normalizeName, with a second compact check for
-  // references formatted using separators by the supplier.
-  const wholeToken=(token:string)=>hay.split(" ").includes(token);
-  const matched=tokens.filter(wholeToken);
-  // Product identity matters in verbose searches too: reject weak token coverage.
+  if(isCode&&!exactCode(compact))return 0;
+  const matched=tokens.filter(t=>wordSet.has(t));
   if(tokens.length>=2&&matched.length<Math.ceil(tokens.length*0.75))return 0;
-  const quantities=[...q.matchAll(/\\b(\\d+(?:[.,]\\d+)?) (g|ml)\\b/g)];
-  if(quantities.some(m=>!hay.includes(m[1]+" "+m[2])))return 0;
-  // Never accept a different shade or a different mass/volume when specified.
-  const critical=tokens.filter(t=>/^(?:[a-d]\\d(?:\\.\\d)?|body|dentin|enamel|\\d+(?:[.,]\\d+)?)$/.test(t));
-  if(critical.some(t=>!wholeToken(t)))return 0;
+
+  // Variant attributes are strict filters, not fuzzy synonyms.
+  const critical=tokens.filter(t=>/^(?:[a-d]\d(?:\.\d)?|body|dentin|enamel|\d+(?:[.,]\d+)?)$/.test(t));
+  if(critical.some(t=>!wordSet.has(t)))return 0;
+  for(const match of q.matchAll(/\b(\d+(?:[.,]\d+)?) (g|ml)\b/g)){
+    if(!hay.includes(match[1]+" "+match[2]))return 0;
+  }
+  // A3 must not match A3.5; note that URL slugs are also included in hay.
+  for(const shade of q.matchAll(/\b([a-d]\d)\b/g)){
+    if(new RegExp("(^|[^a-z0-9])"+shade[1]+"\\.\\d","i").test(hay))return 0;
+  }
+  let score=0;
+  if(isCode&&exactCode(compact))score+=20;
+  else if(compact.length>=4&&normalizedHay.includes(compact))score+=3;
   if(q.length>=5&&hay.includes(q))score+=16;
   for(const token of matched)score+=token.length>=5?3:1;
-  const coverage=tokens.length?matched.length/tokens.length:0;
-  score+=Math.round(coverage*8);
+  score+=Math.round(8*matched.length/Math.max(tokens.length,1));
   if(/product|producto|html|\/es\//i.test(href))score+=1;
   return score;
 }
