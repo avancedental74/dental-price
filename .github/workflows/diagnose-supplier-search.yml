@@ -2,9 +2,6 @@ name: Diagnose supplier search forms
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/diagnose-supplier-search.yml"
 
 jobs:
   diagnose:
