@@ -66,11 +66,13 @@ jobs:
           check ortolan "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=ortolan&sessionId=smoke-search"
           check ortolan_dentin "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram%20A3%2C5%20Dentina&supplier=ortolan&sessionId=smoke-search"
           check dvd "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Scotchbond%20Universal%20Plus&supplier=dvd-dental&sessionId=smoke-search"
+          check dentipak "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=41294&supplier=dentipak&sessionId=smoke-search"
+          check dentalboom "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Scotchbond%20Universal%20Plus&supplier=dentalboom&sessionId=smoke-search"
           node <<'NODE'
           const fs=require("fs");
           const h=JSON.parse(fs.readFileSync("/tmp/health.json"));
           if(!h.ok||h.searchMode!=="dynamic-per-supplier") process.exit(1);
-          for(const name of ["dentaltix","dentalcost","dentalexpress","ortolan","dvd"]){
+          for(const name of ["dentaltix","dentalcost","dentalexpress","ortolan","dvd","dentipak","dentalboom"]){
             const x=JSON.parse(fs.readFileSync("/tmp/"+name+".json"));
             console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,noMatch:x.noMatch,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
             if(x.sessionId!=="smoke-search"||!Array.isArray(x.offers)||x.error) process.exit(1);
@@ -84,4 +86,8 @@ jobs:
           if(od.sessionId!=="smoke-search"||!Array.isArray(od.offers)||od.error) process.exit(1);
           if(!od.offers.some(o=>o.shade==="A3.5"&&o.variant==="Dentin"&&o.presentation==="Jeringa"&&o.packCount===1&&o.stockStatus==="in_stock")) process.exit(1);
           if(!od.offers.some(o=>o.shade==="A3.5"&&o.variant==="Dentin"&&o.presentation==="Cápsulas"&&o.quantity===0.2&&o.packCount===20)) process.exit(1);
+          const dp=JSON.parse(fs.readFileSync("/tmp/dentipak.json"));
+          if(!dp.offers.some(o=>o.manufacturerReference==="41294"&&o.supplierSku==="041299"&&o.salePrice===79.9&&o.stockStatus==="in_stock")) process.exit(1);
+          const db=JSON.parse(fs.readFileSync("/tmp/dentalboom.json"));
+          if(!db.offers.some(o=>o.supplierSku==="059652"&&o.salePrice===107.39&&o.vatStatus==="excluded"&&o.vatRate===10&&o.stockStatus==="in_stock"&&!o.manufacturerReference)) process.exit(1);
           NODE
