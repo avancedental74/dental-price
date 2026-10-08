@@ -131,6 +131,140 @@ function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVaria
   return output;
 }
 
+
+export function parseDentaltixNuxtFast(html:string,productUrl:string):DentaltixProductRaw|null{
+  const openRe=/<script[^>]*(?:data-nuxt-data|id=["']__NUXT_DATA__["'])[^>]*>/ig;
+  let match:RegExpExecArray|null;
+  const productPath=(()=>{try{return new URL(productUrl).pathname.toLowerCase();}catch{return productUrl.toLowerCase();}})();
+
+  while((match=openRe.exec(html))){
+    const start=(match.index??0)+match[0].length;
+    const end=html.indexOf("</script>",start);
+    if(end<0)continue;
+    const text=html.slice(start,end).trim();
+    if(!text.startsWith("["))continue;
+    try{
+      const payload=JSON.parse(text) as unknown[];
+      const resolve=(value:unknown):unknown=>{
+        if(typeof value==="number"&&Number.isInteger(value)&&value>=0&&value<payload.length)return payload[value];
+        return value;
+      };
+      const resolveObject=(value:unknown):Record<string,unknown>|undefined=>{
+        const resolved=resolve(value);
+        return resolved&&typeof resolved==="object"&&!Array.isArray(resolved)?resolved as Record<string,unknown>:undefined;
+      };
+      const roots=payload.filter((entry):entry is Record<string,unknown>=>{
+        if(!entry||typeof entry!=="object"||Array.isArray(entry))return false;
+        const obj=entry as Record<string,unknown>;
+        return "mainVar" in obj&&"variations" in obj&&"slug" in obj;
+      });
+      if(!roots.length)continue;
+
+      const productPathTokens=new Set(productPath.split(/[^a-z0-9]+/).filter(t=>t.length>=3));
+      const exact=roots.find(root=>{
+        const slug=resolve(root.slug);
+        return typeof slug==="string"&&slug.length>1&&productPath.includes(slug.toLowerCase());
+      });
+      const scored=roots.map(root=>{
+        const name=resolve(root.name);
+        if(typeof name!=="string")return {root,score:0,matches:0};
+        const tokens=normalizeForMatch(name).split(" ").filter(t=>t.length>=3&&!["kit","composite","profesional","universal","producto"].includes(t));
+        const matches=tokens.filter(t=>productPathTokens.has(t)).length;
+        return {root,score:tokens.length?matches/tokens.length:0,matches};
+      }).sort((a,b)=>b.score-a.score||b.matches-a.matches);
+      const root=exact??(scored[0]&&scored[0].matches>=2&&scored[0].score>=0.45?scored[0].root:undefined);
+      if(!root)continue;
+
+      const rootName=resolve(root.name);
+      const title=typeof rootName==="string"&&rootName.trim()?rootName.trim():"Producto Dentaltix";
+      const resolveString=(value:unknown):string|undefined=>{
+        const resolved=resolve(value);
+        return typeof resolved==="string"&&resolved.trim()?resolved.trim():undefined;
+      };
+      const brandValue=resolve(root.brandName??root.brand??root.manufacturer);
+      let manufacturer:string|undefined;
+      if(typeof brandValue==="string")manufacturer=brandValue.trim()||undefined;
+      else if(brandValue&&typeof brandValue==="object"&&!Array.isArray(brandValue)){
+        manufacturer=resolveString((brandValue as Record<string,unknown>).name);
+      }
+      const vatRateMatch=html.match(/(?:Price VAT included|Precio IVA incluido)\s*\(?\s*(\d{1,2})\s*%/i);
+      const vatRate=vatRateMatch?Number(vatRateMatch[1]):undefined;
+
+      const candidates:Record<string,unknown>[]=[];
+      const addCandidate=(value:unknown)=>{
+        const obj=resolveObject(value);
+        if(obj&&"manRef" in obj&&"sku" in obj)candidates.push(obj);
+      };
+      addCandidate(root.mainVar);
+      const variations=resolveObject(root.variations);
+      if(variations){
+        for(const value of Object.values(variations)){
+          const resolved=resolve(value);
+          if(Array.isArray(resolved))for(const nested of resolved)addCandidate(nested);
+          else addCandidate(resolved);
+        }
+      }
+
+      const seen=new Set<string>();
+      const variants:DentaltixVariantRaw[]=[];
+      const resolveNumber=(value:unknown):number|undefined=>{
+        const resolved=resolve(value);
+        return typeof resolved==="number"&&Number.isFinite(resolved)?resolved:undefined;
+      };
+      for(const obj of candidates){
+        const manufacturerReference=resolveString(obj.manRef);
+        const supplierSku=resolveString(obj.sku);
+        if(!manufacturerReference)continue;
+        const longName=resolveString(obj.name);
+        const type=resolveString(obj.type);
+        const variantTitle=[longName,type].filter(Boolean).join(" - ");
+        if(!variantTitle)continue;
+
+        let salePrice:number|undefined,regularPrice:number|undefined;
+        const priceResolved=resolve(obj.price);
+        if(priceResolved&&typeof priceResolved==="object"&&!Array.isArray(priceResolved)){
+          const priceObj=priceResolved as Record<string,unknown>;
+          const sales=resolve(priceObj.sales);
+          const recommended=resolve(priceObj.recommended);
+          if(sales&&typeof sales==="object"&&!Array.isArray(sales))salePrice=resolveNumber((sales as Record<string,unknown>).value);
+          if(recommended&&typeof recommended==="object"&&!Array.isArray(recommended))regularPrice=resolveNumber((recommended as Record<string,unknown>).value);
+        }
+
+        const stockControl=resolve(obj.stockControl);
+        const stockValue=resolve(obj.stock);
+        const delivery=resolveString(obj.deliveryEstimate);
+        const numericStock=typeof stockValue==="number"&&Number.isFinite(stockValue)?stockValue:undefined;
+        const structuredStockText=stockControl===true&&typeof numericStock==="number"
+          ?numericStock<=0?"Agotado (stock 0)":numericStock<=5?`Solo quedan ${numericStock} en stock`:`En stock: ${numericStock}`
+          :undefined;
+        const rawStockText=[structuredStockText,!structuredStockText&&typeof stockValue==="string"?stockValue:undefined,delivery].filter(Boolean).join(" ");
+
+        const key=manufacturerReference+"|"+(supplierSku??"");
+        if(seen.has(key))continue;
+        seen.add(key);
+        let variantUrl=productUrl;
+        if(supplierSku){
+          try{const u=new URL(productUrl);u.searchParams.set("sku",supplierSku);variantUrl=u.toString();}catch{ /* keep base */ }
+        }
+        variants.push({title:variantTitle,supplierSku,manufacturerReference,regularPrice,salePrice,rawStockText:rawStockText||undefined,productUrl:variantUrl});
+      }
+      if(!variants.length)continue;
+
+      return {
+        title,
+        manufacturer,
+        vatRate:Number.isFinite(vatRate)?vatRate:undefined,
+        vatIncluded:false,
+        productUrl,
+        variants
+      };
+    }catch{
+      // Try the next Nuxt block, then fall back to the full parser.
+    }
+  }
+  return null;
+}
+
 function parseJsonLd($: cheerio.CheerioAPI): Record<string, unknown>[] {
   const output: Record<string, unknown>[] = [];
   $("script[type=\"application/ld+json\"]").each((_, el) => {
