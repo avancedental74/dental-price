@@ -355,25 +355,30 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
   });
   if(!response.ok)throw new Error("ORTOLAN_SEARCH_HTTP_"+response.status);
   const html=await response.text();
-  const $=cheerio.load(html);
   const urlsByProduct=new Map<string,string>();
   const namesByProduct=new Map<string,string>();
-  $('article[data-id-product]').each((_,el)=>{
-    const id=$(el).attr("data-id-product");
-    const href=$(el).find('a[href*=".html"]').first().attr("href");
-    const name=$(el).find(".product-title").first().text().replace(/\s+/g," ").trim();
-    if(id&&href){
-      try{urlsByProduct.set(id,new URL(href,response.url||searchUrl).toString());}catch{ /* ignore */ }
-      if(name)namesByProduct.set(id,name);
-    }
-  });
+  // On broad searches the index is sufficient for a clearly-labelled
+  // orientative amount. Avoid parsing a full storefront DOM on the free Worker.
+  if(includeDetailVariants){
+    const $=cheerio.load(html);
+    $('article[data-id-product]').each((_,el)=>{
+      const id=$(el).attr("data-id-product");
+      const href=$(el).find('a[href*=".html"]').first().attr("href");
+      const name=$(el).find(".product-title").first().text().replace(/\s+/g," ").trim();
+      if(id&&href){
+        try{urlsByProduct.set(id,new URL(href,response.url||searchUrl).toString());}catch{ /* ignore */ }
+        if(name)namesByProduct.set(id,name);
+      }
+    });
+  }
 
   // A search card can show only its default shade (e.g. A1). Discover the
   // family first, then confirm the requested shade against detail variants.
   const familyQuery=query.replace(/\b[a-d]\d(?:[.,]\d)?\b/gi,"").trim()||query;
   const defaultRecords:OrtolanSearchRecord[]=[];
   const seen=new Set<string>();
-  for(const match of html.matchAll(/"item_id":"([^"]+)","item_name":"([^"]+)"[^{}]{0,700}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,700}?"item_variant":"([^"]*)"/g)){
+  const limitedHtml=includeDetailVariants?html:html.slice(0,550_000);
+  for(const match of limitedHtml.matchAll(/"item_id":"([^"]+)","item_name":"([^"]+)"[^{}]{0,700}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,700}?"item_variant":"([^"]*)"/g)){
     const supplierSku=match[1];
     const name=decodeHtmlJson(match[2]??"");
     const price=Number(match[3]);
