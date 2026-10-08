@@ -65,6 +65,7 @@ jobs:
           check dentaltix_name "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=dentaltix&sessionId=smoke-search"
           check dentaltix_model "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Z250&supplier=dentaltix&sessionId=smoke-search"
           check dentalcost "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentalcost&sessionId=smoke-search"
+          check dentalcost_name "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=dentalcost&sessionId=smoke-search"
           check dentalexpress "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=41294&supplier=dentalexpress&sessionId=smoke-search"
           check ortolan "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=ortolan&sessionId=smoke-search"
           check ortolan_dentin "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram%20A3%2C5%20Dentina&supplier=ortolan&sessionId=smoke-search"
@@ -78,15 +79,15 @@ jobs:
           if(!h.ok||h.searchMode!=="dynamic-per-supplier") process.exit(1);
           if(!Array.isArray(h.suppliers)||h.suppliers.length!==7) process.exit(1);
           if(!Array.isArray(h.protectedSuppliers)||h.protectedSuppliers.length!==3) process.exit(1);
-          for(const name of ["dentaltix","dentaltix_name","dentaltix_model","dentalcost","dentalexpress","ortolan","dvd","dvd_name","dentipak","dentalboom"]){
+          for(const name of ["dentaltix","dentaltix_name","dentaltix_model","dentalcost","dentalcost_name","dentalexpress","ortolan","dvd","dvd_name","dentipak","dentalboom"]){
             const x=JSON.parse(fs.readFileSync("/tmp/"+name+".json"));
             console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,noMatch:x.noMatch,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
             if(x.sessionId!=="smoke-search"||!Array.isArray(x.offers)||x.error) process.exit(1);
             // Dental Express is queryable but may deliberately return noMatch when the
             // product page exposes no product-scoped price. Never make the smoke test
             // reward the old unsafe whole-page price fallback.
-            if(name!=="dentalexpress"&&x.offers.length<1) process.exit(1);
-            if((name==="dentaltix_name"||name==="dvd_name")&&!x.offers.every(o=>{
+            if(!["dentalexpress","dentalcost_name"].includes(name)&&x.offers.length<1) process.exit(1);
+            if(["dentaltix_name","dvd_name","dentalcost_name"].includes(name)&&!x.offers.every(o=>{
               const hay=((o.rawName||"")+" "+(o.manufacturer||"")).toLowerCase();
               return hay.includes("tetric")&&hay.includes("evoceram");
             })) process.exit(1);
