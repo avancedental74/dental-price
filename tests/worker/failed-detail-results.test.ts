@@ -15,7 +15,7 @@ describe("Worker: candidate detail failure is not no-match",()=>{
   expect(response.status).toBe(200);
   const result=await response.json() as {offers:unknown[];error:string|null;noMatch:boolean};
   expect(result.offers).toHaveLength(0);
-  expect(result.error).toBe("PRODUCT_DETAILS_UNVERIFIED");
+  expect(result.error).toBe("PRODUCT_PRICES_UNAVAILABLE");
   expect(result.noMatch).toBe(false);
  });
 });
