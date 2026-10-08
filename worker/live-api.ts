@@ -123,20 +123,39 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
   const limitFor=(standard:number,more:number)=>extended?more:standard;
   const fetchImpl=withTimeout();
   if(supplierId==="dentalboom"){
-    const records=await searchDentalBoomRecords(query,fetchImpl,limitFor(5,12));
-    const pages:SupplierOffer[][]=[];
-    for(const record of records.slice(0,limitFor(4,8))){
-      try{
-        const pageOffers=(await fetchDentalBoomProduct(record.url,fetchImpl)).offers.filter(o=>relevantToQuery(o,query));
-        if(pageOffers.length)pages.push(pageOffers);
-      }catch{ /* try next API result */ }
-    }
+    const records=await searchDentalBoomRecords(query,fetchImpl,limitFor(5,10));
     const policy=policyList.find(p=>p.supplierId===supplierId);
-    const offers=pages.flat()
+    // WooCommerce Store API provides a lightweight discovery-price estimate.
+    // Never label that value as checkout-confirmed without visiting the SKU page.
+    const indexOffers:SupplierOffer[]=records.filter(record=>record.publishedPrice!==undefined)
+      .map(record=>({
+        supplierId:"dentalboom",supplierSku:record.sku,rawName:record.name,
+        normalizedName:normalizeName(record.name),productUrl:record.url,
+        regularPrice:record.regularPrice??record.publishedPrice!,
+        salePrice:record.publishedPrice,
+        stockStatus:record.inStock===true?"in_stock":"unknown",
+        vatStatus:"unknown",currency:"EUR",observedAt:new Date().toISOString(),
+        sourceStatus:"suspicious",sourceMode:"automatic",priceVerification:"search_index"
+      }));
+    const detailOffers:SupplierOffer[]=[];
+    // At most one detail is checked on an explicit expanded reference request.
+    if(extended&&looksLikeReference(query)){
+      for(const record of records.slice(0,1)){
+        try{
+          detailOffers.push(...(await fetchDentalBoomProduct(record.url,fetchImpl)).offers
+            .filter(o=>relevantToQuery(o,query)&&(!record.sku||!o.supplierSku||normalizeReference(record.sku)===normalizeReference(o.supplierSku))));
+        }catch{ /* keep published estimate, not a fabricated verified price */ }
+      }
+    }
+    const detailSkus=new Set(detailOffers.map(o=>normalizeReference(o.supplierSku)).filter(Boolean));
+    const offers=[...detailOffers.map(o=>({...o,priceVerification:"detail" as const})),
+      ...indexOffers.filter(o=>!detailSkus.has(normalizeReference(o.supplierSku)))]
       .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
-      .map(o=>({...o,priceVerification:"detail" as const,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+      .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:records.length>0&&!offers.length?"PRODUCT_DETAILS_UNVERIFIED":null,noMatch:records.length===0,discoveredFrom:"woocommerce-store-api+product",candidateLimitReached:records.length>=limitFor(5,12)};
+    return {offers,error:records.length>0&&!offers.length?"PRODUCT_PRICES_UNAVAILABLE":null,
+      noMatch:records.length===0,discoveredFrom:"woocommerce-store-api-light",
+      candidateLimitReached:records.length>=limitFor(5,10)};
   }
   if(supplierId==="ortolan"){
     const needsVariants=looksLikeReference(query)||/\b[a-d]\d(?:[.,]\d)?\b/i.test(query);
