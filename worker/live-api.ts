@@ -100,7 +100,7 @@ function relevantToQuery(offer:SupplierOffer,query:string){
   if(looksLikeReference(query)){
     const manufacturerRef=normalizeReference(offer.manufacturerReference)??"";
     const supplierRef=normalizeReference(offer.supplierSku)??"";
-    return Boolean((manufacturerRef&&manufacturerRef.includes(compact))||(supplierRef&&supplierRef.includes(compact)));
+    return Boolean((manufacturerRef&&manufacturerRef===compact)||(supplierRef&&supplierRef===compact));
   }
   const tokens=normalizeName(query).split(" ").filter(t=>t.length>=2);
   // Do not use normalizedName here: some connectors intentionally prefix the parent
