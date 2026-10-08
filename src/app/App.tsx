@@ -5,7 +5,7 @@ import { getFreshnessStatus } from "../domain/comparison/compare";
 import { appendObservation, calculateHistoryStats, type PriceObservation } from "../domain/history";
 import { opportunityFromHistory } from "../domain/opportunity";
 import { calculatePricing } from "../domain/pricing";
-import { normalizeReference } from "../domain/matching/normalization";
+import { normalizeName, normalizeReference } from "../domain/matching/normalization";
 import { ComparisonTable } from "../components/ComparisonTable";
 import { ConnectorStatusPanel } from "../components/ConnectorStatusPanel";
 import { HistoryPanel } from "../components/HistoryPanel";
@@ -37,6 +37,8 @@ export function App(){
   const [liveHistory,setLiveHistory]=useState<PriceObservation[]>(()=>loadLiveHistory());
   const [basket,setBasket]=useState<BasketUiItem[]>([]);
   const [basketOffers,setBasketOffers]=useState<Record<string,SupplierOffer[]>>({});
+  const [basketRefreshing,setBasketRefreshing]=useState(false);
+  const [basketRefreshedAt,setBasketRefreshedAt]=useState<string|undefined>();
   const [liveOffers,setLiveOffers]=useState<SupplierOffer[]>([]);
   const [liveSessionId,setLiveSessionId]=useState<string|null>(null);
   const [liveState,setLiveState]=useState<LiveSearchState>("idle");
@@ -151,6 +153,32 @@ export function App(){
     setBasket(items=>items.filter(x=>x.product.id!==id));
     setBasketOffers(current=>{const next={...current};delete next[id];return next;});
   };
+
+  const refreshWholeBasket=async()=>{
+    if(!basket.length)return;
+    setBasketRefreshing(true);
+    try{
+      const historyBase=data?[...data.history,...liveHistory]:liveHistory;
+      const refreshed=await Promise.all(basket.map(async item=>{
+        const lookup=item.product.manufacturerReference??item.product.family;
+        const result=await searchLiveCatalog(lookup,historyBase);
+        const ref=normalizeReference(item.product.manufacturerReference);
+        let group=ref?result.groups.find(g=>normalizeReference(g.manufacturerReference)===ref):undefined;
+        if(!group){
+          const wanted=normalizeName(item.product.family);
+          group=result.groups.find(g=>{
+            const label=normalizeName(g.label);
+            return label===wanted||label.includes(wanted)||wanted.includes(label);
+          });
+        }
+        return {id:item.product.id,offers:group?.offers??[]};
+      }));
+      setBasketOffers(Object.fromEntries(refreshed.map(x=>[x.id,x.offers])));
+      setBasketRefreshedAt(new Date().toISOString());
+    }finally{
+      setBasketRefreshing(false);
+    }
+  };
   const onSelectCoverage=(id:string)=>{const product=data?.products.find(p=>p.id===id);if(product)void runSeededLiveSearch(product);};
 
   if(error)return <main className="app-shell"><section className="card state-card"><span className="state-icon">!</span><h2>No se pudieron cargar los datos auxiliares</h2><p>{error}</p></section></main>;
@@ -209,7 +237,7 @@ export function App(){
     {comparison&&<ComparisonTable items={comparison.matches}/>}
     {selected&&<div className="insight-grid"><HistoryPanel history={history} stats={stats}/><ScoreBadge score={score}/></div>}
 
-    <BasketPanel items={basket} result={basketComputation.result} error={basketComputation.error} onChangeQuantity={changeBasketQuantity} onRemove={removeBasketItem}/>
+    <BasketPanel items={basket} result={basketComputation.result} error={basketComputation.error} onChangeQuantity={changeBasketQuantity} onRemove={removeBasketItem} onRefresh={()=>void refreshWholeBasket()} refreshing={basketRefreshing} refreshedAt={basketRefreshedAt}/>
 
     <details className="advanced-panel">
       <summary><span><b>Información avanzada</b><small>Histórico, cobertura y verificación manual</small></span><span className="chevron">⌄</span></summary>
