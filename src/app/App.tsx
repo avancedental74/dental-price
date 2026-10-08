@@ -39,6 +39,7 @@ export function App(){
   const [basketOffers,setBasketOffers]=useState<Record<string,SupplierOffer[]>>({});
   const [basketRefreshing,setBasketRefreshing]=useState(false);
   const [basketRefreshedAt,setBasketRefreshedAt]=useState<string|undefined>();
+  const [basketRefreshError,setBasketRefreshError]=useState<string|null>(null);
   const [liveOffers,setLiveOffers]=useState<SupplierOffer[]>([]);
   const [liveSessionId,setLiveSessionId]=useState<string|null>(null);
   const [liveState,setLiveState]=useState<LiveSearchState>("idle");
@@ -157,6 +158,7 @@ export function App(){
   const refreshWholeBasket=async()=>{
     if(!basket.length)return;
     setBasketRefreshing(true);
+    setBasketRefreshError(null);
     try{
       const historyBase=data?[...data.history,...liveHistory]:liveHistory;
       const basketSessionId=crypto.randomUUID();
@@ -176,6 +178,10 @@ export function App(){
       }));
       setBasketOffers(Object.fromEntries(refreshed.map(x=>[x.id,x.offers])));
       setBasketRefreshedAt(new Date().toISOString());
+    }catch(error){
+      setBasketOffers({});
+      setBasketRefreshedAt(undefined);
+      setBasketRefreshError(error instanceof Error?error.message:"No se pudo actualizar toda la cesta en vivo.");
     }finally{
       setBasketRefreshing(false);
     }
@@ -238,7 +244,7 @@ export function App(){
     {comparison&&<ComparisonTable items={comparison.matches}/>}
     {selected&&<div className="insight-grid"><HistoryPanel history={history} stats={stats}/><ScoreBadge score={score}/></div>}
 
-    <BasketPanel items={basket} result={basketComputation.result} error={basketComputation.error} onChangeQuantity={changeBasketQuantity} onRemove={removeBasketItem} onRefresh={()=>void refreshWholeBasket()} refreshing={basketRefreshing} refreshedAt={basketRefreshedAt}/>
+    <BasketPanel items={basket} result={basketComputation.result} error={basketRefreshError??basketComputation.error} onChangeQuantity={changeBasketQuantity} onRemove={removeBasketItem} onRefresh={()=>void refreshWholeBasket()} refreshing={basketRefreshing} refreshedAt={basketRefreshedAt}/>
 
     <details className="advanced-panel">
       <summary><span><b>Información avanzada</b><small>Histórico, cobertura y verificación manual</small></span><span className="chevron">⌄</span></summary>
