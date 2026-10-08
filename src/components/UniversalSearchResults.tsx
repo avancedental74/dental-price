@@ -18,7 +18,7 @@ function SupplierRows({offers}: {offers:UniversalOffer[]}){
     <th>Depósito</th><th>Precio publicado</th><th>Coste efectivo</th><th>Estado</th><th>Ficha</th>
   </tr></thead><tbody>{offers.map(o=><tr key={o.id}>
     <td><strong>{supplierNames[o.supplierId]??o.supplierId}</strong></td>
-    <td>{Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"—"}</td>
+    <td>{o.priceVerification==="search_index"?"Pendiente de comprobar":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"—"}</td>
     <td>{o.effectiveTotal===undefined?"—":money(o.effectiveTotal)}</td>
     <td>{o.eligible?<span className="pill good">Verificado</span>:<small>{o.issues.join("; ")||"Pendiente de verificación"}</small>}</td>
     <td>{o.productUrl?<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Abrir ↗</a>:<span>Sin enlace verificado</span>}</td>
@@ -58,7 +58,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
         <h3>{profileLabel(profile)}: opciones encontradas</h3></div>
       <span>{visible.length} de {items.length} productos</span>
     </div>
-    <p className="universal-intro">Consulta cualquier referencia o nombre. Cada producto se compara con sus propios proveedores; otras marcas aparecen por separado.</p>
+    <p className="universal-intro">Consulta cualquier referencia o nombre. Cada producto se compara con sus propios proveedores; otras marcas aparecen por separado. Un precio del buscador que no coincida con una variante verificada en su ficha se identifica como pendiente, no como precio de compra.</p>
     <div className="universal-coverage">
       <div><strong>Alcance real de la búsqueda</strong>
         <small>{coverage.filter(c=>c.offers>0).length} de {coverage.length} proveedores automáticos devolvieron productos · {coverage.filter(c=>c.candidateLimitReached).length} alcanzaron su límite de revisión de candidatos.</small>
@@ -149,7 +149,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
         <summary>{alternatives.unverified.length} opciones sin ranking de equivalencia</summary>
         <div className="alternatives-pending-list">
           {alternatives.unverified.map(o=><div key={o.id}><strong>{o.name}</strong>
-            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
+            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {o.priceVerification==="search_index"?"No confirmado en ficha":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
             {o.normalizedCost!==undefined&&<small>Coste orientativo por {o.normalizedBasis}: {money(o.normalizedCost)} (no acredita equivalencia con otros productos)</small>}
             <small>{[
               ...o.issues,
