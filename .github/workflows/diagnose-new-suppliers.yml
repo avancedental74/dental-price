@@ -51,3 +51,39 @@ jobs:
             }catch(e){console.log("ERROR",e instanceof Error?e.message:String(e));}
           }
           NODE
+
+      - name: Deep inspect Dentipak and Dental Boom
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36";
+          async function inspect(name,url){
+            const r=await fetch(url,{redirect:"follow",headers:{"user-agent":ua,"accept":"text/html,application/xhtml+xml"}});
+            const html=await r.text(),$=cheerio.load(html);
+            const body=$("body").text().replace(/\s+/g," ").trim();
+            console.log("\n### DEEP",name,"HTTP",r.status,"URL",r.url,"LEN",html.length);
+            console.log("TITLE",$("h1").first().text().replace(/\s+/g," ").trim());
+            console.log("BODY",body.slice(0,12000));
+            console.log("LD",JSON.stringify($('script[type="application/ld+json"]').toArray().map(x=>$(x).text()).filter(x=>/Product|Offer|price|sku|mpn|availability/i.test(x)).slice(0,8),null,2));
+            for(const re of [
+              /41294.{0,800}/gi,/059652.{0,800}/gi,/sku.{0,800}/gi,/mpn.{0,800}/gi,/reference.{0,800}/gi,/referencia.{0,800}/gi,
+              /stock.{0,1000}/gi,/availability.{0,1000}/gi,/tax.{0,1000}/gi,/iva.{0,1000}/gi,/list_price.{0,1000}/gi,
+              /product_template_id.{0,1000}/gi,/product_id.{0,1000}/gi,/price.{0,1000}/gi
+            ]) console.log("PATTERN",String(re),JSON.stringify((html.match(re)||[]).slice(0,20),null,2));
+          }
+          await inspect("dentipak","https://www.dentipak.es/shop/041299-adhesivo-scotchbond-universal-plus-5-ml-41294-3m-solventum-6987");
+          await inspect("dentalboom","https://dentalboom.com/shop/restauracion/adhesivos/scotchbond-universal-plus/");
+          for(const url of [
+            "https://www.dentipak.es/website_sale/get_combination_info",
+            "https://www.dentipak.es/shop/cart/update_json",
+            "https://dentalboom.com/wp-json/wc/store/v1/products?search=Scotchbond%20Universal%20Plus",
+            "https://dentalboom.com/wp-json/wc/v3/products?search=Scotchbond%20Universal%20Plus"
+          ]){
+            try{
+              const r=await fetch(url,{headers:{"user-agent":ua,"accept":"application/json,text/plain,*/*"}});
+              const text=await r.text();
+              console.log("\n### API",url,"HTTP",r.status,"CT",r.headers.get("content-type"),"LEN",text.length);
+              console.log(text.slice(0,12000));
+            }catch(e){console.log("APIERR",url,e.message);}
+          }
+          NODE
