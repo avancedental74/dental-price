@@ -216,7 +216,7 @@ export function App(){
     </section>
 
     {liveState==="loading"&&<LiveSearchStatus state="loading" errors={[]}/>}
-    <VisualSearchResults key={query} items={liveGroups} query={query} onSelect={selectLiveGroup}/>
+    <VisualSearchResults key={query} items={liveGroups} query={query} sessionId={liveSessionId} onSelect={selectLiveGroup}/>
 
     {!selected&&liveGroups.length===0&&query&&liveState!=="loading"&&<section className="card empty-card">
       <span className="empty-icon">⌕</span><h2>No encontramos “{query}” ahora</h2>
