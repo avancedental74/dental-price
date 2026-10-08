@@ -217,4 +217,25 @@ describe("Dentaltix connector", () => {
     expect(exact?.productUrl).toContain("sku=053M4910A3B");
     expect(offers.some(o=>o.manufacturerReference==="UNRELATED-REF")).toBe(false);
   });
+  it("preserves half shades written with comma",()=>{
+    const html=`<html><body>
+      <h1>Tetric EvoCeram</h1>
+      <div class="product-variation" data-sku="A35" data-manufacturer-reference="590323WW">1 Jer. de 3 gr - A3,5 Dentina 64,14 € 44,90 € En stock</div>
+    </body></html>`;
+    const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo"));
+    expect(offers[0].shade).toBe("A3.5");
+    expect(offers[0].packCount).toBe(1);
+  });
+
+  it("preserves multi-syringe pack counts",()=>{
+    const html=`<html><body>
+      <h1>Tetric EvoCeram</h1>
+      <div class="product-variation" data-sku="PACK3" data-manufacturer-reference="637736">3 Jer. de 3 gr - Color A2 Dentina 189,86 € 132,90 € En stock</div>
+      <div class="product-variation" data-sku="PACK10" data-manufacturer-reference="642043WW">Jumbo Pack: 10 Jer. de 3 gr - A3 598,57 € 419,00 € En stock</div>
+    </body></html>`;
+    const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo"));
+    expect(offers.find(o=>o.manufacturerReference==="637736")?.packCount).toBe(3);
+    expect(offers.find(o=>o.manufacturerReference==="642043WW")?.packCount).toBe(10);
+  });
+
 });
