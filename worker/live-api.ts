@@ -139,7 +139,8 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
     return {offers,error:records.length>0&&!offers.length?"PRODUCT_DETAILS_UNVERIFIED":null,noMatch:records.length===0,discoveredFrom:"woocommerce-store-api+product",candidateLimitReached:records.length>=limitFor(5,12)};
   }
   if(supplierId==="ortolan"){
-    const records=await searchOrtolanRecords(query,fetchImpl,limitFor(12,20));
+    const needsVariants=looksLikeReference(query)||/\b[a-d]\d(?:[.,]\d)?\b/i.test(query);
+    const records=await searchOrtolanRecords(query,fetchImpl,limitFor(7,12),needsVariants);
     const policy=policyList.find(p=>p.supplierId===supplierId);
     const offers=records.map(record=>{
       const rawName=[record.name,record.variant].filter(Boolean).join(" - ");
