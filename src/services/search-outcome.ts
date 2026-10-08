@@ -3,6 +3,8 @@ export interface SupplierCoverage {
   supplierId:string;
   offers:number;
   candidateLimitReached:boolean;
+  candidateCount?:number;
+  verifiedCandidateCount?:number;
   queries:number;
   partialErrors:number;
   status:SupplierCoverageStatus;

@@ -39,7 +39,7 @@ function SupplierRows({offers}:{offers:UniversalOffer[]}){
 
 export function UniversalSearchResults({items,query,onSelect,sessionId,searchDepth,coverage,onExpand}:{
   items:LiveSearchGroup[];query:string;sessionId:string|null;onSelect:(group:LiveSearchGroup)=>void;
-  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"partial"|"error"}>;onExpand:()=>void;
+  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;candidateCount:number;verifiedCandidateCount:number;queries:number;partialErrors:number;status:"results"|"no_match"|"partial"|"error"}>;onExpand:()=>void;
 }){
   const [filters,setFilters]=useState<SearchFilters>({});
   const [mode,setMode]=useState<"offers"|"alternatives">("offers");
@@ -82,7 +82,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
       <summary>Estado de los {coverage.length} depositos automaticos</summary>
       <div className="provider-status-list">{coverage.map(item=><div key={item.supplierId}>
         <strong>{supplierNames[item.supplierId]??item.supplierId}</strong>
-        <span>{item.status==="results"?item.offers+" ofertas recuperadas":item.status==="partial"?"Candidatos sin oferta verificable":item.status==="error"?"Consulta fallida":"Sin coincidencias recuperadas"} - {item.queries} intento(s){item.partialErrors>0?" - "+item.partialErrors+" error(es)":""}</span>
+        <span>{item.status==="results"?item.offers+" ofertas recuperadas":item.status==="partial"?"Candidatos sin oferta verificable":item.status==="error"?"Consulta fallida":"Sin coincidencias recuperadas"} - {item.queries} intento(s){item.candidateCount>0?" - "+item.verifiedCandidateCount+"/"+item.candidateCount+" candidatos":""}{item.partialErrors>0?" - "+item.partialErrors+" error(es)":""}</span>
       </div>)}</div>
     </details>
     <details className="universal-protected-suppliers">

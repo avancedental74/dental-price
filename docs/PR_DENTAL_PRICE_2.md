@@ -23,12 +23,15 @@
 - Corrige la clasificacion de estados `partial` para candidatos sin precio verificable.
 - Optimiza discovery HTML con extraccion ligera antes de Cheerio.
 - Recupera Dental Express como Nivel C cuando el precio solo aparece en datos no visibles de analitica/B2B.
+- Anade exploracion progresiva acotada y metricas de candidatos vistos/verificados.
+- Prepara el procedimiento de staging Cloudflare, bloqueado hasta autenticar Wrangler.
 
 ## Commits incluidos
 
 - `4df2f61 feat: add live search traceability`
 - `35ae7ef feat: add sortable supplier comparison`
 - `1569827 feat: validate live coverage and simplify results`
+- `5122d40 fix: stabilize live supplier diagnostics`
 
 ## Verificacion local
 
@@ -51,6 +54,7 @@ Resultado:
 - Validacion de datos: OK
 - Build Vite: OK
 - Diagnostico live local: 6 de 7 proveedores con oferta representativa; Ortolan sin coincidencia en la consulta elegida, sin error tecnico.
+- Matriz Worker local optimizada: 290 ofertas, 52 celdas con resultados, 0 errores tecnicos, 74 celdas con limite de candidatos.
 
 ## Metricas de datos validadas
 
@@ -66,6 +70,7 @@ Resultado:
 - No se migra historico a D1 ni a otro almacenamiento central.
 - No se despliega Worker ni GitHub Pages desde esta rama.
 - No se pudo desplegar staging remoto porque falta `CLOUDFLARE_API_TOKEN`; se valido con Wrangler local.
+- `wrangler whoami` confirma ausencia de sesion; ejecutar `npx --yes wrangler@4.45.0 login` antes de crear `dental-price-live-staging`.
 - Los precios de indice permanecen como Nivel C y no compiten como ganadores.
 - La cobertura real depende de las respuestas publicas de cada proveedor consultado.
 

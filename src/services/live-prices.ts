@@ -49,7 +49,7 @@ export interface LiveCatalogSearchResponse {
   discovery:LiveDiscoveryRecord[];
   errors:Array<{supplierId:string;message:string}>;
   depth:SearchDepth;
-  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"partial"|"error"}>;
+  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;candidateCount:number;verifiedCandidateCount:number;queries:number;partialErrors:number;status:"results"|"no_match"|"partial"|"error"}>;
 }
 
 export type SearchDepth="standard"|"extended";
@@ -64,6 +64,8 @@ interface SupplierSearchResponse {
   error?:string|null;
   noMatch?:boolean;
   partial?:boolean;
+  candidateCount?:number;
+  verifiedCandidateCount?:number;
   candidateLimitReached?:boolean;
 }
 
@@ -284,18 +286,20 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
           +"&supplier="+encodeURIComponent(supplierId)
           +"&sessionId="+encodeURIComponent(sessionId)+"&depth="+requestDepth;
         const response=await fetch(url,{method:"GET",headers:{accept:"application/json"},cache:"no-store"});
-        if(!response.ok)return {offers:[] as SupplierOffer[],error:"HTTP "+response.status,candidateLimitReached:false};
+        if(!response.ok)return {offers:[] as SupplierOffer[],error:"HTTP "+response.status,candidateCount:0,verifiedCandidateCount:0,candidateLimitReached:false};
         const data=await response.json() as SupplierSearchResponse;
         if(data.supplierId!==supplierId||data.sessionId!==sessionId)
-          return {offers:[] as SupplierOffer[],error:"RESPONSE_IDENTITY_MISMATCH",candidateLimitReached:false};
+          return {offers:[] as SupplierOffer[],error:"RESPONSE_IDENTITY_MISMATCH",candidateCount:0,verifiedCandidateCount:0,candidateLimitReached:false};
         return {
           offers:data.offers??[],
           error:data.partial?null:data.error??null,
           partial:Boolean(data.partial),
+          candidateCount:data.candidateCount??0,
+          verifiedCandidateCount:data.verifiedCandidateCount??0,
           candidateLimitReached:Boolean(data.candidateLimitReached)
         };
       }catch(error){
-        return {offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR",candidateLimitReached:false};
+        return {offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR",candidateCount:0,verifiedCandidateCount:0,candidateLimitReached:false};
       }
     };
     const attempts=await Promise.all(queries.map(term=>fetchTerm(term,depth)));
@@ -320,6 +324,8 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
       partial:attempts.some(a=>a.partial),
       partialErrors:attempts.filter(a=>a.error).length,
       queries:attempts.length,
+      candidateCount:attempts.reduce((sum,a)=>sum+(a.candidateCount??0),0),
+      verifiedCandidateCount:attempts.reduce((sum,a)=>sum+(a.verifiedCandidateCount??0),0),
       candidateLimitReached:attempts.some(a=>a.candidateLimitReached)
     };
   },2);
@@ -328,7 +334,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
     groups,discovery:buildDiscoveryRecords(groups),depth,
-    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached,queries:x.queries,partialErrors:x.partialErrors,status:x.error?"error" as const:x.offers.length?"results" as const:x.partial?"partial" as const:"no_match" as const})),
+    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached,candidateCount:x.candidateCount,verifiedCandidateCount:x.verifiedCandidateCount,queries:x.queries,partialErrors:x.partialErrors,status:x.error?"error" as const:x.offers.length?"results" as const:x.partial?"partial" as const:"no_match" as const})),
     errors:settled.filter(x=>x.error).map(x=>({supplierId:x.supplierId,message:x.error!}))
   };
 }

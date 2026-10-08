@@ -155,4 +155,17 @@ describe("live search result scoring",()=>{
     expect(found.urls).toEqual(["https://www.dentaltix.com/es/3m/filtek-supreme-xte?sku=053M4910A3B"]);
   });
 
+  it("reports candidate limits without returning the probe-only extra candidate",async()=>{
+    const fetchImpl=(async()=>new Response(
+      '<a href="https://www.dentaltix.com/es/composite-1">Composite Universal 1</a>'+
+      '<a href="https://www.dentaltix.com/es/composite-2">Composite Universal 2</a>'+
+      '<a href="https://www.dentaltix.com/es/composite-3">Composite Universal 3</a>',
+      {status:200}
+    )) as typeof fetch;
+    const found=await discoverSupplierProductUrls("dentaltix","composite",fetchImpl,2);
+    expect(found.urls).toHaveLength(2);
+    expect(found.candidateCount).toBe(3);
+    expect(found.candidateLimitReached).toBe(true);
+  });
+
 });

@@ -152,3 +152,113 @@ Lectura:
 - Ortolan requiere mas trabajo de discovery para algunas consultas por nombre/variante.
 - DentalCost encuentra pocos resultados en busquedas genericas: no es caida HTTP, sino candidatos que no pasan verificacion.
 - Dental Express mantiene precios como Nivel C cuando proceden de datos no visibles de analitica/B2B.
+
+## Fase 4 - preparacion staging y exploracion progresiva
+
+Fecha: 2026-10-08
+
+### Estado de autenticacion Cloudflare
+
+Comando ejecutado:
+
+```bash
+npx --yes wrangler@4.45.0 whoami
+```
+
+Resultado:
+
+- Wrangler esta instalado y operativo.
+- No hay sesion autenticada: `You are not authenticated. Please run wrangler login`.
+- No se ha desplegado staging remoto ni produccion.
+
+Comandos preparados para cuando exista autorizacion interactiva:
+
+```bash
+npx --yes wrangler@4.45.0 login
+npx --yes wrangler@4.45.0 whoami
+npx --yes wrangler@4.45.0 deploy --name dental-price-live-staging
+$env:LIVE_API_URL="https://dental-price-live-staging.<subdominio-cuenta>.workers.dev"
+$env:LIVE_MATRIX_OUT="docs/live-search-matrix.staging.json"
+npm.cmd run validate:live
+```
+
+No se debe sustituir `dental-price-live` ni publicar GitHub Pages hasta revisar la matriz staging.
+
+### Cambios implementados
+
+- `src/connectors/live-search.ts`: `discoverSupplierProductUrls` ahora sondea `maxResults + 1` y devuelve `candidateCount` y `candidateLimitReached` sin mostrar el candidato extra.
+- `worker/live-api.ts`: presupuesto progresivo para proveedores HTML:
+  - referencia exacta: mas candidatos que una busqueda generica;
+  - DentalCost: presupuesto superior porque su ranking publico es ruidoso;
+  - modo `extended`: presupuesto mayor, siempre acotado.
+- `worker/live-api.ts`: la respuesta live incluye `candidateCount` y `verifiedCandidateCount`.
+- `src/services/live-prices.ts` y UI: la cobertura conserva candidatos vistos/verificados para auditoria.
+- `scripts/live-search-matrix.ts`: la matriz mide candidatos totales, candidatos verificados y minimo de candidatos no verificados.
+- `tests/connectors/live-search.test.ts`: regresion para garantizar que el candidato extra de medicion no se devuelve como resultado.
+
+### Matriz comparativa
+
+Worker publicado antiguo (`docs/live-search-matrix.latest.json`):
+
+- Ofertas: 22
+- Celdas con resultados: 7
+- Celdas sin coincidencia: 77
+- Celdas con error: 126
+- Limites de candidatos: 0
+
+Worker local optimizado fase 3:
+
+- Ofertas: 147
+- Celdas con resultados: 50
+- Celdas sin coincidencia: 107
+- Celdas con error tecnico: 0
+- Limites de candidatos: 94
+
+Worker local optimizado fase 4 (`docs/live-search-matrix.worker-local.json`):
+
+- Ofertas: 290
+- Candidatos detectados dentro del sondeo acotado: 379
+- Candidatos verificados: 305
+- Minimo de candidatos no verificados por limite: 74
+- Celdas con resultados: 52
+- Celdas sin coincidencia: 107
+- Celdas con error tecnico: 0
+- Limites de candidatos: 74
+
+Lectura:
+
+- La exploracion progresiva mejora de 147 a 290 ofertas sin reintroducir HTTP 503/1102 en Worker local.
+- Los limites bajan de 94 a 74 celdas, pero siguen siendo relevantes; aumentar mas el presupuesto probablemente tensionaria el Worker gratuito y a algunos proveedores.
+- La mejora procede sobre todo de verificar mas variantes/ofertas en candidatos ya descubiertos; los precios orientativos se mantienen como Nivel C y no se promocionan como checkout confirmado.
+
+### DentalCost
+
+Evidencia:
+
+- Por referencia exacta (`4910A3B`, `41294`) DentalCost devuelve un unico candidato correcto y se verifica.
+- Por nombre amplio (`Filtek Supreme XTE A3 Body 3 g`, `adhesivo universal dental`, `guantes nitrilo talla M sin polvo`) el buscador publico devuelve cientos o miles de resultados poco relacionados en las primeras posiciones.
+- No se han convertido esos candidatos ruidosos en equivalencias; se verifican y, si no coinciden con la consulta, quedan como `partial`.
+
+Causa probable:
+
+- Limitacion/ranking del buscador remoto de DentalCost, no caida HTTP ni parser de ficha.
+
+Pendiente:
+
+- Investigar una via publica mas precisa para DentalCost, por ejemplo endpoint interno autorizado o parametros de busqueda mas estrictos, antes de ampliar mas el presupuesto.
+
+### Ortolan
+
+Evidencia:
+
+- `Tetric EvoCeram` devuelve variantes desde detalle.
+- `Tetric EvoCeram A3,5 Dentina` no devuelve oferta porque las variantes publicadas localizadas no acreditan `Dentina`; aceptar la coincidencia sin ese atributo mezclaria variantes.
+- Consultas genericas como `composite fluido A2` o `sutura seda 3/0` no generan registros en el conector actual.
+
+Causa probable:
+
+- El conector de Ortolan funciona para familias/variantes localizables, pero la cobertura por nombre generico y atributos de variante es incompleta.
+
+Pendiente:
+
+- Mejorar discovery de Ortolan sin relajar atributos tecnicos como dentina/esmalte, talla, tono o formato.

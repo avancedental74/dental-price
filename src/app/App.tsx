@@ -36,7 +36,7 @@ export function App(){
   const [query,setQuery]=useState("");
   const [liveGroups,setLiveGroups]=useState<LiveSearchGroup[]>([]);
   const [searchDepth,setSearchDepth]=useState<SearchDepth>("standard");
-  const [supplierCoverage,setSupplierCoverage]=useState<Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"partial"|"error"}>>([]);
+  const [supplierCoverage,setSupplierCoverage]=useState<Array<{supplierId:string;offers:number;candidateLimitReached:boolean;candidateCount:number;verifiedCandidateCount:number;queries:number;partialErrors:number;status:"results"|"no_match"|"partial"|"error"}>>([]);
   const activeSearchId=useRef(0);
   const [manualOffers,setManualOffers]=useState<SupplierOffer[]>(()=>loadManualOffers());
   const [manualHistory,setManualHistory]=useState<PriceObservation[]>(()=>loadManualHistory());

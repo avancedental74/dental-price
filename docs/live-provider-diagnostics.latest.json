@@ -1,16 +1,18 @@
 {
-  "generatedAt": "2026-10-08T17:07:01.129Z",
+  "generatedAt": "2026-10-08T17:52:01.550Z",
   "rows": [
     {
       "supplierId": "dentaltix",
       "query": "4910A3B",
       "depth": "standard",
-      "elapsedMs": 1403,
+      "elapsedMs": 1291,
       "offers": 1,
       "error": null,
       "noMatch": false,
       "discoveredFrom": "https://www.dentaltix.com/es/search-results?q=4910A3B",
-      "candidateLimitReached": true,
+      "candidateCount": 1,
+      "verifiedCandidateCount": 1,
+      "candidateLimitReached": false,
       "sample": [
         {
           "name": "Filtek Supreme XTE: Nanocomposite Universal (Jeringa 3 gr) - A3 BODY - 1 Jer. de 3 gr - Color: A3 Body",
@@ -22,7 +24,7 @@
         }
       ],
       "diagnostics": {
-        "startedAt": "2026-10-08T17:06:52.866Z",
+        "startedAt": "2026-10-08T17:51:54.396Z",
         "events": [
           {
             "stage": "start",
@@ -34,7 +36,7 @@
             "url": "https://www.dentaltix.com/es/search-results",
             "status": 200,
             "ok": true,
-            "elapsedMs": 477
+            "elapsedMs": 345
           },
           {
             "stage": "discovery",
@@ -47,7 +49,7 @@
             "url": "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer",
             "status": 200,
             "ok": true,
-            "elapsedMs": 530
+            "elapsedMs": 544
           },
           {
             "stage": "complete",
@@ -62,11 +64,13 @@
       "supplierId": "dentalcost",
       "query": "4910A3B",
       "depth": "standard",
-      "elapsedMs": 3496,
+      "elapsedMs": 2806,
       "offers": 1,
       "error": null,
       "noMatch": false,
       "discoveredFrom": "https://www.dentalcost.es/?controller=search&search_query=4910A3B",
+      "candidateCount": 1,
+      "verifiedCandidateCount": 1,
       "candidateLimitReached": false,
       "sample": [
         {
@@ -79,7 +83,7 @@
         }
       ],
       "diagnostics": {
-        "startedAt": "2026-10-08T17:06:54.270Z",
+        "startedAt": "2026-10-08T17:51:55.687Z",
         "events": [
           {
             "stage": "start",
@@ -91,7 +95,7 @@
             "url": "https://www.dentalcost.es/buscar",
             "status": 200,
             "ok": true,
-            "elapsedMs": 370
+            "elapsedMs": 385
           },
           {
             "stage": "fetch",
@@ -99,7 +103,7 @@
             "url": "https://www.dentalcost.es/",
             "status": 200,
             "ok": true,
-            "elapsedMs": 1648
+            "elapsedMs": 1663
           },
           {
             "stage": "discovery",
@@ -112,7 +116,7 @@
             "url": "https://www.dentalcost.es/composites-universales/687-filtek-supreme-xte-composite-universal-body-3gr.html",
             "status": 200,
             "ok": true,
-            "elapsedMs": 770
+            "elapsedMs": 210
           },
           {
             "stage": "complete",
@@ -127,11 +131,13 @@
       "supplierId": "dvd-dental",
       "query": "4910A3B",
       "depth": "standard",
-      "elapsedMs": 89,
+      "elapsedMs": 456,
       "offers": 1,
       "error": null,
       "noMatch": false,
       "discoveredFrom": "klevu-discovery+sku-verified-detail",
+      "candidateCount": 1,
+      "verifiedCandidateCount": 1,
       "candidateLimitReached": false,
       "sample": [
         {
@@ -144,7 +150,7 @@
         }
       ],
       "diagnostics": {
-        "startedAt": "2026-10-08T17:06:57.766Z",
+        "startedAt": "2026-10-08T17:51:58.493Z",
         "events": [
           {
             "stage": "start",
@@ -156,7 +162,7 @@
             "url": "https://eucs34v2.ksearchnet.com/cs/v2/search",
             "status": 200,
             "ok": true,
-            "elapsedMs": 84
+            "elapsedMs": 452
           },
           {
             "stage": "complete",
@@ -171,12 +177,14 @@
       "supplierId": "dentalexpress",
       "query": "41294",
       "depth": "standard",
-      "elapsedMs": 1119,
+      "elapsedMs": 948,
       "offers": 1,
       "error": null,
       "noMatch": false,
       "discoveredFrom": "https://dentalexpress.es/catalogsearch/result/?q=41294",
-      "candidateLimitReached": true,
+      "candidateCount": 1,
+      "verifiedCandidateCount": 1,
+      "candidateLimitReached": false,
       "sample": [
         {
           "name": "ADHESIVO SCOTCHBOND UNIVERSAL PLUS 5ML SOLVENTUM",
@@ -188,7 +196,7 @@
         }
       ],
       "diagnostics": {
-        "startedAt": "2026-10-08T17:06:57.855Z",
+        "startedAt": "2026-10-08T17:51:58.949Z",
         "events": [
           {
             "stage": "start",
@@ -200,7 +208,7 @@
             "url": "https://dentalexpress.es/catalogsearch/result/",
             "status": 200,
             "ok": true,
-            "elapsedMs": 893
+            "elapsedMs": 696
           },
           {
             "stage": "discovery",
@@ -213,7 +221,7 @@
             "url": "https://dentalexpress.es/adhesivo-scotchbond-universal-plus-5ml-solventum",
             "status": 200,
             "ok": true,
-            "elapsedMs": 13
+            "elapsedMs": 34
           },
           {
             "stage": "complete",
@@ -228,15 +236,17 @@
       "supplierId": "ortolan",
       "query": "Tetric EvoCeram A3,5 Dentina",
       "depth": "standard",
-      "elapsedMs": 506,
+      "elapsedMs": 462,
       "offers": 0,
       "error": null,
       "noMatch": true,
       "discoveredFrom": "ortolan-structured-search",
+      "candidateCount": 0,
+      "verifiedCandidateCount": 0,
       "candidateLimitReached": false,
       "sample": [],
       "diagnostics": {
-        "startedAt": "2026-10-08T17:06:58.974Z",
+        "startedAt": "2026-10-08T17:51:59.897Z",
         "events": [
           {
             "stage": "start",
@@ -248,7 +258,7 @@
             "url": "https://ortolan.es/es/busqueda",
             "status": 200,
             "ok": true,
-            "elapsedMs": 438
+            "elapsedMs": 393
           },
           {
             "stage": "complete",
@@ -263,12 +273,14 @@
       "supplierId": "dentipak",
       "query": "41294",
       "depth": "standard",
-      "elapsedMs": 363,
+      "elapsedMs": 417,
       "offers": 1,
       "error": null,
       "noMatch": false,
       "discoveredFrom": "https://www.dentipak.es/shop?search=41294",
-      "candidateLimitReached": true,
+      "candidateCount": 1,
+      "verifiedCandidateCount": 1,
+      "candidateLimitReached": false,
       "sample": [
         {
           "name": "ADHESIVO SCOTCHBOND UNIVERSAL PLUS (5 ml) 41294 - 3M SOLVENTUM",
@@ -280,7 +292,7 @@
         }
       ],
       "diagnostics": {
-        "startedAt": "2026-10-08T17:06:59.480Z",
+        "startedAt": "2026-10-08T17:52:00.359Z",
         "events": [
           {
             "stage": "start",
@@ -292,7 +304,7 @@
             "url": "https://www.dentipak.es/shop",
             "status": 200,
             "ok": true,
-            "elapsedMs": 210
+            "elapsedMs": 289
           },
           {
             "stage": "discovery",
@@ -305,7 +317,7 @@
             "url": "https://www.dentipak.es/shop/041299-adhesivo-scotchbond-universal-plus-5-ml-41294-3m-solventum-6987",
             "status": 200,
             "ok": true,
-            "elapsedMs": 138
+            "elapsedMs": 114
           },
           {
             "stage": "complete",
@@ -320,11 +332,13 @@
       "supplierId": "dentalboom",
       "query": "Scotchbond Universal Plus",
       "depth": "standard",
-      "elapsedMs": 1286,
+      "elapsedMs": 774,
       "offers": 1,
       "error": null,
       "noMatch": false,
       "discoveredFrom": "woocommerce-store-api-light",
+      "candidateCount": 1,
+      "verifiedCandidateCount": 1,
       "candidateLimitReached": false,
       "sample": [
         {
@@ -336,7 +350,7 @@
         }
       ],
       "diagnostics": {
-        "startedAt": "2026-10-08T17:06:59.843Z",
+        "startedAt": "2026-10-08T17:52:00.776Z",
         "events": [
           {
             "stage": "start",
@@ -348,7 +362,7 @@
             "url": "https://dentalboom.com/wp-json/wc/store/v1/products",
             "status": 200,
             "ok": true,
-            "elapsedMs": 1285
+            "elapsedMs": 772
           },
           {
             "stage": "complete",

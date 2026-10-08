@@ -29,6 +29,8 @@ for(const item of cases){
       error:result.error??null,
       noMatch:result.noMatch??false,
       discoveredFrom:result.discoveredFrom,
+      candidateCount:result.candidateCount??result.offers.length,
+      verifiedCandidateCount:result.verifiedCandidateCount??result.offers.length,
       candidateLimitReached:result.candidateLimitReached??false,
       sample:result.offers.slice(0,3).map(offer=>({
         name:offer.rawName,

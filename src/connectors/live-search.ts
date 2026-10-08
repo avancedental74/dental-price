@@ -194,8 +194,21 @@ async function trySearchRequest(
   if(!response.ok)throw new Error("HTTP "+response.status);
   const html=await response.text();
   const responseUrl=response.url||url;
-  const fast=extractProductLinksFast(html,responseUrl,origin,query,maxResults);
+  // DentalCost repeats the query inside result-card anchors on broad searches,
+  // which can make lightweight extraction over-score unrelated products. Use
+  // the scoped card parser there even if it costs a little more CPU.
+  const fast=origin.includes("dentalcost.es")?[]:extractProductLinksFast(html,responseUrl,origin,query,maxResults);
   return {urls:fast.length?fast:extractProductLinks(html,responseUrl,origin,query,maxResults),html,responseUrl};
+}
+
+function limitedDiscovery(urls:string[],maxResults:number,searchUrl?:string,error?:string){
+  return {
+    urls:urls.slice(0,maxResults),
+    searchUrl,
+    error,
+    candidateCount:urls.length,
+    candidateLimitReached:urls.length>maxResults
+  };
 }
 
 // Only explicit search pagination; same origin, same route and a strict page cap.
@@ -479,39 +492,40 @@ export async function discoverSupplierProductUrls(
   query:string,
   fetchImpl:typeof fetch=fetch,
   maxResults=5
-):Promise<{urls:string[];searchUrl?:string;error?:string}>{
+):Promise<{urls:string[];searchUrl?:string;error?:string;candidateCount:number;candidateLimitReached:boolean}>{
   const cfg=configs[supplierId];
   let lastError="";
+  const probeLimit=maxResults+1;
   if(supplierId==="dvd-dental"){
     try{
-      const urls=await searchDvdKlevu(query,fetchImpl,maxResults);
-      return urls.length?{urls,searchUrl:"klevu"}:{urls:[],error:"Sin resultados en DVD"};
+      const urls=await searchDvdKlevu(query,fetchImpl,probeLimit);
+      return urls.length?limitedDiscovery(urls,maxResults,"klevu"):limitedDiscovery([],maxResults,undefined,"Sin resultados en DVD");
     }catch(error){
-      return {urls:[],error:error instanceof Error?error.message:"KLEVU_SEARCH_ERROR"};
+      return limitedDiscovery([],maxResults,undefined,error instanceof Error?error.message:"KLEVU_SEARCH_ERROR");
     }
   }
   for(const template of cfg.templates){
     const searchUrl=template.replace("{q}",encodeURIComponent(query));
     try{
-      const result=await trySearchRequest(searchUrl,query,cfg.origin,fetchImpl,maxResults);
+      const result=await trySearchRequest(searchUrl,query,cfg.origin,fetchImpl,probeLimit);
       if(result.urls.length){
-        const expanded=await extendPaginatedSearch(result,cfg.origin,query,fetchImpl,maxResults);
+        const expanded=await extendPaginatedSearch(result,cfg.origin,query,fetchImpl,probeLimit);
         if(supplierId==="ortolan"){
           const productPages=expanded.filter(u=>/\.html(?:[?#]|$)/i.test(u));
-          if(productPages.length)return {urls:productPages,searchUrl};
+          if(productPages.length)return limitedDiscovery(productPages,maxResults,searchUrl);
         }
-        return {urls:expanded,searchUrl};
+        return limitedDiscovery(expanded,maxResults,searchUrl);
       }
       lastError="Sin enlaces de producto";
     }catch(error){lastError=error instanceof Error?error.message:"SEARCH_ERROR";}
   }
   try{
-    const detected=await searchViaDetectedForm(cfg,query,fetchImpl,maxResults);
-    if(detected.urls.length)return detected;
+    const detected=await searchViaDetectedForm(cfg,query,fetchImpl,probeLimit);
+    if(detected.urls.length)return limitedDiscovery(detected.urls,maxResults,detected.searchUrl);
   }catch(error){lastError=error instanceof Error?error.message:lastError;}
   try{
-    const sitemapUrls=await searchViaSitemap(cfg,query,fetchImpl,maxResults);
-    if(sitemapUrls.length)return {urls:sitemapUrls,searchUrl:"sitemap"};
+    const sitemapUrls=await searchViaSitemap(cfg,query,fetchImpl,probeLimit);
+    if(sitemapUrls.length)return limitedDiscovery(sitemapUrls,maxResults,"sitemap");
   }catch(error){lastError=error instanceof Error?error.message:lastError;}
-  return {urls:[],error:lastError||"Búsqueda no disponible"};
+  return limitedDiscovery([],maxResults,undefined,lastError||"Busqueda no disponible");
 }

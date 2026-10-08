@@ -45,6 +45,8 @@ interface SupplierResult {
   supplierId:SearchSupplierId;
   status:"results"|"no_match"|"error"|"partial";
   offers:number;
+  candidateCount:number;
+  verifiedCandidateCount:number;
   candidateLimitReached:boolean;
   error:string|null;
   elapsedMs:number;
@@ -82,6 +84,8 @@ async function runSupplier(query:string,supplierId:SearchSupplierId,sessionId:st
       error?:string|null;
       noMatch?:boolean;
       partial?:boolean;
+      candidateCount?:number;
+      verifiedCandidateCount?:number;
       candidateLimitReached?:boolean;
     };
     const offers=Array.isArray(body.offers)?body.offers:[];
@@ -90,6 +94,8 @@ async function runSupplier(query:string,supplierId:SearchSupplierId,sessionId:st
     const status:SupplierResult["status"]=httpError?"error":offers.length?"results":body.partial?"partial":body.noMatch?"no_match":error?"partial":"partial";
     return {
       supplierId,status,offers:offers.length,
+      candidateCount:body.candidateCount??0,
+      verifiedCandidateCount:body.verifiedCandidateCount??0,
       candidateLimitReached:Boolean(body.candidateLimitReached),
       error,
       elapsedMs,
@@ -104,7 +110,7 @@ async function runSupplier(query:string,supplierId:SearchSupplierId,sessionId:st
     };
   }catch(error){
     return {
-      supplierId,status:"error",offers:0,candidateLimitReached:false,
+      supplierId,status:"error",offers:0,candidateCount:0,verifiedCandidateCount:0,candidateLimitReached:false,
       error:error instanceof Error?error.message:"SEARCH_ERROR",elapsedMs:timeoutMs,sample:[]
     };
   }
@@ -127,6 +133,8 @@ for(const [index,query] of queries.entries()){
       suppliersNoMatch:suppliers.filter(item=>item.status==="no_match").length,
       suppliersWithErrors:suppliers.filter(item=>item.status==="error").length,
       totalOffers:suppliers.reduce((sum,item)=>sum+item.offers,0),
+      totalCandidates:suppliers.reduce((sum,item)=>sum+item.candidateCount,0),
+      verifiedCandidates:suppliers.reduce((sum,item)=>sum+item.verifiedCandidateCount,0),
       candidateLimits:suppliers.filter(item=>item.candidateLimitReached).length
     },
     suppliers
@@ -143,6 +151,9 @@ const report={
   rows,
   summary:{
     totalOffers:rows.reduce((sum,row)=>sum+row.totals.totalOffers,0),
+    totalCandidates:rows.reduce((sum,row)=>sum+row.totals.totalCandidates,0),
+    verifiedCandidates:rows.reduce((sum,row)=>sum+row.totals.verifiedCandidates,0),
+    unverifiedCandidateLowerBound:rows.reduce((sum,row)=>sum+Math.max(0,row.totals.totalCandidates-row.totals.verifiedCandidates),0),
     resultCells:rows.reduce((sum,row)=>sum+row.totals.suppliersWithResults,0),
     noMatchCells:rows.reduce((sum,row)=>sum+row.totals.suppliersNoMatch,0),
     errorCells:rows.reduce((sum,row)=>sum+row.totals.suppliersWithErrors,0),

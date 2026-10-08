@@ -133,6 +133,12 @@ function looksLikeReference(query:string){
   return compact.length>=6&&/[A-Z]/.test(compact)&&/\d/.test(compact);
 }
 
+function genericCandidateBudget(supplierId:SearchSupplierId,query:string,extended:boolean){
+  if(extended)return supplierId==="dentalcost"?8:6;
+  if(looksLikeReference(query))return supplierId==="dentalcost"?5:4;
+  return supplierId==="dentalcost"?4:3;
+}
+
 export function relevantToQuery(offer:SupplierOffer,query:string){
   const compact=normalizeReference(query)??"";
   if(looksLikeReference(query)){
@@ -301,13 +307,14 @@ export async function searchOneSupplier(supplierId:SearchSupplierId,query:string
   }
   // Keep each request within a small CPU budget. Search depth expands
   // through multiple bounded supplier calls, not long HTML-parsing loops.
-  const candidateLimit=extended?3:(supplierId==="dentalcost"?2:1);
+  const candidateLimit=genericCandidateBudget(supplierId,query,extended);
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
   diagnostics?.events.push({stage:"discovery",supplierId,status:discovered.urls.length,error:discovered.error});
   if(!discovered.urls.length){
     const message=discovered.error??"Sin resultados";
     const noMatch=/^Sin\b/i.test(message);
-    return {offers:[] as SupplierOffer[],error:noMatch?null:message,noMatch,discoveredFrom:discovered.searchUrl,candidateLimitReached:false};
+    return {offers:[] as SupplierOffer[],error:noMatch?null:message,noMatch,discoveredFrom:discovered.searchUrl,
+      candidateCount:discovered.candidateCount,candidateLimitReached:discovered.candidateLimitReached,verifiedCandidateCount:0};
   }
   const policy=policyList.find(p=>p.supplierId===supplierId);
   const verified:SupplierOffer[]=[];
@@ -327,7 +334,9 @@ export async function searchOneSupplier(supplierId:SearchSupplierId,query:string
     .filter(o=>supplierOfferSchema.safeParse(o).success);
   diagnostics?.events.push({stage:"complete",supplierId,ok:true,status:offers.length});
   return {offers,error:!offers.length?"CANDIDATE_PRODUCT_PAGES_NOT_VERIFIED":null,
-    partial:!offers.length,noMatch:false,discoveredFrom:discovered.searchUrl,candidateLimitReached:discovered.urls.length>=candidateLimit};
+    partial:!offers.length,noMatch:false,discoveredFrom:discovered.searchUrl,
+    candidateCount:discovered.candidateCount,candidateLimitReached:discovered.candidateLimitReached,
+    verifiedCandidateCount:discovered.urls.length};
 }
 
 export default {
@@ -357,7 +366,7 @@ export default {
       },{status:409,headers});
       try{
         const result=await searchOneSupplier(supplierId,query,sessionId,depth,diagnostics);
-        return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error??null,partial:result.partial??false,noMatch:result.noMatch??false,discoveredFrom:result.discoveredFrom,candidateLimitReached:result.candidateLimitReached??false,depth,diagnostics},{headers});
+        return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error??null,partial:result.partial??false,noMatch:result.noMatch??false,discoveredFrom:result.discoveredFrom,candidateCount:result.candidateCount??result.offers.length,verifiedCandidateCount:result.verifiedCandidateCount??result.offers.length,candidateLimitReached:result.candidateLimitReached??false,depth,diagnostics},{headers});
       }catch(error){
         diagnostics?.events.push({stage:"exception",supplierId,error:error instanceof Error?error.message:"SEARCH_ERROR"});
         return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:[],error:error instanceof Error?error.message:"SEARCH_ERROR",diagnostics},{headers});
