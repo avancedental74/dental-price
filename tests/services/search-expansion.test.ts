@@ -49,4 +49,10 @@ describe("safe universal search expansion",()=>{
     expect(applyAnomalyStatus(offer({sourceStatus:"quarantined"})).sourceStatus).toBe("quarantined");
   });
 
+  it("tries singular and plural when extending a broad material name",()=>{
+    expect(planSupplierQueries("alginato",true)).toEqual(["alginato","alginatos"]);
+    expect(planSupplierQueries("alginatos",true)).toEqual(["alginatos","alginato"]);
+    expect(planSupplierQueries("alginato",false)).toEqual(["alginato"]);
+  });
+
 });
