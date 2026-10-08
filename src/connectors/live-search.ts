@@ -62,8 +62,15 @@ function scoreLink(text:string,href:string,query:string):number{
   const normalizedHay=normalizeReference(hay)??"";
   let score=0;
   if(compact&&normalizedHay.includes(compact))score+=12;
-  const tokens=q.split(" ").filter(t=>t.length>=2);
-  for(const token of tokens)if(hay.includes(token))score+=token.length>=5?3:1;
+  const tokens=[...new Set(q.split(" ").filter(t=>t.length>=2))];
+  const matched=tokens.filter(token=>hay.includes(token));
+  // Short product/model names are precise enough that accepting only one token
+  // creates false positives such as Tetric EvoFlow for "Tetric EvoCeram".
+  if(tokens.length>=2&&tokens.length<=4&&matched.length<Math.ceil(tokens.length*0.75))return 0;
+  if(q.length>=5&&hay.includes(q))score+=16;
+  for(const token of matched)score+=token.length>=5?3:1;
+  const coverage=tokens.length?matched.length/tokens.length:0;
+  score+=Math.round(coverage*8);
   if(/product|producto|html|\/es\//i.test(href))score+=1;
   return score;
 }
