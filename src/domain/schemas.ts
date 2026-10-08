@@ -68,6 +68,7 @@ export const supplierOfferSchema = z.object({
   observedAt: z.string().datetime(),
   sourceStatus: z.enum(["normal","suspicious","quarantined"]),
   sourceMode: z.enum(["automatic","manual"]).optional(),
+  priceVerification: z.enum(["detail","search_index"]).optional(),
   verificationKind: z.enum(["live","snapshot","manual"]).optional(),
   verificationSessionId: z.string().optional(),
   verifiedAt: z.string().datetime().optional()

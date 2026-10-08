@@ -33,6 +33,13 @@ export function planSupplierQueries(query:string,extended:boolean):string[]{
     const other=original.replace(pattern,replacement).replace(/\s+/g," ").trim();
     if(other&&normalizeName(other)!==normalizeName(original))return [original,other];
   }
+  // Plural/singular variants are a generic discovery fallback for one-word
+  // material names, not a substitution of clinical characteristics.
+  const word=normalizeName(original);
+  if(!word.includes(" ")&&/^[a-z]{5,}$/.test(word)){
+    if(word.endsWith("s")&&/[aeiou]s$/.test(word))return [original,original.slice(0,-1)];
+    if(/[aeiou]$/.test(word))return [original,original+"s"];
+  }
   return [original];
 }
 

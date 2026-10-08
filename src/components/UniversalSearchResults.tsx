@@ -1,5 +1,6 @@
 import {useMemo,useState} from "react";
 import type {LiveSearchGroup,SearchDepth} from "../services/live-prices";
+import {classifyPurchaseIntent} from "../features/search/purchase-intent";
 import {
   assessProducts,assessAlternatives,filterProducts,getAvailableFacets,
   profileForSearch,profileLabel,facetLabels,
@@ -14,27 +15,29 @@ const supplierNames:Record<string,string>={
   brokerdental:"Broker Dental"
 };
 function SupplierRows({offers}: {offers:UniversalOffer[]}){
-  return <div className="table-wrap"><table className="universal-offers-table"><thead><tr>
+  return <><p className="alternatives-footnote">Si el depósito muestra varias variantes, selecciona la referencia y presentación de esta fila antes de comparar el importe con la ficha.</p><div className="table-wrap"><table className="universal-offers-table"><thead><tr>
     <th>Depósito</th><th>Precio publicado</th><th>Coste efectivo</th><th>Estado</th><th>Ficha</th>
   </tr></thead><tbody>{offers.map(o=><tr key={o.id}>
     <td><strong>{supplierNames[o.supplierId]??o.supplierId}</strong></td>
-    <td>{Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"—"}</td>
+    <td>{o.priceVerification==="search_index"?"Pendiente de comprobar":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"—"}{o.priceVerification!=="search_index"&&<small className="source-note">{o.vatStatus==="excluded"?"Sin IVA":o.vatStatus==="included"?"IVA incluido":"IVA por confirmar"}</small>}</td>
     <td>{o.effectiveTotal===undefined?"—":money(o.effectiveTotal)}</td>
     <td>{o.eligible?<span className="pill good">Verificado</span>:<small>{o.issues.join("; ")||"Pendiente de verificación"}</small>}</td>
     <td>{o.productUrl?<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Abrir ↗</a>:<span>Sin enlace verificado</span>}</td>
-  </tr>)}</tbody></table></div>;
+  </tr>)}</tbody></table></div></>;
 }
 export function UniversalSearchResults({items,query,onSelect,sessionId,searchDepth,coverage,onExpand}:{
   items:LiveSearchGroup[];query:string;sessionId:string|null;onSelect:(group:LiveSearchGroup)=>void;
-  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number}>;onExpand:()=>void;
+  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"error"}>;onExpand:()=>void;
 }){
   const [filters,setFilters]=useState<SearchFilters>({});
   const [mode,setMode]=useState<"offers"|"alternatives">("offers");
   const [opened,setOpened]=useState<string|null>(null);
   const [category,setCategory]=useState<string|null>(null);
   const products=useMemo(()=>assessProducts(items,sessionId),[items,sessionId]);
+  const requestedProducts=useMemo(()=>products.filter(p=>classifyPurchaseIntent(query,p.group.label)==="requested_product"),[products,query]);
+  const relatedProducts=useMemo(()=>products.filter(p=>classifyPurchaseIntent(query,p.group.label)==="related_accessory"),[products,query]);
   const profile=useMemo(()=>profileForSearch(query,items),[query,items]);
-  const facets=useMemo(()=>getAvailableFacets(products),[products]);
+  const facets=useMemo(()=>getAvailableFacets(requestedProducts),[requestedProducts]);
   // Data-driven grouping works for any product family. It uses the best covered
   // attribute, not a hard-coded "gloves" branch.
   const groupFacet=useMemo(()=>{
@@ -43,7 +46,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
       .find(f=>f&&f.values.length>=2&&f.values.length<=8) ?? null;
   },[facets]);
   const categoryValues=groupFacet?.values??[];
-  const scoped=useMemo(()=>filterProducts(products,category&&groupFacet?{[groupFacet.key]:category}:{}),[products,category,groupFacet]);
+  const scoped=useMemo(()=>filterProducts(requestedProducts,category&&groupFacet?{[groupFacet.key]:category}:{}),[requestedProducts,category,groupFacet]);
   const facetOptions=useMemo(()=>getAvailableFacets(scoped),[scoped]);
   const visible=useMemo(()=>filterProducts(scoped,filters),[scoped,filters]);
   const alternatives=useMemo(()=>assessAlternatives(visible,filters,profile),[visible,filters,profile]);
@@ -56,9 +59,9 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
     <div className="section-head">
       <div><p className="eyebrow">COMPARADOR UNIVERSAL · BÚSQUEDA EN VIVO</p>
         <h3>{profileLabel(profile)}: opciones encontradas</h3></div>
-      <span>{visible.length} de {items.length} productos</span>
+      <span>{visible.length} productos principales · {relatedProducts.length} relacionados</span>
     </div>
-    <p className="universal-intro">Consulta cualquier referencia o nombre. Cada producto se compara con sus propios proveedores; otras marcas aparecen por separado.</p>
+    <p className="universal-intro">Consulta cualquier referencia o nombre. Cada producto se compara con sus propios proveedores; otras marcas aparecen por separado. Un precio del buscador que no coincida con una variante verificada en su ficha se identifica como pendiente, no como precio de compra.</p>
     <div className="universal-coverage">
       <div><strong>Alcance real de la búsqueda</strong>
         <small>{coverage.filter(c=>c.offers>0).length} de {coverage.length} proveedores automáticos devolvieron productos · {coverage.filter(c=>c.candidateLimitReached).length} alcanzaron su límite de revisión de candidatos.</small>
@@ -67,6 +70,13 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
       </div>
       {searchDepth==="standard"&&<button type="button" className="secondary-button" onClick={onExpand}>Ampliar resultados ↗</button>}
     </div>
+    <details className="universal-protected-suppliers">
+      <summary>Consultar estado de los {coverage.length} depósitos automáticos</summary>
+      <div className="provider-status-list">{coverage.map(item=><div key={item.supplierId}>
+        <strong>{supplierNames[item.supplierId]??item.supplierId}</strong>
+        <span>{item.status==="results"?item.offers+" ofertas recuperadas":item.status==="error"?"Consulta fallida":"Sin coincidencias recuperadas"} · {item.queries} intento(s){item.partialErrors>0?" · "+item.partialErrors+" error(es)":""}</span>
+      </div>)}</div>
+    </details>
     <details className="universal-protected-suppliers">
       <summary>Otros 3 depósitos requieren acceso desde su web</summary>
       <p>Estas búsquedas se abren en el sitio del proveedor. Sus precios no se incorporan automáticamente ni se consideran verificados en Dental Price.</p>
@@ -81,7 +91,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
       <button type="button" aria-pressed={mode==="alternatives"} className={mode==="alternatives"?"active":""} onClick={()=>setMode("alternatives")}>Explorar alternativas</button>
     </div>
     {categoryValues.length>0&&<div className="smart-categories" aria-label={"Agrupar por "+facetLabels[groupFacet!.key]}>
-      <button type="button" className={!category?"active":""} onClick={()=>setCategory(null)}>Todos <small>{products.length} productos</small></button>
+      <button type="button" className={!category?"active":""} onClick={()=>setCategory(null)}>Todos <small>{requestedProducts.length} productos</small></button>
       {categoryValues.map(entry=><button type="button" key={entry.value} className={category===entry.value?"active":""}
         onClick={()=>{setCategory(entry.value);setFilters(old=>({...old,[groupFacet!.key]:undefined}));}}>
         <strong>{entry.value}</strong><small>{entry.count} productos</small>
@@ -149,7 +159,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
         <summary>{alternatives.unverified.length} opciones sin ranking de equivalencia</summary>
         <div className="alternatives-pending-list">
           {alternatives.unverified.map(o=><div key={o.id}><strong>{o.name}</strong>
-            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
+            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {o.priceVerification==="search_index"?"No confirmado en ficha":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} {o.priceVerification!=="search_index"&&(o.vatStatus==="excluded"?"(sin IVA)":o.vatStatus==="included"?"(IVA incluido)":"(IVA sin confirmar)")} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
             {o.normalizedCost!==undefined&&<small>Coste orientativo por {o.normalizedBasis}: {money(o.normalizedCost)} (no acredita equivalencia con otros productos)</small>}
             <small>{[
               ...o.issues,
@@ -162,5 +172,12 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
       {!alternatives.ranked.length&&!alternatives.unverified.length&&<p className="smart-no-results">No se encontraron alternativas con los filtros elegidos.</p>}
       <p className="alternatives-footnote">Los costes normalizados provienen del coste de un envase verificado, con IVA y transporte cuando están confirmados. No equivalen al coste exacto de comprar una cantidad fija. La búsqueda puede tener proveedores no disponibles.</p>
     </div>}
+    {relatedProducts.length>0&&<details className="alternatives-pending">
+      <summary>{relatedProducts.length} accesorios y productos relacionados (fuera de la comparación principal)</summary>
+      <div className="alternatives-pending-list">{relatedProducts.map(p=><div key={p.group.id}>
+        <strong>{p.group.label}</strong><small>{new Set(p.group.offers.map(o=>o.supplierId)).size} depósito(s) · Accesorio distinto del material solicitado.</small>
+        <button className="secondary-button" type="button" onClick={()=>onSelect(p.group)}>Examinar por separado</button>
+      </div>)}</div>
+    </details>}
   </section>;
 }

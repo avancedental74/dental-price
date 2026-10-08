@@ -115,4 +115,21 @@ describe("universal dental price comparison",()=>{
     expect(result[0].offers[0].effectiveTotal).toBeGreaterThan(0);
   });
 
+  it("normalizes package quantities regardless of whitespace",()=>{
+    expect(extractSpecs("Alginato 500g").quantity).toBe("500 g");
+    expect(extractSpecs("Alginato 500 g").quantity).toBe("500 g");
+    expect(extractSpecs("Alginato 453gr").quantity).toBe("453 g");
+    expect(extractSpecs("Alginato 453 g").quantity).toBe("453 g");
+  });
+  it("never presents a search-index price as a verified purchase price",()=>{
+    const entry=group("D001","Alginato de impresión 500g",9.24,500,{
+      unit:"g",quantity:500,priceVerification:"search_index"
+    });
+    const result=assessProducts([entry],"live1");
+    expect(result[0].best).toBeUndefined();
+    expect(result[0].offers[0].eligible).toBe(false);
+    expect(result[0].offers[0].issues.join(" ")).toContain("no comprobado en la ficha");
+    expect(result[0].offers[0].priceVerification).toBe("search_index");
+  });
+
 });

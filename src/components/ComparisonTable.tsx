@@ -7,6 +7,7 @@ const names:Record<string,string>={
 
 function eligibilityLabel(item:MatchedSupplierOffer):string{
   if(item.eligibleForRanking) return "Live · comparable";
+  if(item.offer.priceVerification==="search_index") return "Precio de buscador no confirmado";
   if(item.offer.verificationKind==="snapshot") return "Snapshot histórico";
   if(item.offer.verificationKind==="manual") return "Manual · fuera de sesión live";
   if(item.offer.sourceStatus==="quarantined") return "Precio en cuarentena";
@@ -30,10 +31,10 @@ export function ComparisonTable({items}:{items:MatchedSupplierOffer[]}){
     <div className="table-wrap"><table><thead><tr><th>Proveedor</th><th>Precio</th><th>Coste efectivo</th><th>Stock</th><th>Verificación</th><th>Estado</th></tr></thead>
       <tbody>{sorted.map((item,index)=><tr key={`${item.offer.supplierId}-${item.offer.verificationKind??"legacy"}-${item.offer.supplierSku ?? item.offer.manufacturerReference ?? index}`}>
         <td><strong>{names[item.offer.supplierId] ?? item.offer.supplierId}</strong></td>
-        <td>{(item.offer.salePrice ?? item.offer.regularPrice).toFixed(2)} €</td>
-        <td>{item.pricing ? `${item.pricing.effectiveTotalCost.toFixed(2)} €` : "—"}</td>
+        <td>{item.offer.priceVerification==="search_index"?"Por comprobar":(item.offer.salePrice ?? item.offer.regularPrice).toFixed(2)+" €"}</td>
+        <td>{item.offer.priceVerification==="search_index"?"—":item.pricing ? `${item.pricing.effectiveTotalCost.toFixed(2)} €` : "—"}</td>
         <td>{item.offer.stockStatus==="in_stock"?"Disponible":item.offer.stockStatus==="low_stock"?"Pocas unidades":item.offer.stockStatus}</td>
-        <td>{item.offer.verificationKind==="live" ? <><b>Ahora</b><small className="source-note">{item.offer.verifiedAt?new Date(item.offer.verifiedAt).toLocaleTimeString("es-ES"):"sesión live"}</small></> : <><span>Snapshot</span><small className="source-note">{new Date(item.offer.observedAt).toLocaleString("es-ES")}</small></>}</td>
+        <td>{item.offer.priceVerification==="search_index"?<><b>Índice del proveedor</b><small className="source-note">Precio no contrastado en ficha</small></>:item.offer.verificationKind==="live" ? <><b>Ficha consultada</b><small className="source-note">{item.offer.verifiedAt?new Date(item.offer.verifiedAt).toLocaleTimeString("es-ES"):"sesión live"}</small></> : <><span>Snapshot</span><small className="source-note">{new Date(item.offer.observedAt).toLocaleString("es-ES")}</small></>}</td>
         <td><span className={item.eligibleForRanking?"pill good":"pill"}>{eligibilityLabel(item)}</span></td>
       </tr>)}</tbody></table></div>
   </section>;

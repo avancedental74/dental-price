@@ -55,8 +55,9 @@ export function extractSpecs(value:string):SearchFilters {
   const shade=s.match(/\b([a-d]\d(?:\.\d)?)\b/)?.[1]?.toUpperCase();
   const size=s.match(/\btalla\s*(?:n[º°o.]?\s*)?(xxl|xl|xs|s|m|l|\d+(?:[.,]\d+)?)\b/)?.[1]
     ??s.match(/\bn[º°o.]\s*(\d+(?:[.,]\d+)?)\b/)?.[1];
-  const quantity=s.match(/\b(\d+(?:[.,]\d+)?)\s*(g|gr|ml|mg|uds?\.?|unidades)\b/)?.[0];
-  const normalizedQuantity=quantity?.replace(/\s+/g," ").replace(/\bgr\b/,"g").replace(/\b(?:uds?\.?|unidades)\b/,"ud").replace(",",".");
+  const quantity=s.match(/\b(\d+(?:[.,]\d+)?)\s*(g|gr|grs|gramos?|ml|mg|uds?\.?|unidades)\b/);
+  const metricUnit=quantity?.[2]?.replace(/^(?:gr|grs|gramos?)$/,"g").replace(/^(?:uds?\.?|unidades)$/,"ud");
+  const normalizedQuantity=quantity?Number(quantity[1].replace(",","."))+" "+metricUnit:undefined;
   return {material,powder,sterile,color,presentation,shade,size:size?.toUpperCase().replace(",","."),quantity:normalizedQuantity};
 }
 export function specsForGroup(group:LiveSearchGroup,offer?:SupplierOffer):SearchSpecs {
@@ -99,8 +100,8 @@ export function specsForGroup(group:LiveSearchGroup,offer?:SupplierOffer):Search
 }
 export interface UniversalOffer {
   id:string;groupId:string;name:string;reference?:string;supplierId:string;
-  productUrl:string;publishedPrice:number;properties:SearchFilters;
-  unit?:string;count?:number;effectiveTotal?:number;normalizedCost?:number;
+  productUrl:string;publishedPrice:number;vatStatus?:"included"|"excluded"|"unknown";properties:SearchFilters;
+  unit?:string;count?:number;priceVerification?:"detail"|"search_index";effectiveTotal?:number;normalizedCost?:number;
   normalizedBasis?:string;eligible:boolean;issues:string[];
 }
 export interface UniversalProduct {
@@ -118,6 +119,7 @@ export function assessProducts(groups:LiveSearchGroup[],sessionId:string|null):U
       const issues=[...spec.conflicts];
       if(!match.eligibleForRanking||!match.pricing)issues.push("Identidad, sesión, stock o coste no comprobados");
       if(!validHttps(o.productUrl))issues.push("URL no verificada");
+      if(o.priceVerification==="search_index")issues.push("Precio tomado del índice de búsqueda, no comprobado en la ficha");
       const eligible=issues.length===0&&!!match.pricing;
       const count=spec.count;
       const unit=spec.unit;
@@ -130,8 +132,8 @@ export function assessProducts(groups:LiveSearchGroup[],sessionId:string|null):U
         id:group.id+"|"+o.supplierId+"|"+(o.supplierSku??index),groupId:group.id,
         name:o.rawName,reference:o.manufacturerReference??o.supplierSku,
         supplierId:o.supplierId,productUrl:validHttps(o.productUrl)?o.productUrl:"",
-        publishedPrice:o.salePrice??o.regularPrice,properties:spec.properties,
-        unit,count,eligible,issues,
+        publishedPrice:o.salePrice??o.regularPrice,vatStatus:o.vatStatus,properties:spec.properties,
+        unit,count,priceVerification:o.priceVerification,eligible,issues,
         effectiveTotal:eligible?match.pricing?.effectiveTotalCost:undefined,
         normalizedBasis:normalizable?(unit==="unit"?"100 ud":"1 "+unit):undefined,
         normalizedCost:normalizable?Math.round(match.pricing!.effectiveTotalCost/(count!)*(unit==="unit"?100:1)*100)/100:undefined
