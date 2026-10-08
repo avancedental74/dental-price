@@ -1,6 +1,7 @@
 import {useMemo,useState} from "react";
 import type {LiveSearchGroup} from "../services/live-prices";
 import {normalizeName} from "../domain/matching/normalization";
+import {compareSupplierOffers} from "../domain/comparison";
 
 type Attribute="material"|"size"|"powder"|"color"|"sterile"|"units";
 type Filters=Partial<Record<Attribute,string>>;
@@ -30,12 +31,13 @@ function label(item:Item):string{
   const p=item.group.product;
   return [p.family,p.shade,p.variant].filter(Boolean).join(" · ");
 }
-export function VisualSearchResults({items,query,onSelect}:{
-  items:LiveSearchGroup[];query:string;onSelect:(group:LiveSearchGroup)=>void;
+export function VisualSearchResults({items,query,onSelect,sessionId}:{
+  items:LiveSearchGroup[];query:string;sessionId:string|null;onSelect:(group:LiveSearchGroup)=>void;
 }){
   const [filters,setFilters]=useState<Filters>({});
   const [category,setCategory]=useState<string>("");
   const [expanded,setExpanded]=useState(true);
+  const [preview,setPreview]=useState<string|null>(null);
   const analyzed=useMemo(()=>items.map(describe),[items]);
   const gloveSearch=match(cleaned(query),/\bguantes?\b/);
   const counts=useMemo(()=>{
@@ -75,9 +77,26 @@ export function VisualSearchResults({items,query,onSelect}:{
     </fieldset>)}</div>}
     <div className="smart-direct-head"><div><strong>Productos y proveedores encontrados</strong><p>Elige una referencia para consultar su coste efectivo, stock y portes. Los artículos distintos no compiten entre sí.</p></div></div>
     {!visible.length?<p className="smart-no-results">No hay coincidencias con estos filtros. Prueba a quitar uno.</p>:
-    <div className="smart-result-list">{visible.map(item=><div key={item.group.id} className="smart-result">
-      <div className="smart-result-description"><strong>{label(item)}</strong><small>{[item.properties.material,item.properties.size?"Talla "+item.properties.size:null,item.properties.powder,item.properties.units?item.properties.units+" uds.":null,item.group.manufacturerReference?"Ref. "+item.group.manufacturerReference:null].filter(Boolean).join(" · ")}</small><small>{new Set(item.group.offers.map(o=>o.supplierId)).size} proveedor(es) encontrados</small></div>
-      <button className="primary-button" onClick={()=>onSelect(item.group)}>Ver comparación →</button>
-    </div>)}</div>}
+    <div className="smart-result-list">{visible.map(item=>{
+      const result=preview===item.group.id?compareSupplierOffers(item.group.product,item.group.offers,1,{requiredLiveSessionId:sessionId??"__NO_LIVE_SESSION__"}):null;
+      return <div key={item.group.id} className="smart-result-card">
+        <div className="smart-result">
+          <div className="smart-result-description"><strong>{label(item)}</strong><small>{[item.properties.material,item.properties.size?"Talla "+item.properties.size:null,item.properties.powder,item.properties.units?item.properties.units+" uds.":null,item.group.manufacturerReference?"Ref. "+item.group.manufacturerReference:null].filter(Boolean).join(" · ")}</small><small>{new Set(item.group.offers.map(o=>o.supplierId)).size} proveedor(es) encontrados</small></div>
+          <div className="smart-result-actions">
+            <button className="secondary-button" aria-expanded={preview===item.group.id} onClick={()=>setPreview(prev=>prev===item.group.id?null:item.group.id)}>{preview===item.group.id?"Ocultar precios":"Comparar aquí"}</button>
+            <button className="primary-button" onClick={()=>onSelect(item.group)}>Ver detalles →</button>
+          </div>
+        </div>
+        {result&&<div className="smart-inline-comparison">
+          <p>Coste efectivo de una unidad. Solo se muestran costes verificables; artículos distintos se comparan por separado.</p>
+          <div className="table-wrap"><table><thead><tr><th>Proveedor</th><th>Precio publicado</th><th>Coste efectivo</th><th>Estado</th></tr></thead>
+          <tbody>{result.matches.map((m,index)=><tr key={m.offer.supplierId+"-"+(m.offer.supplierSku??index)}>
+            <td>{m.offer.supplierId}</td><td>{(m.offer.salePrice??m.offer.regularPrice).toFixed(2)} €</td>
+            <td>{m.eligibleForRanking&&m.pricing?m.pricing.effectiveTotalCost.toFixed(2)+" €":"—"}</td>
+            <td>{m.eligibleForRanking?"Verificada y comparable":"No comparable todavía"}</td>
+          </tr>)}</tbody></table></div>
+        </div>}
+      </div>;
+    })}</div>}
   </section>;
 }
