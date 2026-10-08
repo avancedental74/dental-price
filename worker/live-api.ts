@@ -123,23 +123,43 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
   const limitFor=(standard:number,more:number)=>extended?more:standard;
   const fetchImpl=withTimeout();
   if(supplierId==="dentalboom"){
-    const records=await searchDentalBoomRecords(query,fetchImpl,limitFor(5,12));
-    const pages:SupplierOffer[][]=[];
-    for(const record of records.slice(0,limitFor(4,8))){
-      try{
-        const pageOffers=(await fetchDentalBoomProduct(record.url,fetchImpl)).offers.filter(o=>relevantToQuery(o,query));
-        if(pageOffers.length)pages.push(pageOffers);
-      }catch{ /* try next API result */ }
-    }
+    const records=await searchDentalBoomRecords(query,fetchImpl,limitFor(5,10));
     const policy=policyList.find(p=>p.supplierId===supplierId);
-    const offers=pages.flat()
+    // WooCommerce Store API provides a lightweight discovery-price estimate.
+    // Never label that value as checkout-confirmed without visiting the SKU page.
+    const indexOffers:SupplierOffer[]=records.filter(record=>record.publishedPrice!==undefined)
+      .map(record=>({
+        supplierId:"dentalboom",supplierSku:record.sku,rawName:record.name,
+        normalizedName:normalizeName(record.name),productUrl:record.url,
+        regularPrice:record.regularPrice??record.publishedPrice!,
+        salePrice:record.publishedPrice,
+        stockStatus:record.inStock===true?"in_stock":"unknown",
+        vatStatus:"unknown",currency:"EUR",observedAt:new Date().toISOString(),
+        sourceStatus:"suspicious",sourceMode:"automatic",priceVerification:"search_index"
+      }));
+    const detailOffers:SupplierOffer[]=[];
+    // At most one detail is checked on an explicit expanded reference request.
+    if(extended&&looksLikeReference(query)){
+      for(const record of records.slice(0,1)){
+        try{
+          detailOffers.push(...(await fetchDentalBoomProduct(record.url,fetchImpl)).offers
+            .filter(o=>relevantToQuery(o,query)&&(!record.sku||!o.supplierSku||normalizeReference(record.sku)===normalizeReference(o.supplierSku))));
+        }catch{ /* keep published estimate, not a fabricated verified price */ }
+      }
+    }
+    const detailSkus=new Set(detailOffers.map(o=>normalizeReference(o.supplierSku)).filter(Boolean));
+    const offers=[...detailOffers.map(o=>({...o,priceVerification:"detail" as const})),
+      ...indexOffers.filter(o=>!detailSkus.has(normalizeReference(o.supplierSku)))]
       .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
-      .map(o=>({...o,priceVerification:"detail" as const,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+      .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"woocommerce-store-api+product",candidateLimitReached:records.length>=limitFor(5,12)};
+    return {offers,error:records.length>0&&!offers.length?"PRODUCT_PRICES_UNAVAILABLE":null,
+      noMatch:records.length===0,discoveredFrom:"woocommerce-store-api-light",
+      candidateLimitReached:records.length>=limitFor(5,10)};
   }
   if(supplierId==="ortolan"){
-    const records=await searchOrtolanRecords(query,fetchImpl,limitFor(12,20));
+    const needsVariants=looksLikeReference(query)||/\b[a-d]\d(?:[.,]\d)?\b/i.test(query);
+    const records=await searchOrtolanRecords(query,fetchImpl,limitFor(7,12),needsVariants);
     const policy=policyList.find(p=>p.supplierId===supplierId);
     const offers=records.map(record=>{
       const rawName=[record.name,record.variant].filter(Boolean).join(" - ");
@@ -176,12 +196,15 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>relevantToQuery(o,query))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"ortolan-structured-search",candidateLimitReached:records.length>=limitFor(12,20)};
+    return {offers,error:records.length>0&&!offers.length?"PRODUCT_VARIANTS_NOT_VERIFIED":null,noMatch:records.length===0,discoveredFrom:"ortolan-structured-search",candidateLimitReached:records.length>=limitFor(12,20)};
   }
   if(supplierId==="dvd-dental"){
     const records=await searchDvdKlevuRecords(query,fetchImpl,limitFor(10,20));
     const policy=policyList.find(p=>p.supplierId===supplierId);
-    const chosen=records.slice(0,limitFor(5,9));
+    // Product detail HTML can exceed the free Worker CPU budget.
+    // Generic discovery must remain cheap; index prices stay marked as
+    // orientative. Only a narrow extended reference query fetches one detail.
+    const chosen=looksLikeReference(query)&&extended?records.slice(0,1):[];
     // The discovery index is never price evidence for a specific variant.
     const pages=await Promise.all(chosen.map(async record=>{
       if(!record.url)return [] as SupplierOffer[];
@@ -228,11 +251,13 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,
+    return {offers,error:records.length>0&&!offers.length?"DISCOVERED_WITHOUT_PRICE":null,noMatch:records.length===0,
       discoveredFrom:"klevu-discovery+sku-verified-detail",
       candidateLimitReached:records.length>=limitFor(10,20)};
   }
-  const candidateLimit=extended?10:5;
+  // Keep each request within a small CPU budget. Search depth expands
+  // through multiple bounded supplier calls, not long HTML-parsing loops.
+  const candidateLimit=extended?3:(supplierId==="dentalcost"?2:1);
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
   if(!discovered.urls.length){
     const message=discovered.error??"Sin resultados";
@@ -255,7 +280,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
     .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
     .map(o=>({...o,priceVerification:"detail" as const,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
     .filter(o=>supplierOfferSchema.safeParse(o).success);
-  return {offers,error:null,noMatch:offers.length===0,discoveredFrom:discovered.searchUrl,candidateLimitReached:discovered.urls.length>=candidateLimit};
+  return {offers,error:!offers.length?"CANDIDATE_PRODUCT_PAGES_NOT_VERIFIED":null,noMatch:false,discoveredFrom:discovered.searchUrl,candidateLimitReached:discovered.urls.length>=candidateLimit};
 }
 
 export default {

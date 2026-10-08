@@ -1,0 +1,44 @@
+name: Diagnose live supplier search
+on:
+  pull_request:
+    paths:
+      - "worker/**"
+      - "src/services/**"
+      - "src/components/ZeroResultDiagnostics.tsx"
+      - ".github/workflows/diagnose-live-search.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  search-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check deployed API and a broad dental search
+        run: |
+          node <<'NODE'
+          const endpoint="https://dental-price-live.avance-dental74.workers.dev";
+          const suppliers=["dentaltix","dentalcost","dvd-dental","dentalexpress","ortolan","dentipak","dentalboom"];
+          const session="diagnostics-"+Date.now();
+          async function inspect(url){
+            try{
+              const response=await fetch(url,{signal:AbortSignal.timeout(25000),headers:{accept:"application/json"}});
+              const body=await response.text();
+              let data={};try{data=JSON.parse(body);}catch{}
+              return {http:response.status,error:data.error??null,noMatch:data.noMatch??null,offers:data.offers?.length??null,source:data.discoveredFrom??null,health:data.ok??null,body:response.ok?undefined:body.slice(0,220)};
+            }catch(error){return {error:String(error)};}
+          }
+          console.log("HEALTH",JSON.stringify(await inspect(endpoint+"/health")));
+          const checks=[];
+          for(const supplier of suppliers){
+            const query=endpoint+"/search-supplier?q=guantes&supplier="+encodeURIComponent(supplier)+"&sessionId="+session+"&depth=standard";
+            const row={supplier,...await inspect(query)};
+            console.log("SINGLE_SUPPLIER",JSON.stringify(row));
+            checks.push(row);
+          }
+          for(const row of checks)console.log("SUPPLIER",JSON.stringify(row));
+          const recovered=checks.reduce((sum,row)=>sum+(row.offers??0),0);
+          const errored=checks.filter(row=>row.error).length;
+          console.log("DIAGNOSTIC_SUMMARY",JSON.stringify({query:"guantes",suppliers:suppliers.length,recovered,errored}));
+          if(recovered===0)console.warn("NO_PRODUCTS_RECOVERED: check connectors/deployment, not a valid product-not-found assertion");
+          NODE

@@ -269,17 +269,30 @@ export interface DentalBoomRecord {
   sku?:string;
   name:string;
   url:string;
+  publishedPrice?:number;
+  regularPrice?:number;
+  inStock?:boolean;
 }
 
 export async function searchDentalBoomRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=5):Promise<DentalBoomRecord[]>{
   const url="https://dentalboom.com/wp-json/wc/store/v1/products?search="+encodeURIComponent(query);
   const response=await fetchImpl(url,{headers:{"user-agent":"Mozilla/5.0","accept":"application/json"}});
   if(!response.ok)throw new Error("DENTALBOOM_API_HTTP_"+response.status);
-  const data=await response.json() as Array<{sku?:string;name?:string;permalink?:string}>;
+  const data=await response.json() as Array<{sku?:string;name?:string;permalink?:string;prices?:{price?:string;regular_price?:string;currency_minor_unit?:number};is_in_stock?:boolean}>;
   return data
     .filter(item=>item.name&&item.permalink&&scoreLink([item.name,item.sku].filter(Boolean).join(" "),item.permalink!,query)>=2)
     .slice(0,maxResults)
-    .map(item=>({sku:item.sku,name:item.name!,url:item.permalink!}));
+    .map(item=>{
+      const divisor=Math.pow(10,Math.max(0,Math.min(item.prices?.currency_minor_unit??2,4)));
+      const value=Number(item.prices?.price)/divisor;
+      const regular=Number(item.prices?.regular_price)/divisor;
+      return {
+        sku:item.sku,name:item.name!,url:item.permalink!,
+        publishedPrice:Number.isFinite(value)&&value>0?value:undefined,
+        regularPrice:Number.isFinite(regular)&&regular>0?regular:undefined,
+        inStock:item.is_in_stock
+      };
+    });
 }
 
 export interface OrtolanSearchRecord {
@@ -334,7 +347,7 @@ async function expandOrtolanProductVariants(
     .slice(0,maxResults);
 }
 
-export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=8):Promise<OrtolanSearchRecord[]>{
+export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=8,includeDetailVariants=true):Promise<OrtolanSearchRecord[]>{
   const searchUrl="https://ortolan.es/es/busqueda?controller=search&s="+encodeURIComponent(query);
   const response=await fetchImpl(searchUrl,{
     headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36",accept:"text/html,application/xhtml+xml"},
@@ -342,25 +355,30 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
   });
   if(!response.ok)throw new Error("ORTOLAN_SEARCH_HTTP_"+response.status);
   const html=await response.text();
-  const $=cheerio.load(html);
   const urlsByProduct=new Map<string,string>();
   const namesByProduct=new Map<string,string>();
-  $('article[data-id-product]').each((_,el)=>{
-    const id=$(el).attr("data-id-product");
-    const href=$(el).find('a[href*=".html"]').first().attr("href");
-    const name=$(el).find(".product-title").first().text().replace(/\s+/g," ").trim();
-    if(id&&href){
-      try{urlsByProduct.set(id,new URL(href,response.url||searchUrl).toString());}catch{ /* ignore */ }
-      if(name)namesByProduct.set(id,name);
-    }
-  });
+  // On broad searches the index is sufficient for a clearly-labelled
+  // orientative amount. Avoid parsing a full storefront DOM on the free Worker.
+  if(includeDetailVariants){
+    const $=cheerio.load(html);
+    $('article[data-id-product]').each((_,el)=>{
+      const id=$(el).attr("data-id-product");
+      const href=$(el).find('a[href*=".html"]').first().attr("href");
+      const name=$(el).find(".product-title").first().text().replace(/\s+/g," ").trim();
+      if(id&&href){
+        try{urlsByProduct.set(id,new URL(href,response.url||searchUrl).toString());}catch{ /* ignore */ }
+        if(name)namesByProduct.set(id,name);
+      }
+    });
+  }
 
   // A search card can show only its default shade (e.g. A1). Discover the
   // family first, then confirm the requested shade against detail variants.
   const familyQuery=query.replace(/\b[a-d]\d(?:[.,]\d)?\b/gi,"").trim()||query;
   const defaultRecords:OrtolanSearchRecord[]=[];
   const seen=new Set<string>();
-  for(const match of html.matchAll(/"item_id":"([^"]+)","item_name":"([^"]+)"[^{}]{0,700}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,700}?"item_variant":"([^"]*)"/g)){
+  const limitedHtml=includeDetailVariants?html:html.slice(0,550_000);
+  for(const match of limitedHtml.matchAll(/"item_id":"([^"]+)","item_name":"([^"]+)"[^{}]{0,700}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,700}?"item_variant":"([^"]*)"/g)){
     const supplierSku=match[1];
     const name=decodeHtmlJson(match[2]??"");
     const price=Number(match[3]);
@@ -376,7 +394,7 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
   }
 
   const top=defaultRecords.find(record=>record.url);
-  if(top?.url){
+  if(includeDetailVariants&&top?.url){
     try{
       const baseId=top.supplierSku?.split("-")[0];
       const expanded=await expandOrtolanProductVariants(top.url,namesByProduct.get(baseId??"")??top.name,query,fetchImpl,maxResults);

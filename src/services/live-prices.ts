@@ -4,6 +4,7 @@ import { applyAnomalyStatus } from "../domain/anomaly";
 import { normalizeManufacturer, normalizeName, normalizeReference } from "../domain/matching/normalization";
 import { browserProtectedSupplierIds, liveAutomaticSupplierIds } from "../connectors/live-supplier-registry";
 import {planSupplierQueries,mergeSupplierQueryOffers} from "./search-expansion";
+import {mapWithConcurrency} from "./supplier-concurrency";
 
 export interface LiveSearchGroup {
   id:string;
@@ -197,7 +198,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
   const sessionId=sessionIdOverride?.trim()||crypto.randomUUID();
   const requestedAt=new Date().toISOString();
   const queries=planSupplierQueries(query,depth==="extended");
-  const settled=await Promise.all(liveAutomaticSuppliers.map(async supplierId=>{
+  const settled=await mapWithConcurrency(liveAutomaticSuppliers,async supplierId=>{
     // In extended mode try at most two semantics-preserving terms per provider.
     // The requests share a session so validation remains scoped to this search.
     const fetchTerm=async(term:string,requestDepth:SearchDepth)=>{
@@ -216,6 +217,12 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
       }
     };
     const attempts=await Promise.all(queries.map(term=>fetchTerm(term,depth)));
+    // A single bounded retry for temporary transport/server problems. A
+    // failure is never treated as a legitimate empty supplier catalogue.
+    const transient=(error:string|null|undefined)=>Boolean(error&&/(?:HTTP 5\d\d|timeout|timed out|abort|network|fetch failed|failed to fetch)/i.test(error));
+    if(depth==="standard"&&attempts.every(a=>a.offers.length===0)&&attempts.some(a=>transient(a.error))){
+      attempts.push(await fetchTerm(query,"standard"));
+    }
     // Improve coverage automatically for suppliers that returned no matches.
     // A hard error is reported, not retried indefinitely. Only one bounded
     // extended pass, with lexical alternatives where available.
@@ -232,7 +239,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
       queries:attempts.length,
       candidateLimitReached:attempts.some(a=>a.candidateLimitReached)
     };
-  }));
+  },2);
   const offers=applyClientHistorySafety(settled.flatMap(x=>x.offers),previousHistory);
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
