@@ -196,7 +196,7 @@ export function App(){
   return <main className="app-shell">
     <header className="topbar">
       <div className="brand"><span className="brand-mark">DP</span><div><strong>Dental Price</strong><small>Búsqueda federada en tiempo real</small></div></div>
-      <div className="status-chip"><span className="status-dot"/>Consulta directa a proveedores</div>
+      <div className={"status-chip"+(liveState==="failed"||liveState==="unavailable"?" warning":"")}><span className="status-dot"/>{liveState==="loading"?"Consultando depósitos...":liveState==="failed"?"Consulta incompleta":liveState==="unavailable"?"Servicio no configurado":liveState==="partial"?"Resultados parciales":"Consulta a proveedores disponible"}</div>
     </header>
 
     <section className="hero">
@@ -211,7 +211,7 @@ export function App(){
       </div>
       <div className="trust-row">
         <span><b>{liveAutomaticSupplierIds.length} live + {browserProtectedSupplierIds.length} protegidos</b> proveedores objetivo</span>
-        <span><b>Live</b> precio y stock al consultar</span>
+        <span><b>Live</b> cuando el depósito responde</span>
         <span><b>Exact</b> variantes separadas</span>
       </div>
     </section>
