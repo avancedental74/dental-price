@@ -81,12 +81,13 @@ async function runSupplier(query:string,supplierId:SearchSupplierId,sessionId:st
       offers?:Array<{rawName:string;manufacturerReference?:string;supplierSku?:string;salePrice?:number;regularPrice:number;priceVerification?:string;sourceStatus:string}>;
       error?:string|null;
       noMatch?:boolean;
+      partial?:boolean;
       candidateLimitReached?:boolean;
     };
     const offers=Array.isArray(body.offers)?body.offers:[];
     const httpError=response.ok?null:"HTTP "+response.status;
     const error=body.error??httpError;
-    const status:SupplierResult["status"]=error?"error":offers.length?"results":body.noMatch?"no_match":"partial";
+    const status:SupplierResult["status"]=httpError?"error":offers.length?"results":body.partial?"partial":body.noMatch?"no_match":error?"partial":"partial";
     return {
       supplierId,status,offers:offers.length,
       candidateLimitReached:Boolean(body.candidateLimitReached),

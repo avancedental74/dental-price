@@ -49,7 +49,7 @@ export interface LiveCatalogSearchResponse {
   discovery:LiveDiscoveryRecord[];
   errors:Array<{supplierId:string;message:string}>;
   depth:SearchDepth;
-  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"error"}>;
+  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"partial"|"error"}>;
 }
 
 export type SearchDepth="standard"|"extended";
@@ -63,6 +63,7 @@ interface SupplierSearchResponse {
   offers:SupplierOffer[];
   error?:string|null;
   noMatch?:boolean;
+  partial?:boolean;
   candidateLimitReached?:boolean;
 }
 
@@ -287,7 +288,12 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
         const data=await response.json() as SupplierSearchResponse;
         if(data.supplierId!==supplierId||data.sessionId!==sessionId)
           return {offers:[] as SupplierOffer[],error:"RESPONSE_IDENTITY_MISMATCH",candidateLimitReached:false};
-        return {offers:data.offers??[],error:data.error??null,candidateLimitReached:Boolean(data.candidateLimitReached)};
+        return {
+          offers:data.offers??[],
+          error:data.partial?null:data.error??null,
+          partial:Boolean(data.partial),
+          candidateLimitReached:Boolean(data.candidateLimitReached)
+        };
       }catch(error){
         return {offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR",candidateLimitReached:false};
       }
@@ -311,6 +317,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
     return {
       supplierId,offers:combined,
       error:good.length?null:attempts.map(a=>a.error).filter(Boolean).join("; "),
+      partial:attempts.some(a=>a.partial),
       partialErrors:attempts.filter(a=>a.error).length,
       queries:attempts.length,
       candidateLimitReached:attempts.some(a=>a.candidateLimitReached)
@@ -321,7 +328,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
     groups,discovery:buildDiscoveryRecords(groups),depth,
-    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached,queries:x.queries,partialErrors:x.partialErrors,status:x.error?"error" as const:x.offers.length?"results" as const:"no_match" as const})),
+    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached,queries:x.queries,partialErrors:x.partialErrors,status:x.error?"error" as const:x.offers.length?"results" as const:x.partial?"partial" as const:"no_match" as const})),
     errors:settled.filter(x=>x.error).map(x=>({supplierId:x.supplierId,message:x.error!}))
   };
 }

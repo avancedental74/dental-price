@@ -16,6 +16,7 @@
     "lint": "eslint .",
     "validate:data": "tsx scripts/validate-data.ts",
     "validate:live": "tsx scripts/live-search-matrix.ts",
+    "diagnose:live": "tsx scripts/live-provider-diagnostics.ts",
     "refresh": "tsx scripts/refresh-prices.ts",
     "health": "tsx scripts/connector-health.ts"
   },

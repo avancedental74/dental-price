@@ -1,0 +1,369 @@
+{
+  "generatedAt": "2026-10-08T17:07:01.129Z",
+  "rows": [
+    {
+      "supplierId": "dentaltix",
+      "query": "4910A3B",
+      "depth": "standard",
+      "elapsedMs": 1403,
+      "offers": 1,
+      "error": null,
+      "noMatch": false,
+      "discoveredFrom": "https://www.dentaltix.com/es/search-results?q=4910A3B",
+      "candidateLimitReached": true,
+      "sample": [
+        {
+          "name": "Filtek Supreme XTE: Nanocomposite Universal (Jeringa 3 gr) - A3 BODY - 1 Jer. de 3 gr - Color: A3 Body",
+          "reference": "4910A3B",
+          "sku": "053M4910A3B",
+          "price": 44.9,
+          "verification": "detail",
+          "sourceStatus": "normal"
+        }
+      ],
+      "diagnostics": {
+        "startedAt": "2026-10-08T17:06:52.866Z",
+        "events": [
+          {
+            "stage": "start",
+            "supplierId": "dentaltix"
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentaltix",
+            "url": "https://www.dentaltix.com/es/search-results",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 477
+          },
+          {
+            "stage": "discovery",
+            "supplierId": "dentaltix",
+            "status": 1
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentaltix",
+            "url": "https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 530
+          },
+          {
+            "stage": "complete",
+            "supplierId": "dentaltix",
+            "ok": true,
+            "status": 1
+          }
+        ]
+      }
+    },
+    {
+      "supplierId": "dentalcost",
+      "query": "4910A3B",
+      "depth": "standard",
+      "elapsedMs": 3496,
+      "offers": 1,
+      "error": null,
+      "noMatch": false,
+      "discoveredFrom": "https://www.dentalcost.es/?controller=search&search_query=4910A3B",
+      "candidateLimitReached": false,
+      "sample": [
+        {
+          "name": "− + ComprarFiltek Supreme XTE Composite Universal Opacidad Body 3gr 3M Espe: A3",
+          "reference": "4910A3B",
+          "sku": "06873M3",
+          "price": 47.86,
+          "verification": "detail",
+          "sourceStatus": "normal"
+        }
+      ],
+      "diagnostics": {
+        "startedAt": "2026-10-08T17:06:54.270Z",
+        "events": [
+          {
+            "stage": "start",
+            "supplierId": "dentalcost"
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentalcost",
+            "url": "https://www.dentalcost.es/buscar",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 370
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentalcost",
+            "url": "https://www.dentalcost.es/",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 1648
+          },
+          {
+            "stage": "discovery",
+            "supplierId": "dentalcost",
+            "status": 1
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentalcost",
+            "url": "https://www.dentalcost.es/composites-universales/687-filtek-supreme-xte-composite-universal-body-3gr.html",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 770
+          },
+          {
+            "stage": "complete",
+            "supplierId": "dentalcost",
+            "ok": true,
+            "status": 1
+          }
+        ]
+      }
+    },
+    {
+      "supplierId": "dvd-dental",
+      "query": "4910A3B",
+      "depth": "standard",
+      "elapsedMs": 89,
+      "offers": 1,
+      "error": null,
+      "noMatch": false,
+      "discoveredFrom": "klevu-discovery+sku-verified-detail",
+      "candidateLimitReached": false,
+      "sample": [
+        {
+          "name": "Composite Filtek supreme XTE jeringas (3g)",
+          "reference": "4910A3B",
+          "sku": "M-072",
+          "price": 83.36,
+          "verification": "search_index",
+          "sourceStatus": "suspicious"
+        }
+      ],
+      "diagnostics": {
+        "startedAt": "2026-10-08T17:06:57.766Z",
+        "events": [
+          {
+            "stage": "start",
+            "supplierId": "dvd-dental"
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dvd-dental",
+            "url": "https://eucs34v2.ksearchnet.com/cs/v2/search",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 84
+          },
+          {
+            "stage": "complete",
+            "supplierId": "dvd-dental",
+            "ok": true,
+            "status": 1
+          }
+        ]
+      }
+    },
+    {
+      "supplierId": "dentalexpress",
+      "query": "41294",
+      "depth": "standard",
+      "elapsedMs": 1119,
+      "offers": 1,
+      "error": null,
+      "noMatch": false,
+      "discoveredFrom": "https://dentalexpress.es/catalogsearch/result/?q=41294",
+      "candidateLimitReached": true,
+      "sample": [
+        {
+          "name": "ADHESIVO SCOTCHBOND UNIVERSAL PLUS 5ML SOLVENTUM",
+          "reference": "41294",
+          "sku": "350-6016",
+          "price": 57.39,
+          "verification": "search_index",
+          "sourceStatus": "suspicious"
+        }
+      ],
+      "diagnostics": {
+        "startedAt": "2026-10-08T17:06:57.855Z",
+        "events": [
+          {
+            "stage": "start",
+            "supplierId": "dentalexpress"
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentalexpress",
+            "url": "https://dentalexpress.es/catalogsearch/result/",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 893
+          },
+          {
+            "stage": "discovery",
+            "supplierId": "dentalexpress",
+            "status": 1
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentalexpress",
+            "url": "https://dentalexpress.es/adhesivo-scotchbond-universal-plus-5ml-solventum",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 13
+          },
+          {
+            "stage": "complete",
+            "supplierId": "dentalexpress",
+            "ok": true,
+            "status": 1
+          }
+        ]
+      }
+    },
+    {
+      "supplierId": "ortolan",
+      "query": "Tetric EvoCeram A3,5 Dentina",
+      "depth": "standard",
+      "elapsedMs": 506,
+      "offers": 0,
+      "error": null,
+      "noMatch": true,
+      "discoveredFrom": "ortolan-structured-search",
+      "candidateLimitReached": false,
+      "sample": [],
+      "diagnostics": {
+        "startedAt": "2026-10-08T17:06:58.974Z",
+        "events": [
+          {
+            "stage": "start",
+            "supplierId": "ortolan"
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "ortolan",
+            "url": "https://ortolan.es/es/busqueda",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 438
+          },
+          {
+            "stage": "complete",
+            "supplierId": "ortolan",
+            "ok": true,
+            "status": 0
+          }
+        ]
+      }
+    },
+    {
+      "supplierId": "dentipak",
+      "query": "41294",
+      "depth": "standard",
+      "elapsedMs": 363,
+      "offers": 1,
+      "error": null,
+      "noMatch": false,
+      "discoveredFrom": "https://www.dentipak.es/shop?search=41294",
+      "candidateLimitReached": true,
+      "sample": [
+        {
+          "name": "ADHESIVO SCOTCHBOND UNIVERSAL PLUS (5 ml) 41294 - 3M SOLVENTUM",
+          "reference": "41294",
+          "sku": "041299",
+          "price": 79.9,
+          "verification": "detail",
+          "sourceStatus": "normal"
+        }
+      ],
+      "diagnostics": {
+        "startedAt": "2026-10-08T17:06:59.480Z",
+        "events": [
+          {
+            "stage": "start",
+            "supplierId": "dentipak"
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentipak",
+            "url": "https://www.dentipak.es/shop",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 210
+          },
+          {
+            "stage": "discovery",
+            "supplierId": "dentipak",
+            "status": 1
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentipak",
+            "url": "https://www.dentipak.es/shop/041299-adhesivo-scotchbond-universal-plus-5-ml-41294-3m-solventum-6987",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 138
+          },
+          {
+            "stage": "complete",
+            "supplierId": "dentipak",
+            "ok": true,
+            "status": 1
+          }
+        ]
+      }
+    },
+    {
+      "supplierId": "dentalboom",
+      "query": "Scotchbond Universal Plus",
+      "depth": "standard",
+      "elapsedMs": 1286,
+      "offers": 1,
+      "error": null,
+      "noMatch": false,
+      "discoveredFrom": "woocommerce-store-api-light",
+      "candidateLimitReached": false,
+      "sample": [
+        {
+          "name": "Scotchbond Universal Plus 3M 5ml",
+          "sku": "059652",
+          "price": 107.39,
+          "verification": "search_index",
+          "sourceStatus": "suspicious"
+        }
+      ],
+      "diagnostics": {
+        "startedAt": "2026-10-08T17:06:59.843Z",
+        "events": [
+          {
+            "stage": "start",
+            "supplierId": "dentalboom"
+          },
+          {
+            "stage": "fetch",
+            "supplierId": "dentalboom",
+            "url": "https://dentalboom.com/wp-json/wc/store/v1/products",
+            "status": 200,
+            "ok": true,
+            "elapsedMs": 1285
+          },
+          {
+            "stage": "complete",
+            "supplierId": "dentalboom",
+            "ok": true,
+            "status": 1
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "suppliers": 7,
+    "withOffers": 6,
+    "withErrors": 0,
+    "totalOffers": 6
+  }
+}

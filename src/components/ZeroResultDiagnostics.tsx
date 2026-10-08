@@ -31,6 +31,7 @@ export function ZeroResultDiagnostics({query,coverage,errors,depth,onRetry,onExp
       {coverage.length>0?<div className="provider-status-list">{coverage.map(item=><div key={item.supplierId}>
         <strong>{readable(item.supplierId)}</strong>
         <span>{item.status==="results"?item.offers+" ofertas recuperadas":
+          item.status==="partial"?"Candidatos sin precio verificable":
           item.status==="no_match"?"Sin coincidencias verificables":"Consulta fallida"}
           {" · "+item.queries+" intento(s)"}
           {item.partialErrors>0?" · "+item.partialErrors+" error(es) parciales":""}

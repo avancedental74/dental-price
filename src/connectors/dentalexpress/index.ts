@@ -27,9 +27,19 @@ export async function fetchDentalExpressProduct(productUrl:string,fetchImpl:type
    $('.product-price .price').first().text(),
    $('.current-price').first().text()
  ].map(v=>euro(v)).filter((v):v is number=>typeof v==="number"&&v>0);
+ const analyticsPrice=(()=>{
+   const match=html.match(/var\s+productDetail\s*=\s*JSON\.parse\('([^']+)'\)/);
+   if(!match)return undefined;
+   try{
+     const parsed=JSON.parse(match[1].replace(/\\'/g,"'")) as {price?:number;discount?:number};
+     const discounted=typeof parsed.discount==="number"&&parsed.discount>0?parsed.discount:undefined;
+     const price=typeof parsed.price==="number"&&parsed.price>0?parsed.price:undefined;
+     return discounted??price;
+   }catch{return undefined;}
+ })();
  // Never use the first arbitrary € amount from the whole body: shipping thresholds,
  // promos or menu copy can look like product prices (e.g. "90€").
- const salePrice=priceFromLd??productPriceCandidates[0];
+ const salePrice=priceFromLd??productPriceCandidates[0]??analyticsPrice;
  if(!salePrice)return {offers:[]};
  const grossMatch=body.match(/(?:Precio\s+con\s+IVA\s+incluido|IVA\s+incluido)\s*:?\s*(\d{1,5}(?:[.,]\d{2})?)\s*€/i);
  const grossPrice=grossMatch?euro(grossMatch[1]):undefined;
@@ -39,7 +49,10 @@ export async function fetchDentalExpressProduct(productUrl:string,fetchImpl:type
  const offer:SupplierOffer={supplierId:"dentalexpress",supplierSku,manufacturer:brand,manufacturerReference,rawName:title,normalizedName:normalizeName([title,brand??""].join(" ")),productUrl,
   presentation:known.presentation,quantity:known.quantity,unit:known.unit,packCount:known.packCount,variant:known.variant,shade:known.shade,
   stockStatus:stock(rawStock),rawStockText:String(ldOffer?.availability??""),
-  regularPrice:salePrice,salePrice,vatStatus:vatRate?"excluded":"unknown",vatRate,currency:"EUR",observedAt:new Date().toISOString(),sourceStatus:"normal",sourceMode:"automatic"};
+  regularPrice:salePrice,salePrice,vatStatus:vatRate?"excluded":"unknown",vatRate,currency:"EUR",observedAt:new Date().toISOString(),
+  sourceStatus:analyticsPrice&&!priceFromLd&&!productPriceCandidates.length?"suspicious":"normal",
+  sourceMode:"automatic",
+  priceVerification:analyticsPrice&&!priceFromLd&&!productPriceCandidates.length?"search_index":undefined};
  return {offers:[offer]};
 }
 

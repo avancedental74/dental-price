@@ -19,11 +19,16 @@
   - proveedor
   - disponibilidad
 - Documenta auditoria inicial en `docs/DENTAL_PRICE_2_AUDIT.md`.
+- Anade diagnostico live por proveedor y matriz reproducible de 30 consultas.
+- Corrige la clasificacion de estados `partial` para candidatos sin precio verificable.
+- Optimiza discovery HTML con extraccion ligera antes de Cheerio.
+- Recupera Dental Express como Nivel C cuando el precio solo aparece en datos no visibles de analitica/B2B.
 
 ## Commits incluidos
 
 - `4df2f61 feat: add live search traceability`
 - `35ae7ef feat: add sortable supplier comparison`
+- `1569827 feat: validate live coverage and simplify results`
 
 ## Verificacion local
 
@@ -35,15 +40,17 @@ npm.cmd run lint
 npm.cmd test
 npm.cmd run validate:data
 npm.cmd run build
+npm.cmd run diagnose:live
 ```
 
 Resultado:
 
 - Typecheck: OK
 - Lint: OK
-- Tests: 50 archivos, 219 tests, OK
+- Tests: 50 archivos, 220 tests, OK
 - Validacion de datos: OK
 - Build Vite: OK
+- Diagnostico live local: 6 de 7 proveedores con oferta representativa; Ortolan sin coincidencia en la consulta elegida, sin error tecnico.
 
 ## Metricas de datos validadas
 
@@ -58,6 +65,7 @@ Resultado:
 - No se eluden WAF/CAPTCHA de Proclinic, Dental Iberica ni Broker Dental.
 - No se migra historico a D1 ni a otro almacenamiento central.
 - No se despliega Worker ni GitHub Pages desde esta rama.
+- No se pudo desplegar staging remoto porque falta `CLOUDFLARE_API_TOKEN`; se valido con Wrangler local.
 - Los precios de indice permanecen como Nivel C y no compiten como ganadores.
 - La cobertura real depende de las respuestas publicas de cada proveedor consultado.
 

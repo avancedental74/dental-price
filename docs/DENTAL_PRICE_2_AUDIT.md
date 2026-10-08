@@ -78,3 +78,77 @@ La matriz no permite afirmar ausencia de producto en los proveedores HTML cuando
 - `npm.cmd test -- tests/components/all-supplier-prices.test.ts tests/domain/universal-search.test.ts tests/components/comparison-table.test.ts`
 
 Resultado: OK.
+
+## Fase 3 - estabilizacion del nucleo live 503/1102
+
+Fecha: 2026-10-08
+
+### Causa raiz identificada
+
+1. El Worker publicado respondia `/health`, pero las rutas `/search-supplier` de proveedores con HTML pesado devolvian HTTP 503 o `error code: 1102`.
+2. La misma consulta ejecutada localmente contra conectores directos si recuperaba ofertas en Dentaltix, DentalCost, DVD Dental, Dentipak y DentalBoom.
+3. El Worker local por HTTP, con el codigo actual, recupera tambien Dentaltix y DentalCost sin 503/1102.
+4. Por tanto, los 503/1102 de la evidencia inicial no acreditan ausencia de catalogo; son fallo de ejecucion del Worker publicado/codigo desplegado anterior y coste de parsing HTML.
+5. No se pudo desplegar staging remoto porque Wrangler exige `CLOUDFLARE_API_TOKEN` en este entorno. Se hizo `wrangler deploy --dry-run` y `wrangler dev --local`.
+
+### Optimizaciones y correcciones
+
+- `src/connectors/live-search.ts`: ruta rapida por regex para extraer enlaces antes de cargar Cheerio en paginas grandes.
+- `worker/live-api.ts`: diagnostico estructurado opcional con `debug=1`, eventos por `fetch`, estado HTTP, proveedor, etapa y tiempos.
+- `worker/live-api.ts`: `searchOneSupplier` exportado para diagnostico local controlado.
+- `worker/live-api.ts` y `src/services/live-prices.ts`: estado `partial` separado de `error` y `no_match`.
+- `scripts/live-provider-diagnostics.ts`: diagnostico de 7 consultas representativas, una por proveedor.
+- `scripts/live-search-matrix.ts`: HTTP no OK queda como `error`; candidatos sin precio verificable quedan como `partial`.
+- `src/connectors/dentalexpress/index.ts`: Dental Express recupera precio orientativo desde `productDetail` cuando el bloque B2B oculta el precio visible; se marca `sourceStatus: suspicious` y `priceVerification: search_index`, por tanto Nivel C.
+
+### Diagnostico individual
+
+Consulta representativa local (`npm.cmd run diagnose:live`):
+
+- Dentaltix `4910A3B`: 1 oferta, ficha y precio verificados, sin error.
+- DentalCost `4910A3B`: 1 oferta, ficha y precio verificados, sin error.
+- DVD Dental `4910A3B`: 1 oferta desde API Klevu/indice, sin error.
+- Dental Express `41294`: 1 oferta Nivel C; precio oculto en bloque B2B y disponible solo como dato de analitica, no checkout/ficha visible.
+- Ortolan `Tetric EvoCeram A3,5 Dentina`: sin error, sin coincidencia en esa consulta.
+- Dentipak `41294`: 1 oferta, ficha accesible, sin error.
+- DentalBoom `Scotchbond Universal Plus`: 1 oferta desde API WooCommerce, sin error.
+
+### Comparacion de metricas
+
+Matriz previa contra Worker publicado (`docs/live-search-matrix.latest.json`):
+
+- Ofertas: 22
+- Celdas con resultados: 7
+- Celdas sin coincidencias: 77
+- Celdas con error: 126
+- Limites de candidatos: 0
+
+Matriz posterior contra Worker local HTTP (`docs/live-search-matrix.worker-local.json`):
+
+- Ofertas: 147
+- Celdas con resultados: 50
+- Celdas sin coincidencias: 107
+- Celdas con error tecnico: 0
+- Celdas con limite de candidatos: 94
+
+Lectura:
+
+- Los errores HTTP 503/1102 no se reproducen con el codigo actual en Worker local.
+- Quedan muchos `candidateLimitReached`, lo que indica que la busqueda amplia encuentra mas candidatos de los que el presupuesto actual decide verificar.
+- Los parciales restantes son candidatos sin precio/identidad verificable, no fallos de infraestructura ni productos inexistentes.
+
+### Validaciones ejecutadas
+
+- `npx --yes wrangler@4.45.0 deploy --dry-run --outdir .wrangler-dry-run`
+- `npx --yes wrangler@4.45.0 dev --local --port 8787`
+- HTTP local con `debug=1` por proveedor.
+- `npm.cmd run diagnose:live`
+- `LIVE_API_URL=http://127.0.0.1:8787 LIVE_MATRIX_OUT=docs/live-search-matrix.worker-local.json npm.cmd run validate:live`
+
+### Limitaciones pendientes
+
+- No se ha sustituido el Worker de produccion.
+- No se ha podido desplegar staging remoto por ausencia de `CLOUDFLARE_API_TOKEN`.
+- Ortolan requiere mas trabajo de discovery para algunas consultas por nombre/variante.
+- DentalCost encuentra pocos resultados en busquedas genericas: no es caida HTTP, sino candidatos que no pasan verificacion.
+- Dental Express mantiene precios como Nivel C cuando proceden de datos no visibles de analitica/B2B.
