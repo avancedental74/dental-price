@@ -114,7 +114,7 @@ function offerIdentityCompleteness(offer:SupplierOffer){
   return score;
 }
 
-function groupOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
+export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
   const buckets:Array<{key:string;offers:SupplierOffer[]}>=[];
 
   for(const offer of offers.filter(o=>Boolean(normalizeReference(o.manufacturerReference)))){
@@ -189,7 +189,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
   const offers=applyClientHistorySafety(settled.flatMap(x=>x.offers),previousHistory);
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
-    groups:groupOffers(offers),
+    groups:groupLiveOffers(offers),
     errors:settled.filter(x=>x.error).map(x=>({supplierId:x.supplierId,message:x.error!}))
   };
 }
