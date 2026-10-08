@@ -8,6 +8,10 @@ function parseEuro(value?: string): number | undefined {
   return Number.isFinite(number) ? number : undefined;
 }
 
+function normalizeForMatch(value:string):string{
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+}
+
 function stockFromText(value?: string): string | undefined {
   if (!value) return undefined;
   const normalized = value.replace(/\s+/g, " ").trim();
@@ -39,21 +43,22 @@ function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVaria
         const obj=entry as Record<string,unknown>;
         return "mainVar" in obj&&"variations" in obj&&"slug" in obj;
       });
-      const exactRoot=roots.find(obj=>{
-        const slug=resolve(obj.slug);
-        return typeof slug==="string"&&slug.length>3&&productPath.includes(slug.toLowerCase());
-      });
-      const productTokens=new Set(productPath.split(/[^a-z0-9]+/).filter(t=>t.length>=3));
+      const pageTitle=normalizeForMatch($("h1").first().text());
+      const productPathTokens=new Set(productPath.split(/[^a-z0-9]+/).filter(t=>t.length>=3));
       const scoredRoots=roots.map(obj=>{
-        const slug=resolve(obj.slug);
-        if(typeof slug!=="string")return {obj,score:0,matches:0};
-        const slugTokens=slug.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>=3);
-        const meaningful=slugTokens.filter(t=>!["kit","composite","profesional","universal","producto"].includes(t));
-        const matches=meaningful.filter(t=>productTokens.has(t)).length;
-        const score=meaningful.length?matches/meaningful.length:0;
+        const name=resolve(obj.name);
+        if(typeof name!=="string")return {obj,score:0,matches:0};
+        const normalizedName=normalizeForMatch(name);
+        if(pageTitle&&(pageTitle.includes(normalizedName)||normalizedName.includes(pageTitle))){
+          return {obj,score:100,matches:normalizedName.split(" ").length};
+        }
+        const nameTokens=normalizedName.split(" ").filter(t=>t.length>=3&&!["kit","composite","profesional","universal","producto"].includes(t));
+        const titleTokens=new Set(pageTitle.split(" ").filter(t=>t.length>=3));
+        const matches=nameTokens.filter(t=>titleTokens.has(t)||productPathTokens.has(t)).length;
+        const score=nameTokens.length?matches/nameTokens.length:0;
         return {obj,score,matches};
       }).sort((a,b)=>b.score-a.score||b.matches-a.matches);
-      const root=exactRoot??(scoredRoots[0]&&scoredRoots[0].matches>=2&&scoredRoots[0].score>=0.45?scoredRoots[0].obj:undefined);
+      const root=scoredRoots[0]&&scoredRoots[0].matches>=2&&scoredRoots[0].score>=0.45?scoredRoots[0].obj:undefined;
       if(!root) continue;
 
       const candidates:Record<string,unknown>[]=[];
