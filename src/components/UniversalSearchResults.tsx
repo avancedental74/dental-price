@@ -15,11 +15,11 @@ const supplierNames:Record<string,string>={
   brokerdental:"Broker Dental"
 };
 function SupplierRows({offers}: {offers:UniversalOffer[]}){
-  return <div className="table-wrap"><table className="universal-offers-table"><thead><tr>
+  return <p className="alternatives-footnote">Si el depósito muestra varias variantes, selecciona la referencia y presentación de esta fila antes de comparar el importe con la ficha.</p><div className="table-wrap"><table className="universal-offers-table"><thead><tr>
     <th>Depósito</th><th>Precio publicado</th><th>Coste efectivo</th><th>Estado</th><th>Ficha</th>
   </tr></thead><tbody>{offers.map(o=><tr key={o.id}>
     <td><strong>{supplierNames[o.supplierId]??o.supplierId}</strong></td>
-    <td>{o.priceVerification==="search_index"?"Pendiente de comprobar":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"—"}</td>
+    <td>{o.priceVerification==="search_index"?"Pendiente de comprobar":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"—"}{o.priceVerification!=="search_index"&&<small className="source-note">{o.vatStatus==="excluded"?"Sin IVA":o.vatStatus==="included"?"IVA incluido":"IVA por confirmar"}</small>}</td>
     <td>{o.effectiveTotal===undefined?"—":money(o.effectiveTotal)}</td>
     <td>{o.eligible?<span className="pill good">Verificado</span>:<small>{o.issues.join("; ")||"Pendiente de verificación"}</small>}</td>
     <td>{o.productUrl?<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Abrir ↗</a>:<span>Sin enlace verificado</span>}</td>
@@ -159,7 +159,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
         <summary>{alternatives.unverified.length} opciones sin ranking de equivalencia</summary>
         <div className="alternatives-pending-list">
           {alternatives.unverified.map(o=><div key={o.id}><strong>{o.name}</strong>
-            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {o.priceVerification==="search_index"?"No confirmado en ficha":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
+            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {o.priceVerification==="search_index"?"No confirmado en ficha":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} {o.priceVerification!=="search_index"&&(o.vatStatus==="excluded"?"(sin IVA)":o.vatStatus==="included"?"(IVA incluido)":"(IVA sin confirmar)")} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
             {o.normalizedCost!==undefined&&<small>Coste orientativo por {o.normalizedBasis}: {money(o.normalizedCost)} (no acredita equivalencia con otros productos)</small>}
             <small>{[
               ...o.issues,
