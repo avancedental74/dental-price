@@ -137,7 +137,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         rawStockText:typeof record.stockQuantity==="number"?"Stock publicado: "+record.stockQuantity:undefined,
         regularPrice:record.price,
         salePrice:record.price,
-        vatStatus:"excluded",
+        vatStatus:"unknown",
         currency:"EUR",
         observedAt:new Date().toISOString(),
         sourceStatus:"normal",
