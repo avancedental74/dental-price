@@ -130,7 +130,7 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     const ref=normalizeReference(offer.manufacturerReference)!;
     // Identical-looking references are not enough if the brand, EAN, shade
     // or pack details contradict each other.
-    const existing=buckets.find(bucket=>bucket.ref===ref&&criticalCompatible(offer,bucket.offers[0]!));
+    const existing=buckets.find(bucket=>bucket.ref===ref&&bucket.offers.every(existing=>criticalCompatible(offer,existing)));
     if(existing)existing.offers.push(offer);
     else{
       const conflicting=buckets.filter(bucket=>bucket.ref===ref).length;
@@ -142,7 +142,7 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     const candidates=buckets
       .map(bucket=>{
         const representative=bucket.offers[0]!;
-        return {bucket,score:criticalCompatible(offer,representative)?tokenSimilarity(offer,representative):0};
+        return {bucket,score:bucket.offers.every(existing=>criticalCompatible(offer,existing))?tokenSimilarity(offer,representative):0};
       })
       .filter(x=>x.score>=0.65)
       .sort((a,b)=>b.score-a.score);
@@ -154,9 +154,13 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     }
 
     const fallback=normalizeName(offer.rawName).replace(/\b(?:oferta|promo|promocion)\b/g,"").trim().slice(0,100);
-    const existing=buckets.find(bucket=>bucket.key==="name:"+fallback);
+    const existing=buckets.find(bucket=>bucket.key.startsWith("name:"+fallback)&&
+      bucket.offers.every(other=>criticalCompatible(offer,other)));
     if(existing)existing.offers.push(offer);
-    else buckets.push({key:"name:"+fallback,offers:[offer]});
+    else{
+      const variants=buckets.filter(bucket=>bucket.key.startsWith("name:"+fallback)).length;
+      buckets.push({key:"name:"+fallback+(variants?"|variant-"+variants:""),offers:[offer]});
+    }
   }
 
   return buckets.map(({key,offers:group})=>{
