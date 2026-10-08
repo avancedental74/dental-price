@@ -16,4 +16,14 @@ describe("Dental Express connector",()=>{
     expect(offers[0].vatStatus).toBe("excluded");
     expect(offers[0].vatRate).toBe(10);
   });
+  it("does not treat a shipping threshold or global promo as the product price",async()=>{
+    const html=`<html><body>
+      <h1>TETRIC EVOCERAM JERINGA 3G IVOCLAR</h1>
+      <div class="shipping-banner">Envío gratis a partir de 90€</div>
+      <div>Disponible</div>
+    </body></html>`;
+    const fetchImpl=(async()=>new Response(html,{status:200})) as typeof fetch;
+    const {offers}=await fetchDentalExpressProduct("https://dentalexpress.es/tetric-evoceram-jeringa-3g-ivoclar",fetchImpl);
+    expect(offers).toHaveLength(0);
+  });
 });
