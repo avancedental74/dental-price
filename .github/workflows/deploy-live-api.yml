@@ -61,6 +61,7 @@ jobs:
           }
           check health "https://dental-price-live.avance-dental74.workers.dev/health"
           check dentaltix "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentaltix&sessionId=smoke-search"
+          check dentaltix_name "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=dentaltix&sessionId=smoke-search"
           check dentalcost "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentalcost&sessionId=smoke-search"
           check dentalexpress "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=41294&supplier=dentalexpress&sessionId=smoke-search"
           check ortolan "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=ortolan&sessionId=smoke-search"
@@ -72,7 +73,7 @@ jobs:
           const fs=require("fs");
           const h=JSON.parse(fs.readFileSync("/tmp/health.json"));
           if(!h.ok||h.searchMode!=="dynamic-per-supplier") process.exit(1);
-          for(const name of ["dentaltix","dentalcost","dentalexpress","ortolan","dvd","dentipak","dentalboom"]){
+          for(const name of ["dentaltix","dentaltix_name","dentalcost","dentalexpress","ortolan","dvd","dentipak","dentalboom"]){
             const x=JSON.parse(fs.readFileSync("/tmp/"+name+".json"));
             console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,noMatch:x.noMatch,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
             if(x.sessionId!=="smoke-search"||!Array.isArray(x.offers)||x.error) process.exit(1);
@@ -80,6 +81,10 @@ jobs:
             // product page exposes no product-scoped price. Never make the smoke test
             // reward the old unsafe whole-page price fallback.
             if(name!=="dentalexpress"&&x.offers.length<1) process.exit(1);
+            if(name==="dentaltix_name"&&!x.offers.every(o=>{
+              const hay=((o.rawName||"")+" "+(o.manufacturer||"")).toLowerCase();
+              return hay.includes("tetric")&&hay.includes("evoceram");
+            })) process.exit(1);
           }
           const od=JSON.parse(fs.readFileSync("/tmp/ortolan_dentin.json"));
           console.log("ortolan_dentin",JSON.stringify({offers:od.offers?.length,error:od.error,noMatch:od.noMatch}));
