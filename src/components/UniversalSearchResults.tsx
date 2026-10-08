@@ -1,5 +1,5 @@
 import {useMemo,useState} from "react";
-import type {LiveSearchGroup} from "../services/live-prices";
+import type {LiveSearchGroup,SearchDepth} from "../services/live-prices";
 import {
   assessProducts,assessAlternatives,filterProducts,getAvailableFacets,
   profileForSearch,profileLabel,facetLabels,
@@ -24,8 +24,9 @@ function SupplierRows({offers}: {offers:UniversalOffer[]}){
     <td>{o.productUrl?<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Abrir ↗</a>:<span>Sin enlace verificado</span>}</td>
   </tr>)}</tbody></table></div>;
 }
-export function UniversalSearchResults({items,query,onSelect,sessionId}:{
+export function UniversalSearchResults({items,query,onSelect,sessionId,searchDepth,coverage,onExpand}:{
   items:LiveSearchGroup[];query:string;sessionId:string|null;onSelect:(group:LiveSearchGroup)=>void;
+  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean}>;onExpand:()=>void;
 }){
   const [filters,setFilters]=useState<SearchFilters>({});
   const [mode,setMode]=useState<"offers"|"alternatives">("offers");
@@ -58,6 +59,13 @@ export function UniversalSearchResults({items,query,onSelect,sessionId}:{
       <span>{visible.length} de {items.length} productos</span>
     </div>
     <p className="universal-intro">Consulta cualquier referencia o nombre. Cada producto se compara con sus propios proveedores; otras marcas aparecen por separado.</p>
+    <div className="universal-coverage">
+      <div><strong>Alcance real de la búsqueda</strong>
+        <small>{coverage.filter(c=>c.offers>0).length} de {coverage.length} proveedores consultados devolvieron productos · {coverage.filter(c=>c.candidateLimitReached).length} alcanzaron su límite de revisión de candidatos. Los resultados no representan todo el mercado.</small>
+        {searchDepth==="extended"&&<small>Consulta ampliada aplicada. Algunas webs pueden restringir la cantidad de resultados o requerir verificación.</small>}
+      </div>
+      {searchDepth==="standard"&&<button type="button" className="secondary-button" onClick={onExpand}>Ampliar resultados ↗</button>}
+    </div>
     <div className="smart-mode-toggle" role="group" aria-label="Tipo de comparación">
       <button type="button" aria-pressed={mode==="offers"} className={mode==="offers"?"active":""} onClick={()=>setMode("offers")}>Ofertas por producto</button>
       <button type="button" aria-pressed={mode==="alternatives"} className={mode==="alternatives"?"active":""} onClick={()=>setMode("alternatives")}>Explorar alternativas</button>
