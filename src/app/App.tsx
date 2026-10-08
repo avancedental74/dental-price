@@ -159,9 +159,10 @@ export function App(){
     setBasketRefreshing(true);
     try{
       const historyBase=data?[...data.history,...liveHistory]:liveHistory;
+      const basketSessionId=crypto.randomUUID();
       const refreshed=await Promise.all(basket.map(async item=>{
         const lookup=item.product.manufacturerReference??item.product.family;
-        const result=await searchLiveCatalog(lookup,historyBase);
+        const result=await searchLiveCatalog(lookup,historyBase,basketSessionId);
         const ref=normalizeReference(item.product.manufacturerReference);
         let group=ref?result.groups.find(g=>normalizeReference(g.manufacturerReference)===ref):undefined;
         if(!group){
