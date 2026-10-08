@@ -69,4 +69,17 @@ describe("DVD Dental connector",()=>{
     expect(offers[0].regularPrice).toBe(79.85);
     expect(offers[0].vatRate).toBe(10);
   });
+  it("infers 3x5ml as a three-unit pack",()=>{
+    const html=`<html><body>
+      <h2>SOLVENTUM</h2><h1>Adhesivo Scotchbond Universal Plus (3x5ml)</h1>
+      <div>269,28€ IVA incl. (Incluido impuestos)</div>
+      <div>244,80€ excl. Tax (Excluyendo impuestos)</div>
+      <div>REF. DVD 3138781</div><div>REF. FAB: 41295</div><div>11 en stock</div>
+    </body></html>`;
+    const offers=normalizeDvd(parseDvdProductHtml(html,"https://www.dvd-dental.com/adhesivo-scotchbond-universal-plus-3x5ml/"));
+    expect(offers).toHaveLength(1);
+    expect(offers[0].quantity).toBe(5);
+    expect(offers[0].unit).toBe("ml");
+    expect(offers[0].packCount).toBe(3);
+  });
 });
