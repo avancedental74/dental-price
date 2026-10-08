@@ -99,8 +99,10 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       const shade=rawName.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?)\b/i)?.[1]?.replace(",",".").toUpperCase();
       const variant=/\bdentina\b|\bdentin\b/i.test(rawName)?"Dentin":/\besmalte\b|\benamel\b/i.test(rawName)?"Enamel":undefined;
       const quantityMatch=rawName.match(/(\d+(?:[.,]\d+)?)\s*(g|grm?|ml)\b/i);
+      const packMatch=rawName.match(/\b(\d+)\s*(?:cavifills?|c[aá]psulas?|capsules?)\b/i);
       const quantity=quantityMatch?Number(quantityMatch[1].replace(",",".")):undefined;
       const unit=quantityMatch?(quantityMatch[2].toLowerCase().startsWith("g")?"g":"ml"):undefined;
+      const packCount=packMatch?Number(packMatch[1]):quantity?1:undefined;
       const offer:SupplierOffer={
         supplierId:"ortolan",
         supplierSku:record.supplierSku,
@@ -108,7 +110,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         normalizedName:normalizeName(rawName),
         productUrl:record.url??"https://ortolan.es/es/busqueda?controller=search&s="+encodeURIComponent(query),
         presentation:/jeringa/i.test(rawName)?"Jeringa":/cavifill|capsul|cápsul/i.test(rawName)?"Cápsulas":undefined,
-        quantity,unit,packCount:quantity?1:undefined,variant,shade,
+        quantity,unit,packCount,variant,shade,
         stockStatus:typeof record.stockQuantity==="number"
           ?record.stockQuantity<=0?"unavailable":record.stockQuantity<=5?"low_stock":"in_stock"
           :"unknown",
