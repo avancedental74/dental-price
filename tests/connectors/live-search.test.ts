@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { scoreLink } from "../../src/connectors/live-search";
+import { scoreLink,discoverSupplierProductUrls } from "../../src/connectors/live-search";
 
 describe("live search result scoring",()=>{
   it("rejects same-brand sibling products that miss a key model token",()=>{
@@ -116,6 +116,33 @@ describe("live search result scoring",()=>{
       "https://ortolan.es/es/odontologia/tetric-evoceram.html",
       "Tetric EvoCeram A3"
     )).toBe(0);
+  });
+
+  it("expands only bounded same-origin paginated product results",async()=>{
+    const seen:string[]=[];
+    const fetchImpl=(async(input:string|URL|Request)=>{
+      const url=String(input);seen.push(url);
+      const page=new URL(url).searchParams.get("page");
+      const next=page==="3"?"":'<a rel="next" href="?q=composite&page='+Number(page??1+1)+'">Next</a>';
+      const num=page==="2"?2:page==="3"?3:1;
+      const html='<html><body><article class="product-miniature"><a href="https://www.dentaltix.com/es/composite-'+num+'">Composite Universal '+num+'</a></article>'+next+'</body></html>';
+      return new Response(html,{status:200});
+    }) as typeof fetch;
+    const extended=await discoverSupplierProductUrls("dentaltix","composite",fetchImpl,10);
+    expect(extended.urls).toHaveLength(3);
+    expect(seen.length).toBeLessThanOrEqual(3);
+    expect(extended.urls.every(url=>url.startsWith("https://www.dentaltix.com/es/composite-"))).toBe(true);
+  });
+
+  it("never follows a pagination link to an external hostname",async()=>{
+    let requests=0;
+    const fetchImpl=(async()=>{requests++;return new Response(
+      '<article class="product-miniature"><a href="/es/composite-1">Composite A3</a></article><a rel="next" href="https://elsewhere.example/?page=2">Next</a>',
+      {status:200});
+    }) as typeof fetch;
+    const found=await discoverSupplierProductUrls("dentaltix","composite",fetchImpl,10);
+    expect(found.urls).toHaveLength(1);
+    expect(requests).toBe(1);
   });
 
 });
