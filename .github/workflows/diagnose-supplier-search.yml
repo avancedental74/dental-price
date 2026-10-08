@@ -362,3 +362,46 @@ jobs:
               }
             })().catch(e=>{console.error(e);process.exit(1);});
           '
+
+      - name: Inspect Dentaltix variant stock fields
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const url="https://www.dentaltix.com/es/ivoclar-vivadent/tetric-evoceram-cavifil-20-x-02gr";
+          const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+          const html=await r.text();
+          const $=cheerio.load(html);
+          for(const el of $('script[type="application/json"],script#__NUXT_DATA__').toArray()){
+            const text=$(el).text().trim();
+            if(!text.startsWith("["))continue;
+            try{
+              const payload=JSON.parse(text);
+              const resolve=v=>Number.isInteger(v)&&v>=0&&v<payload.length?payload[v]:v;
+              const roots=payload.filter(x=>x&&typeof x==="object"&&!Array.isArray(x)&&"mainVar" in x&&"variations" in x);
+              for(const root of roots){
+                const name=resolve(root.name);
+                if(typeof name!=="string"||!/Tetric EvoCeram/i.test(name))continue;
+                const vals=[];
+                const add=v=>{
+                  const obj=resolve(v);
+                  if(!obj||typeof obj!=="object"||Array.isArray(obj)||!("sku" in obj))return;
+                  const out={};
+                  for(const [k,val] of Object.entries(obj)){
+                    if(/stock|avail|inventory|qty|quant|delivery|lead|backorder|status|dispon|almacen/i.test(k))out[k]=resolve(val);
+                  }
+                  out.sku=resolve(obj.sku);out.manRef=resolve(obj.manRef);out.name=resolve(obj.name);
+                  vals.push(out);
+                };
+                add(root.mainVar);
+                const variations=resolve(root.variations);
+                if(variations&&typeof variations==="object"&&!Array.isArray(variations)){
+                  for(const value of Object.values(variations)){
+                    const resolved=resolve(value);
+                    if(Array.isArray(resolved))for(const nested of resolved)add(nested);else add(resolved);
+                  }
+                }
+                console.log("DENTALTIX_STOCK_FIELDS",JSON.stringify(vals.slice(0,20),null,2));
+              }
+            }catch{}
+          }
+          NODE
