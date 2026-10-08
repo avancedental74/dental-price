@@ -129,7 +129,7 @@ Si una fuente no puede verificarse automáticamente, Dental Price debe mostrar a
 4. El histórico live persistente entre dispositivos todavía no usa una base central; el navegador conserva observaciones locales y el snapshot público aporta el histórico compartido.
 5. Opportunity Score necesita más histórico temporal por SKU para ganar valor estadístico.
 6. Precios negociados, facturas e inventario interno siguen fuera del alcance público actual.
-7. El Basket Optimizer necesita consultas live por todas las líneas de la cesta para que su optimización sea completamente actual al momento de compra.
+7. El Basket Optimizer ya puede actualizar todas las líneas bajo un **único `sessionId` compartido** antes de optimizar; queda pendiente persistir ese snapshot de cesta de forma central entre dispositivos.
 
 ## Seguridad de dependencias
 
