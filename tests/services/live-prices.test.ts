@@ -91,4 +91,21 @@ describe("groupLiveOffers",()=>{
     expect(groups[0].product.quantity).toBe(3);
     expect(groups[0].product.shade).toBe("A2");
   });
+  it("separates identical reference codes when manufacturer, shade, EAN or pack differs",()=>{
+    const base={manufacturerReference:"SAME123",manufacturer:"Maker A",presentation:"Jeringa",
+      quantity:3,unit:"g",packCount:1,shade:"A3"};
+    const groups=groupLiveOffers([
+      offer({supplierId:"dentaltix",...base,eanGtin:"1234567890123"}),
+      offer({supplierId:"dentalcost",...base,eanGtin:"1234567890123"}),
+      offer({supplierId:"dvd-dental",...base,shade:"A3.5",eanGtin:"1234567890123"}),
+      offer({supplierId:"dentalexpress",...base,manufacturer:"Maker B",eanGtin:"1234567890123"}),
+      offer({supplierId:"dentipak",...base,eanGtin:"9999999999999"}),
+      offer({supplierId:"ortolan",...base,quantity:4,eanGtin:"1234567890123"})
+    ]);
+    expect(groups).toHaveLength(5);
+    expect(groups[0].id).not.toEqual(groups[1].id);
+    expect(groups.some(g=>g.offers.length===2)).toBe(true);
+    expect(groups.every(g=>g.offers.every(o=>o.manufacturerReference==="SAME123"))).toBe(true);
+  });
+
 });
