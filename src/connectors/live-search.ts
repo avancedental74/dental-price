@@ -61,8 +61,9 @@ export function scoreLink(text:string,href:string,query:string):number{
   const compact=normalizeReference(query)??"";
   const normalizedHay=normalizeReference(hay)??"";
   let score=0;
-  if(compact&&normalizedHay.includes(compact))score+=12;
   const tokens=[...new Set(q.split(" ").filter(t=>t.length>=2))];
+  if(tokens.length===1&&compact.length>=4&&/\d/.test(compact)&&!normalizedHay.includes(compact))return 0;
+  if(compact&&normalizedHay.includes(compact))score+=12;
   const matched=tokens.filter(token=>hay.includes(token));
   // Short product/model names are precise enough that accepting only one token
   // creates false positives such as Tetric EvoFlow for "Tetric EvoCeram".
