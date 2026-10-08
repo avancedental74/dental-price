@@ -165,6 +165,35 @@ async function trySearchRequest(
   return {urls:extractProductLinks(html,response.url||url,origin,query,maxResults),html,responseUrl:response.url||url};
 }
 
+// Only explicit search pagination; same origin, same route and a strict page cap.
+async function extendPaginatedSearch(
+  initial:{urls:string[];html:string;responseUrl:string},
+  origin:string,query:string,fetchImpl:typeof fetch,maxResults:number
+):Promise<string[]>{
+  const urls=new Set(initial.urls);
+  if(maxResults<10||urls.size>=maxResults)return [...urls].slice(0,maxResults);
+  const visited=new Set([initial.responseUrl]);
+  let current=initial;
+  for(let page=1;page<3&&urls.size<maxResults;page++){
+    const $=cheerio.load(current.html);
+    const raw=$('a[rel="next"],link[rel="next"],.pagination a.next,.pagination-next a').first().attr("href");
+    if(!raw)break;
+    let next:string;
+    try{
+      const u=new URL(raw,current.responseUrl);
+      const prev=new URL(current.responseUrl);
+      if(u.protocol!=="https:"||u.origin!==new URL(origin).origin||u.pathname!==prev.pathname||!u.search||visited.has(u.toString()))break;
+      next=u.toString();
+    }catch{break;}
+    visited.add(next);
+    try{
+      current=await trySearchRequest(next,query,origin,fetchImpl,maxResults);
+      for(const url of current.urls)urls.add(url);
+    }catch{break;}
+  }
+  return [...urls].slice(0,maxResults);
+}
+
 async function searchViaDetectedForm(cfg:{origin:string;home:string},query:string,fetchImpl:typeof fetch,maxResults:number){
   const home=await trySearchRequest(cfg.home,query,cfg.origin,fetchImpl,1);
   const $=cheerio.load(home.html);
@@ -414,11 +443,12 @@ export async function discoverSupplierProductUrls(
     try{
       const result=await trySearchRequest(searchUrl,query,cfg.origin,fetchImpl,maxResults);
       if(result.urls.length){
+        const expanded=await extendPaginatedSearch(result,cfg.origin,query,fetchImpl,maxResults);
         if(supplierId==="ortolan"){
-          const productPages=result.urls.filter(u=>/\.html(?:[?#]|$)/i.test(u));
+          const productPages=expanded.filter(u=>/\.html(?:[?#]|$)/i.test(u));
           if(productPages.length)return {urls:productPages,searchUrl};
         }
-        return {urls:result.urls,searchUrl};
+        return {urls:expanded,searchUrl};
       }
       lastError="Sin enlaces de producto";
     }catch(error){lastError=error instanceof Error?error.message:"SEARCH_ERROR";}

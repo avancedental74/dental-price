@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CanonicalProduct, SupplierOffer } from "../types/domain";
 import { compareSupplierOffers } from "../domain/comparison";
 import { getFreshnessStatus } from "../domain/comparison/compare";
@@ -22,7 +22,7 @@ import { LiveSearchStatus, type LiveSearchState } from "../components/LiveSearch
 import { BasketPanel, type BasketUiItem } from "../components/BasketPanel";
 import { optimizeBasket } from "../domain/basket";
 import { loadPublicData, type PublicData } from "../services/public-data";
-import { searchLiveCatalog, type LiveSearchGroup } from "../services/live-prices";
+import { searchLiveCatalog, type LiveSearchGroup, type SearchDepth } from "../services/live-prices";
 import { loadLiveHistory, recordLiveSearchHistory, saveLiveHistory } from "../services/live-history";
 import { loadManualHistory, loadManualOffers, saveManualHistory, saveManualOffers } from "../services/manual-offers";
 
@@ -33,6 +33,9 @@ export function App(){
   const [selected,setSelected]=useState<CanonicalProduct|null>(null);
   const [query,setQuery]=useState("");
   const [liveGroups,setLiveGroups]=useState<LiveSearchGroup[]>([]);
+  const [searchDepth,setSearchDepth]=useState<SearchDepth>("standard");
+  const [supplierCoverage,setSupplierCoverage]=useState<Array<{supplierId:string;offers:number;candidateLimitReached:boolean}>>([]);
+  const activeSearchId=useRef(0);
   const [manualOffers,setManualOffers]=useState<SupplierOffer[]>(()=>loadManualOffers());
   const [manualHistory,setManualHistory]=useState<PriceObservation[]>(()=>loadManualHistory());
   const [liveHistory,setLiveHistory]=useState<PriceObservation[]>(()=>loadLiveHistory());
@@ -56,9 +59,12 @@ export function App(){
     setLiveState(group.offers.length?(liveErrors.length?"partial":"success"):"failed");
   };
 
-  const runFederatedSearch=async(q:string,keepSelection?:CanonicalProduct|null)=>{
+  const runFederatedSearch=async(q:string,keepSelection?:CanonicalProduct|null,depth:SearchDepth="standard")=>{
     if(!q.trim())return;
+    const searchId=++activeSearchId.current;
     setQuery(q.trim());
+    setSearchDepth(depth);
+    setSupplierCoverage([]);
     setSelected(null);
     setLiveOffers([]);
     setLiveGroups([]);
@@ -67,7 +73,9 @@ export function App(){
     setLiveCompletedAt(undefined);
     setLiveState("loading");
     try{
-      const result=await searchLiveCatalog(q.trim(),data?[...data.history,...liveHistory]:liveHistory);
+      const result=await searchLiveCatalog(q.trim(),data?[...data.history,...liveHistory]:liveHistory,undefined,depth);
+      if(searchId!==activeSearchId.current)return;
+      setSupplierCoverage(result.coverage);
       setLiveSessionId(result.sessionId);
       setLiveCompletedAt(result.completedAt);
       setLiveErrors(result.errors);
@@ -92,6 +100,7 @@ export function App(){
       setLiveGroups(groups);
       setLiveState(result.groups.length?(result.errors.length?"partial":"success"):"failed");
     }catch(e){
+      if(searchId!==activeSearchId.current)return;
       const message=e instanceof Error?e.message:"LIVE_SEARCH_ERROR";
       setLiveState(message==="LIVE_API_NOT_CONFIGURED"?"unavailable":"failed");
       setLiveErrors(message==="LIVE_API_NOT_CONFIGURED"?[]:[{supplierId:"live-api",message}]);
@@ -205,7 +214,7 @@ export function App(){
     </section>
 
     {liveState==="loading"&&<LiveSearchStatus state="loading" errors={[]}/>}
-    {!selected&&<UniversalSearchResults key={query} items={liveGroups} query={query} sessionId={liveSessionId} onSelect={selectLiveGroup}/>}
+    {!selected&&<UniversalSearchResults key={query+"|"+searchDepth} items={liveGroups} query={query} sessionId={liveSessionId} onSelect={selectLiveGroup} searchDepth={searchDepth} coverage={supplierCoverage} onExpand={()=>{void runFederatedSearch(query,null,"extended");}}/>}
 
     {!selected&&liveGroups.length===0&&query&&liveState!=="loading"&&<section className="card empty-card">
       <span className="empty-icon">⌕</span><h2>No encontramos “{query}” ahora</h2>

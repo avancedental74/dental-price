@@ -97,27 +97,34 @@ function looksLikeReference(query:string){
   return compact.length>=6&&/[A-Z]/.test(compact)&&/\d/.test(compact);
 }
 
-function relevantToQuery(offer:SupplierOffer,query:string){
+export function relevantToQuery(offer:SupplierOffer,query:string){
   const compact=normalizeReference(query)??"";
   if(looksLikeReference(query)){
     const manufacturerRef=normalizeReference(offer.manufacturerReference)??"";
     const supplierRef=normalizeReference(offer.supplierSku)??"";
     return Boolean((manufacturerRef&&manufacturerRef===compact)||(supplierRef&&supplierRef===compact));
   }
-  const tokens=normalizeName(query).split(" ").filter(t=>t.length>=2);
-  // Do not use normalizedName here: some connectors intentionally prefix the parent
-  // product name to every variant, which would make unrelated cross-sell variants pass.
-  const hay=normalizeName([offer.rawName,offer.manufacturer,offer.manufacturerReference,offer.supplierSku].filter(Boolean).join(" "));
-  const matched=tokens.filter(t=>hay.includes(t));
+  const searchable=(text:string)=>normalizeName(text.replace(/\b([a-d]\d)[,.](\d)\b/gi,"$1.$2"));
+  const tokens=searchable(query).split(" ").filter(t=>t.length>=2);
+  // Never use normalizedName: connectors may prefix a parent name to unrelated variants.
+  const hay=searchable([offer.rawName,offer.manufacturer,offer.manufacturerReference,offer.supplierSku].filter(Boolean).join(" "));
+  // Model codes and shades require entire identifiers, including decimal precision.
+  const codeTokens=tokens.filter(t=>/^(?:[a-d]\d(?:\.\d)?|[a-z]+\d+[a-z0-9]*|\d+[a-z][a-z0-9]*)$/.test(t));
+  const exactCode=(value:string)=>new RegExp("(^|[^a-z0-9.])"+value.replaceAll(".","\\.")+"(?=$|[^a-z0-9.])","i").test(hay);
+  if(codeTokens.some(t=>!exactCode(t)))return false;
+  const matched=tokens.filter(t=>codeTokens.includes(t)?exactCode(t):hay.includes(t));
   return matched.length>=Math.max(1,Math.ceil(tokens.length*0.6));
 }
 
-async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string){
+async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string,depth:"standard"|"extended"="standard"){
+  const extended=depth==="extended";
+  // Bounded per-supplier expansion; never use unbounded crawling.
+  const limitFor=(standard:number,more:number)=>extended?more:standard;
   const fetchImpl=withTimeout();
   if(supplierId==="dentalboom"){
-    const records=await searchDentalBoomRecords(query,fetchImpl,4);
+    const records=await searchDentalBoomRecords(query,fetchImpl,limitFor(5,12));
     const pages:SupplierOffer[][]=[];
-    for(const record of records.slice(0,2)){
+    for(const record of records.slice(0,limitFor(4,8))){
       try{
         const pageOffers=(await fetchDentalBoomProduct(record.url,fetchImpl)).offers.filter(o=>relevantToQuery(o,query));
         if(pageOffers.length)pages.push(pageOffers);
@@ -128,10 +135,10 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"woocommerce-store-api+product"};
+    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"woocommerce-store-api+product",candidateLimitReached:records.length>=limitFor(5,12)};
   }
   if(supplierId==="ortolan"){
-    const records=await searchOrtolanRecords(query,fetchImpl,8);
+    const records=await searchOrtolanRecords(query,fetchImpl,limitFor(12,20));
     const policy=policyList.find(p=>p.supplierId===supplierId);
     const offers=records.map(record=>{
       const rawName=[record.name,record.variant].filter(Boolean).join(" - ");
@@ -167,10 +174,10 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>relevantToQuery(o,query))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"ortolan-structured-search"};
+    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"ortolan-structured-search",candidateLimitReached:records.length>=limitFor(12,20)};
   }
   if(supplierId==="dvd-dental"){
-    const records=await searchDvdKlevuRecords(query,fetchImpl,5);
+    const records=await searchDvdKlevuRecords(query,fetchImpl,limitFor(10,20));
     const compact=normalizeReference(query)??"";
     const policy=policyList.find(p=>p.supplierId===supplierId);
 
@@ -186,7 +193,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
         .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
         .filter(o=>supplierOfferSchema.safeParse(o).success);
-      return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu+product"};
+      return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu+product",candidateLimitReached:records.length>=limitFor(10,20)};
     }
 
     const offers=records.map(record=>{
@@ -223,30 +230,22 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>relevantToQuery(o,query))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu"};
+    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu",candidateLimitReached:records.length>=limitFor(10,20)};
   }
-  const candidateLimit=supplierId==="dentaltix"?1:supplierId==="dentalcost"?3:supplierId==="dentipak"?2:3;
+  const candidateLimit=extended?10:5;
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
   if(!discovered.urls.length){
     const message=discovered.error??"Sin resultados";
     const noMatch=/^Sin\b/i.test(message);
-    return {offers:[] as SupplierOffer[],error:noMatch?null:message,noMatch,discoveredFrom:discovered.searchUrl};
+    return {offers:[] as SupplierOffer[],error:noMatch?null:message,noMatch,discoveredFrom:discovered.searchUrl,candidateLimitReached:false};
   }
   const policy=policyList.find(p=>p.supplierId===supplierId);
   const verified:SupplierOffer[]=[];
-  if(supplierId==="dentalcost"){
-    for(const productUrl of discovered.urls){
-      try{
-        const pageOffers=await fetchSupplierUrl(supplierId,productUrl,fetchImpl);
-        const relevant=pageOffers.filter(o=>relevantToQuery(o,query));
-        if(relevant.length){
-          verified.push(...relevant);
-          break;
-        }
-      }catch{ /* try next candidate */ }
-    }
-  }else{
-    const pages=await Promise.all(discovered.urls.map(async productUrl=>{
+  // Evaluate more than the first successful product (especially DentalCost).
+  // Process in small parallel batches to bound load on supplier websites.
+  for(let start=0;start<discovered.urls.length;start+=3){
+    const urls=discovered.urls.slice(start,start+3);
+    const pages=await Promise.all(urls.map(async productUrl=>{
       try{return await fetchSupplierUrl(supplierId,productUrl,fetchImpl);}
       catch{return [] as SupplierOffer[];}
     }));
@@ -256,7 +255,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
     .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
     .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
     .filter(o=>supplierOfferSchema.safeParse(o).success);
-  return {offers,error:null,noMatch:offers.length===0,discoveredFrom:discovered.searchUrl};
+  return {offers,error:null,noMatch:offers.length===0,discoveredFrom:discovered.searchUrl,candidateLimitReached:discovered.urls.length>=candidateLimit};
 }
 
 export default {
@@ -275,6 +274,7 @@ export default {
       const supplierId=(url.searchParams.get("supplier")??"") as SearchSupplierId;
       const requestedAt=new Date().toISOString();
       const sessionId=(url.searchParams.get("sessionId")??"").trim()||crypto.randomUUID();
+      const depth=url.searchParams.get("depth")==="extended"?"extended" as const:"standard" as const;
       if(query.length<2)return Response.json({error:"QUERY_TOO_SHORT"},{status:400,headers});
       if(!suppliers.includes(supplierId))return Response.json({error:"UNKNOWN_SUPPLIER"},{status:400,headers});
       if(protectedSuppliers.includes(supplierId))return Response.json({
@@ -282,8 +282,8 @@ export default {
         error:"BROWSER_VERIFICATION_REQUIRED",noMatch:false
       },{status:409,headers});
       try{
-        const result=await searchOneSupplier(supplierId,query,sessionId);
-        return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error??null,noMatch:result.noMatch??false,discoveredFrom:result.discoveredFrom},{headers});
+        const result=await searchOneSupplier(supplierId,query,sessionId,depth);
+        return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error??null,noMatch:result.noMatch??false,discoveredFrom:result.discoveredFrom,candidateLimitReached:result.candidateLimitReached??false,depth},{headers});
       }catch(error){
         return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:[],error:error instanceof Error?error.message:"SEARCH_ERROR"},{headers});
       }

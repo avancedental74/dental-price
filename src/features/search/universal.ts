@@ -174,8 +174,13 @@ export function assessAlternatives(products:UniversalProduct[],filters:SearchFil
   const uniform=basis.size===1;
   const ranked=reason||!uniform?[]:possible.sort((a,b)=>a.normalizedCost!-b.normalizedCost!);
   const rankedIds=new Set(ranked.map(o=>o.id));
+  // For every other product family, keep the verified prices discoverable in
+  // monetary order, without labeling different products interchangeable.
+  const unverified=candidates.filter(o=>!rankedIds.has(o.id))
+    .sort((a,b)=>(a.effectiveTotal??Infinity)-(b.effectiveTotal??Infinity)
+      ||a.name.localeCompare(b.name));
   return {
-    profile:profileId,ranked,unverified:candidates.filter(o=>!rankedIds.has(o.id)),
+    profile:profileId,ranked,unverified,
     reason:reason??(!uniform&&possible.length>1?"Los productos tienen unidades de medida distintas.":undefined)
   };
 }
