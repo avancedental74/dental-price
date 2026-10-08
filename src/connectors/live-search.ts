@@ -67,8 +67,8 @@ export function scoreLink(text:string,href:string,query:string):number{
   const exactCode=(value:string)=>new RegExp("(^|[^a-z0-9])"+value.toLowerCase()+"(?=$|[^a-z0-9])").test(hay);
   if(tokens.length===1&&compact.length>=4&&/\d/.test(compact)&&!exactCode(compact))return 0;
   // Decimal shade A3.5 is not shade A3.
-  const requestedShade=q.match(/\\ba\\d(?:\\.\\d)?\\b/i)?.[0];
-  if(requestedShade&&!requestedShade.includes(".")&&new RegExp("(^|[^a-z0-9])"+requestedShade+"\\\\.\\\\d","i").test(hay))return 0;
+  const requestedShade=q.match(/\ba\d(?:\.\d)?\b/i)?.[0];
+  if(requestedShade&&!requestedShade.includes(".")&&new RegExp("(^|[^a-z0-9])"+requestedShade+"\\.\\d","i").test(hay))return 0;
   if(compact&&normalizedHay.includes(compact))score+=12;
   // Match whole normalized tokens: Z250 must not match Z2500 and A3 must not match A3.5.
   // Boundaries are spaces after normalizeName, with a second compact check for
