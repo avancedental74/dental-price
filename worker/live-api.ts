@@ -92,7 +92,7 @@ function relevantToQuery(offer:SupplierOffer,query:string){
 async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string){
   const fetchImpl=withTimeout();
   if(supplierId==="ortolan"){
-    const records=await searchOrtolanRecords(query,fetchImpl,5);
+    const records=await searchOrtolanRecords(query,fetchImpl,8);
     const policy=policyList.find(p=>p.supplierId===supplierId);
     const offers=records.map(record=>{
       const rawName=[record.name,record.variant].filter(Boolean).join(" - ");
@@ -108,7 +108,10 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         productUrl:record.url??"https://ortolan.es/es/busqueda?controller=search&s="+encodeURIComponent(query),
         presentation:/jeringa/i.test(rawName)?"Jeringa":/cavifill|capsul|cápsul/i.test(rawName)?"Cápsulas":undefined,
         quantity,unit,packCount:quantity?1:undefined,shade,
-        stockStatus:"unknown",
+        stockStatus:typeof record.stockQuantity==="number"
+          ?record.stockQuantity<=0?"unavailable":record.stockQuantity<=5?"low_stock":"in_stock"
+          :"unknown",
+        rawStockText:typeof record.stockQuantity==="number"?"Stock publicado: "+record.stockQuantity:undefined,
         regularPrice:record.price,
         salePrice:record.price,
         vatStatus:"excluded",
