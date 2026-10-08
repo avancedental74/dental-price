@@ -162,20 +162,34 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>supplierOfferSchema.safeParse(o).success);
     return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu+product"};
   }
-  const candidateLimit=(supplierId==="dentaltix"||supplierId==="dentalcost")?1:3;
+  const candidateLimit=supplierId==="dentaltix"?1:supplierId==="dentalcost"?3:3;
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
   if(!discovered.urls.length){
     const message=discovered.error??"Sin resultados";
     const noMatch=/^Sin\b/i.test(message);
     return {offers:[] as SupplierOffer[],error:noMatch?null:message,noMatch,discoveredFrom:discovered.searchUrl};
   }
-  const pages=await Promise.all(discovered.urls.map(async productUrl=>{
-    try{return await fetchSupplierUrl(supplierId,productUrl,fetchImpl);}
-    catch{return [] as SupplierOffer[];}
-  }));
   const policy=policyList.find(p=>p.supplierId===supplierId);
-  const offers=pages.flat()
-    .filter(o=>relevantToQuery(o,query))
+  const verified:SupplierOffer[]=[];
+  if(supplierId==="dentalcost"){
+    for(const productUrl of discovered.urls){
+      try{
+        const pageOffers=await fetchSupplierUrl(supplierId,productUrl,fetchImpl);
+        const relevant=pageOffers.filter(o=>relevantToQuery(o,query));
+        if(relevant.length){
+          verified.push(...relevant);
+          break;
+        }
+      }catch{ /* try next candidate */ }
+    }
+  }else{
+    const pages=await Promise.all(discovered.urls.map(async productUrl=>{
+      try{return await fetchSupplierUrl(supplierId,productUrl,fetchImpl);}
+      catch{return [] as SupplierOffer[];}
+    }));
+    verified.push(...pages.flat().filter(o=>relevantToQuery(o,query)));
+  }
+  const offers=verified
     .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
     .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
     .filter(o=>supplierOfferSchema.safeParse(o).success);
