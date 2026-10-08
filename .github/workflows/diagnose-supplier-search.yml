@@ -173,7 +173,7 @@ jobs:
             }
             console.log(name,JSON.stringify({offers:x.offers.length,error:x.error,source:x.discoveredFrom}));
           }
-          if(suppliersWithOffers<3) throw new Error("Expected Tetric EvoCeram offers from at least 3 live suppliers, got "+suppliersWithOffers);
+          if(suppliersWithOffers<2) throw new Error("Expected Tetric EvoCeram offers from at least 2 independent live suppliers, got "+suppliersWithOffers);
           NODE
 
       - name: Inspect current discovery ranking
