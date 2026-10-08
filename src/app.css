@@ -248,3 +248,10 @@ button.smart-result:hover{border-color:#92c8ff}
   .smart-result{align-items:stretch;flex-direction:column}
   .smart-result .primary-button{width:100%}
 }
+
+.smart-result-card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.smart-result-card .smart-result{border:0;border-radius:0}
+.smart-result-actions{display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0}
+.smart-inline-comparison{padding:12px 16px 20px;border-top:1px solid var(--line);background:#fcfcfd}
+.smart-inline-comparison p{font-size:12px;color:var(--muted);margin:0 0 10px}
+@media(max-width:600px){.smart-result-actions{width:100%;flex-direction:column}.smart-result-actions button{width:100%}}
