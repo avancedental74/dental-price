@@ -48,7 +48,7 @@ export function VisualSearchResults({items,query,onSelect,sessionId}:{
   const byCategory=analyzed.filter(i=>!category||i.type===category);
   const facetValues=useMemo(()=>Object.fromEntries(facets.map(k=>{
     const values=new Map<string,number>();
-    for(const item of byCategory.filter(i=>facets.every(other=>other===k||!filters[other]||item.properties[other]===filters[other]))){
+    for(const item of byCategory.filter(candidate=>facets.every(other=>other===k||!filters[other]||candidate.properties[other]===filters[other]))){
       const v=item.properties[k];if(v)values.set(v,(values.get(v)??0)+1);
     }
     return [k,[...values.entries()]] as const;
