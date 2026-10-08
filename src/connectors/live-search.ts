@@ -82,9 +82,10 @@ export function scoreLink(text:string,href:string,query:string):number{
   // references formatted using separators by the supplier.
   const wholeToken=(token:string)=>hay.split(" ").includes(token);
   const matched=tokens.filter(wholeToken);
-  // Product identity matters even in verbose searches: enforce substantial coverage.
-  // creates false positives such as Tetric EvoFlow for "Tetric EvoCeram".
+  // Product identity matters in verbose searches too: reject weak token coverage.
   if(tokens.length>=2&&matched.length<Math.ceil(tokens.length*0.75))return 0;
+  const quantities=[...q.matchAll(/\\b(\\d+(?:[.,]\\d+)?) (g|ml)\\b/g)];
+  if(quantities.some(m=>!hay.includes(m[1]+" "+m[2])))return 0;
   // Never accept a different shade or a different mass/volume when specified.
   const critical=tokens.filter(t=>/^(?:[a-d]\\d(?:\\.\\d)?|body|dentin|enamel|\\d+(?:[.,]\\d+)?)$/.test(t));
   if(critical.some(t=>!wholeToken(t)))return 0;
