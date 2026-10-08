@@ -64,6 +64,7 @@ jobs:
           check dentalcost "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentalcost&sessionId=smoke-search"
           check dentalexpress "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=41294&supplier=dentalexpress&sessionId=smoke-search"
           check ortolan "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=ortolan&sessionId=smoke-search"
+          check ortolan_dentin "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram%20A3%2C5%20Dentina&supplier=ortolan&sessionId=smoke-search"
           check dvd "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Scotchbond%20Universal%20Plus&supplier=dvd-dental&sessionId=smoke-search"
           node <<'NODE'
           const fs=require("fs");
