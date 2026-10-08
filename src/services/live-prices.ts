@@ -21,7 +21,7 @@ export interface LiveCatalogSearchResponse {
   groups:LiveSearchGroup[];
   errors:Array<{supplierId:string;message:string}>;
   depth:SearchDepth;
-  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number}>;
+  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"error"}>;
 }
 
 export type SearchDepth="standard"|"extended";
@@ -237,7 +237,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
     groups:groupLiveOffers(offers),depth,
-    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached,queries:x.queries,partialErrors:x.partialErrors})),
+    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached,queries:x.queries,partialErrors:x.partialErrors,status:x.error?"error" as const:x.offers.length?"results" as const:"no_match" as const})),
     errors:settled.filter(x=>x.error).map(x=>({supplierId:x.supplierId,message:x.error!}))
   };
 }
