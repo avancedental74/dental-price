@@ -64,5 +64,7 @@ export function analyzeOfferAnomaly(input:AnomalyInput):AnomalyResult {
 
 export function applyAnomalyStatus(offer:SupplierOffer,previous?:PriceObservation):SupplierOffer {
   const result=analyzeOfferAnomaly({offer,previous});
-  return {...offer,sourceStatus:result.severity};
+  // Existing source-level alarms (e.g. two live queries disagreeing on a price)
+  // must not be silently cleared by a separate historical anomaly check.
+  return {...offer,sourceStatus:worsen(offer.sourceStatus,result.severity)};
 }
