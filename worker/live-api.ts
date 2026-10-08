@@ -21,7 +21,9 @@ import type { PriceObservation } from "../src/domain/history";
 
 type Env={ALLOWED_ORIGIN?:string};
 const policyList=policies as SupplierPolicy[];
-const suppliers:SearchSupplierId[]=["dentaltix","dentalcost","dvd-dental","proclinic","dental-iberica","dentalexpress","brokerdental","ortolan","dentipak","dentalboom"];
+const automaticSuppliers:SearchSupplierId[]=["dentaltix","dentalcost","dvd-dental","dentalexpress","ortolan","dentipak","dentalboom"];
+const protectedSuppliers:SearchSupplierId[]=["proclinic","dental-iberica","brokerdental"];
+const suppliers:SearchSupplierId[]=[...automaticSuppliers,...protectedSuppliers];
 
 function cors(origin:string|null,env:Env){
   const allowed=env.ALLOWED_ORIGIN??"*";
@@ -269,7 +271,7 @@ export default {
     if(request.method!=="GET")return Response.json({error:"METHOD_NOT_ALLOWED"},{status:405,headers});
 
     const url=new URL(request.url);
-    if(url.pathname==="/health")return Response.json({ok:true,at:new Date().toISOString(),suppliers,searchMode:"dynamic-per-supplier"},{headers});
+    if(url.pathname==="/health")return Response.json({ok:true,at:new Date().toISOString(),suppliers:automaticSuppliers,protectedSuppliers,searchMode:"dynamic-per-supplier"},{headers});
 
     if(url.pathname==="/search-supplier"){
       const query=(url.searchParams.get("q")??"").trim();
@@ -278,6 +280,10 @@ export default {
       const sessionId=(url.searchParams.get("sessionId")??"").trim()||crypto.randomUUID();
       if(query.length<2)return Response.json({error:"QUERY_TOO_SHORT"},{status:400,headers});
       if(!suppliers.includes(supplierId))return Response.json({error:"UNKNOWN_SUPPLIER"},{status:400,headers});
+      if(protectedSuppliers.includes(supplierId))return Response.json({
+        query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:[],
+        error:"BROWSER_VERIFICATION_REQUIRED",noMatch:false
+      },{status:409,headers});
       try{
         const result=await searchOneSupplier(supplierId,query,sessionId);
         return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error??null,noMatch:result.noMatch??false,discoveredFrom:result.discoveredFrom},{headers});
