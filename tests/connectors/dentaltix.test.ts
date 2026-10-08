@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { parseDentaltixProductHtml } from "../../src/connectors/dentaltix/parser";
+import { parseDentaltixNuxtFast, parseDentaltixProductHtml } from "../../src/connectors/dentaltix/parser";
 import { normalizeDentaltix } from "../../src/connectors/dentaltix/normalizer";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -241,5 +241,37 @@ describe("Dentaltix connector", () => {
     expect(offers.find(o=>o.manufacturerReference==="637736")?.packCount).toBe(3);
     expect(offers.find(o=>o.manufacturerReference==="642043WW")?.packCount).toBe(10);
   });
+
+  it("uses the lightweight Nuxt parser without DOM traversal",()=>{
+    const payload=[
+      {slug:1,name:2,mainVar:3,variations:4},
+      "tetric-evoceram-cavifil-20-x-02gr",
+      "Tetric EvoCeram",
+      {manRef:5,sku:6,name:7,type:8,price:9,stockControl:14,stock:15},
+      {selected:3},
+      "590314WW",
+      "45TE590314",
+      "Tetric EvoCeram",
+      "1 Jer. de 3 gr - Color A3",
+      {sales:10,recommended:11},
+      {value:12},
+      {value:13},
+      41.9,
+      62.71,
+      true,
+      12
+    ];
+    const html=`<html><body><div>Precio IVA incluido (10%) 46,09 €</div><script type="application/json" data-nuxt-data="nuxt-app">${JSON.stringify(payload)}</script></body></html>`;
+    const raw=parseDentaltixNuxtFast(html,"https://www.dentaltix.com/es/ivoclar-vivadent/tetric-evoceram-cavifil-20-x-02gr");
+    expect(raw).not.toBeNull();
+    expect(raw?.title).toBe("Tetric EvoCeram");
+    expect(raw?.vatRate).toBe(10);
+    expect(raw?.variants).toHaveLength(1);
+    expect(raw?.variants[0].manufacturerReference).toBe("590314WW");
+    expect(raw?.variants[0].supplierSku).toBe("45TE590314");
+    expect(raw?.variants[0].salePrice).toBe(41.9);
+    expect(raw?.variants[0].rawStockText).toContain("En stock: 12");
+  });
+
 
 });
