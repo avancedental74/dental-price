@@ -35,6 +35,7 @@ interface SupplierSearchResponse {
   completedAt:string;
   offers:SupplierOffer[];
   error?:string|null;
+  noMatch?:boolean;
 }
 
 export const liveAutomaticSuppliers=["dentaltix","dentalcost","dvd-dental","dentalexpress","ortolan"] as const;
@@ -153,7 +154,7 @@ export async function searchLiveCatalog(query:string):Promise<LiveCatalogSearchR
       const response=await fetch(url,{method:"GET",headers:{accept:"application/json"},cache:"no-store"});
       if(!response.ok) return {supplierId,offers:[] as SupplierOffer[],error:"HTTP "+response.status};
       const data=await response.json() as SupplierSearchResponse;
-      return {supplierId,offers:data.offers??[],error:data.error??null};
+      return {supplierId,offers:data.offers??[],error:data.error??null,noMatch:Boolean(data.noMatch)};
     }catch(error){
       return {supplierId,offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR"};
     }
