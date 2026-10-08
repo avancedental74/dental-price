@@ -100,7 +100,7 @@ export function specsForGroup(group:LiveSearchGroup,offer?:SupplierOffer):Search
 }
 export interface UniversalOffer {
   id:string;groupId:string;name:string;reference?:string;supplierId:string;
-  productUrl:string;publishedPrice:number;properties:SearchFilters;
+  productUrl:string;publishedPrice:number;vatStatus?:"included"|"excluded"|"unknown";properties:SearchFilters;
   unit?:string;count?:number;priceVerification?:"detail"|"search_index";effectiveTotal?:number;normalizedCost?:number;
   normalizedBasis?:string;eligible:boolean;issues:string[];
 }
@@ -132,7 +132,7 @@ export function assessProducts(groups:LiveSearchGroup[],sessionId:string|null):U
         id:group.id+"|"+o.supplierId+"|"+(o.supplierSku??index),groupId:group.id,
         name:o.rawName,reference:o.manufacturerReference??o.supplierSku,
         supplierId:o.supplierId,productUrl:validHttps(o.productUrl)?o.productUrl:"",
-        publishedPrice:o.salePrice??o.regularPrice,properties:spec.properties,
+        publishedPrice:o.salePrice??o.regularPrice,vatStatus:o.vatStatus,properties:spec.properties,
         unit,count,priceVerification:o.priceVerification,eligible,issues,
         effectiveTotal:eligible?match.pricing?.effectiveTotalCost:undefined,
         normalizedBasis:normalizable?(unit==="unit"?"100 ud":"1 "+unit):undefined,
