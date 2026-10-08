@@ -21,7 +21,7 @@ function SupplierRows({offers}: {offers:UniversalOffer[]}){
     <td>{Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"—"}</td>
     <td>{o.effectiveTotal===undefined?"—":money(o.effectiveTotal)}</td>
     <td>{o.eligible?<span className="pill good">Verificado</span>:<small>{o.issues.join("; ")||"Pendiente de verificación"}</small>}</td>
-    <td><a href={o.productUrl} target="_blank" rel="noopener noreferrer">Abrir ↗</a></td>
+    <td>{o.productUrl?<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Abrir ↗</a>:<span>Sin enlace verificado</span>}</td>
   </tr>)}</tbody></table></div>;
 }
 export function UniversalSearchResults({items,query,onSelect,sessionId}:{
@@ -124,18 +124,19 @@ export function UniversalSearchResults({items,query,onSelect,sessionId}:{
           <td>{o.count} {o.unit==="unit"?"uds.":o.unit}</td>
           <td>{o.effectiveTotal===undefined?"—":money(o.effectiveTotal)}</td>
           <td><strong>{o.normalizedCost===undefined?"—":money(o.normalizedCost)}</strong> <small>{o.normalizedBasis}</small></td>
-          <td><a href={o.productUrl} target="_blank" rel="noopener noreferrer">Proveedor ↗</a></td>
+          <td>{o.productUrl?<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Proveedor ↗</a>:"—"}</td>
         </tr>)}</tbody></table></div>
       </>}
       {alternatives.unverified.length>0&&<details className="alternatives-pending" open={alternatives.ranked.length===0}>
         <summary>{alternatives.unverified.length} opciones sin ranking de equivalencia</summary>
         <div className="alternatives-pending-list">
           {alternatives.unverified.map(o=><div key={o.id}><strong>{o.name}</strong>
-            <small>{supplierNames[o.supplierId]??o.supplierId} · {[
+            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
+            <small>{[
               ...o.issues,
               alternatives.reason??"Sin homologación de características entre marcas"
             ].join("; ")}</small>
-            <a href={o.productUrl} target="_blank" rel="noopener noreferrer">Consultar producto ↗</a>
+            {o.productUrl&&<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Consultar producto ↗</a>}
           </div>)}
         </div>
       </details>}
