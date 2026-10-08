@@ -1,12 +1,21 @@
 # Dental Price — Hardening Status
 
-Fecha: 2026-10-07
+Fecha: 2026-10-08
 
 ## Estado real
 
-La arquitectura, motores de dominio, validación, CI, seguridad y frontend están endurecidos. El último refresh publicado generó **94 ofertas verificadas automáticamente**, **84 ofertas comprables**, **24 promociones estructuradas**, **134 observaciones históricas** y **0 falsos EXACT** en validación.
+La arquitectura actual ya no depende del catálogo canónico para la búsqueda interactiva. El frontend ejecuta una **búsqueda federada live por nombre o referencia**, cada consulta genera un `sessionId` y únicamente las ofertas verificadas dentro de esa sesión pueden competir. El snapshot programado permanece como histórico y referencia auxiliar.
+
+El Worker aplica validación de esquema, política del proveedor, control de anomalías contra histórico y filtrado de relevancia antes de devolver una oferta. Los despliegues están serializados para impedir que una ejecución antigua sobrescriba una versión nueva.
 
 ## Cobertura automática actual
+
+- **7 proveedores live automáticos**: Dentaltix, DentalCost, DVD Dental, Dental Express, Ortolan, Dentipak y Dental Boom.
+- **3 proveedores protegidos por AWS WAF/CAPTCHA**: Proclinic, Dental Ibérica y Broker Dental. No se intenta eludir la verificación humana.
+- El smoke test de despliegue exige respuestas válidas de los 7 proveedores automáticos.
+- La prueba de búsqueda no precargada con `Tetric EvoCeram` confirma discovery live real en proveedores accesibles sin depender de `data/products.json`.
+- El histórico local de búsquedas live se conserva en el navegador y se combina con el histórico público para detección de anomalías y estadísticas.
+
 
 - **Dentaltix: 42 ofertas verdes / EXACT**
   - 13 variantes Filtek Supreme XTE.
@@ -69,13 +78,23 @@ Automatización operativa. Las fichas públicas exponen referencias de fabricant
 
 ### DVD Dental
 
-La automatización sigue siendo parcial. La ficha simple Scotchbond Universal Plus `41294` ya está validada automáticamente con ref. fabricante, SKU DVD, precio, IVA, stock y política de portes. Las páginas de variantes complejas continúan en `manual_verification` mientras no exista una resolución variante→SKU/precio reproducible y segura.
+Búsqueda live mediante Klevu para discovery y verificación posterior sobre la ficha del producto. La consulta limita candidatos para mantenerse dentro del presupuesto de CPU del Worker y rechaza resultados que no superan relevancia o validación comercial.
 
-La interfaz admite snapshots DVD verificados manualmente y exige:
-- dominio `dvd-dental.com`;
-- referencia de fabricante observada coincidente;
-- precio >0;
-- datos económicos suficientes antes de poder ganar el ranking.
+### Dental Express
+
+Búsqueda live operativa. La referencia interna y la referencia de fabricante se tratan como campos distintos. Si la ficha no expone un precio producto-específico verificable, devuelve `noMatch` en lugar de reutilizar precios globales o ambiguos.
+
+### Ortolan
+
+Búsqueda live basada en datos estructurados del propio buscador. Se extraen variante, tono, presentación, cantidad, pack, precio y stock publicado sin descargar múltiples fichas pesadas. Las variantes se mantienen separadas.
+
+### Dentipak
+
+Búsqueda live validada mediante smoke test con referencia, SKU, precio y stock verificables.
+
+### Dental Boom
+
+Discovery mediante API pública de WooCommerce y verificación posterior en ficha. Los resultados sin referencia de fabricante pueden mostrarse, pero no se inventa esa referencia.
 
 ### Proclinic
 
@@ -83,7 +102,11 @@ Las fichas públicas son visibles en navegador/buscadores, pero GitHub Actions r
 
 ### Dental Ibérica
 
-Las fichas públicas son visibles en navegador/buscadores, pero GitHub Actions recibe HTTP 405. Se usa `manual_verification` con las mismas garantías que Proclinic.
+AWS WAF devuelve verificación humana a peticiones de servidor, incluidas rutas de catálogo/API probadas. Se mantiene fuera de la automatización live.
+
+### Broker Dental
+
+AWS WAF devuelve verificación humana a peticiones de servidor y a las rutas de API probadas. Se mantiene fuera de la automatización live.
 
 ## Ejemplo de comparación automática real
 
@@ -100,13 +123,13 @@ Si una fuente no puede verificarse automáticamente, Dental Price debe mostrar a
 
 ## Limitaciones abiertas
 
-1. No existe discovery arbitrario de todo el catálogo; la búsqueda opera sobre catálogo canónico curado.
-2. Proclinic y Dental Ibérica requieren API/feed/autorización o verificación manual.
-3. DVD requiere una vía fiable para resolver variante→SKU/precio antes de volver a automatización.
-4. Dentaltix y DentalCost deben ampliar progresivamente categorías y referencias, priorizando familias compartidas con referencia de fabricante idéntica. Filtek Universal Restorative ya aporta 9 referencias comparables entre ambos; `6555XW` permanece solo en Dentaltix mientras DentalCost no la publique. AIR-N-GO en DentalCost quedó fuera de la automatización porque esa ficha devuelve HTTP 404 desde GitHub Actions aunque sea visible públicamente.
-5. Opportunity Score necesita más días de histórico real para ser estadísticamente útil.
-6. Precios negociados, facturas e inventario interno están fuera del V1 público.
-7. El Basket Optimizer V1 usa búsqueda podada y memoizada, cobra portes una sola vez por proveedor y tiene una regresión de 18 líneas × 3 proveedores. Mantiene un límite de seguridad de estados para cestas patológicas y devuelve un error explícito antes de aproximar o inventar una solución.
+1. Proclinic, Dental Ibérica y Broker Dental requieren navegación humana o una API/feed autorizado por el proveedor.
+2. Algunos proveedores no publican referencia de fabricante en todos los productos. En esos casos la interfaz puede mostrar candidatos, pero el ranking debe seguir siendo conservador.
+3. Algunas búsquedas por nombre devuelven familias con muchas variantes; la UI debe mantener selección explícita y no colapsar presentaciones, tonos o packs incompatibles.
+4. El histórico live persistente entre dispositivos todavía no usa una base central; el navegador conserva observaciones locales y el snapshot público aporta el histórico compartido.
+5. Opportunity Score necesita más histórico temporal por SKU para ganar valor estadístico.
+6. Precios negociados, facturas e inventario interno siguen fuera del alcance público actual.
+7. El Basket Optimizer necesita consultas live por todas las líneas de la cesta para que su optimización sea completamente actual al momento de compra.
 
 ## Seguridad de dependencias
 
