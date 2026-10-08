@@ -63,7 +63,7 @@ export function App(){
     setLiveCompletedAt(undefined);
     setLiveState("loading");
     try{
-      const result=await searchLiveCatalog(q.trim());
+      const result=await searchLiveCatalog(q.trim(),data?[...data.history,...liveHistory]:liveHistory);
       setLiveSessionId(result.sessionId);
       setLiveCompletedAt(result.completedAt);
       setLiveErrors(result.errors);
