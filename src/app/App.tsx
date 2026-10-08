@@ -15,7 +15,7 @@ import { ScoreBadge } from "../components/ScoreBadge";
 import { SearchBar } from "../components/SearchBar";
 import { WinnerCard } from "../components/WinnerCard";
 import { ManualOfferPanel } from "../components/ManualOfferPanel";
-import { LiveSearchCandidates } from "../components/LiveSearchCandidates";
+import { VisualSearchResults } from "../components/VisualSearchResults";
 import { MetricsPanel } from "../components/MetricsPanel";
 import { CoverageQueue } from "../components/CoverageQueue";
 import { LiveSearchStatus, type LiveSearchState } from "../components/LiveSearchStatus";
@@ -52,7 +52,7 @@ export function App(){
   const selectLiveGroup=(group:LiveSearchGroup)=>{
     setSelected(group.product);
     setLiveOffers(group.offers);
-    setLiveGroups([]);
+    // Keep discovered alternatives so switching products does not require a new search.
     setLiveState(group.offers.length?(liveErrors.length?"partial":"success"):"failed");
   };
 
@@ -216,7 +216,7 @@ export function App(){
     </section>
 
     {liveState==="loading"&&<LiveSearchStatus state="loading" errors={[]}/>}
-    <LiveSearchCandidates items={liveGroups} onSelect={selectLiveGroup}/>
+    {!selected&&<VisualSearchResults key={query} items={liveGroups} query={query} sessionId={liveSessionId} onSelect={selectLiveGroup}/>}
 
     {!selected&&liveGroups.length===0&&query&&liveState!=="loading"&&<section className="card empty-card">
       <span className="empty-icon">⌕</span><h2>No encontramos “{query}” ahora</h2>
@@ -231,6 +231,7 @@ export function App(){
       </div>
       <div className="product-controls">
         <QuantityControl value={quantity} onChange={setQuantity}/>
+        {liveGroups.length>0&&<button className="secondary-button" onClick={()=>{setSelected(null);setLiveOffers([]);}}>← Volver a resultados</button>}
         <button className="secondary-button" onClick={()=>void runFederatedSearch(query,selected)}>Consultar otra vez</button>
         <button className="primary-button" onClick={addSelectedToBasket}>Añadir a cesta</button>
       </div>
