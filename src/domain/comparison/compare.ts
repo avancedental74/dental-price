@@ -40,6 +40,7 @@ function rankingEligible(item: MatchedSupplierOffer, options:ComparisonOptions):
   const stockEligible=item.offer.stockStatus==="in_stock" || item.offer.stockStatus==="low_stock";
   return (
     belongsToRequiredLiveSession(item,options) &&
+    item.offer.priceVerification!=="search_index" &&
     item.match.status === "EXACT" &&
     item.offer.sourceStatus === "normal" &&
     stockEligible &&
