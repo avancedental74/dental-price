@@ -2,7 +2,7 @@ import {useMemo,useState} from "react";
 import type {LiveSearchGroup} from "../services/live-prices";
 import {
   assessProducts,assessAlternatives,filterProducts,getAvailableFacets,
-  inferProfile,profileForSearch,profileLabel,facetLabels,
+  profileForSearch,profileLabel,facetLabels,
   type SearchFilters,type SearchFacet,type UniversalOffer
 } from "../features/search/universal";
 
