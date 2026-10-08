@@ -1,4 +1,5 @@
 import policies from "../data/supplier-policies.json";
+import priceHistory from "../data/price-history.json";
 import type { SupplierOffer } from "../src/types/domain";
 import type { SupplierPolicy } from "../src/domain/supplier-policies";
 import { applySupplierPolicy } from "../src/domain/supplier-policies";
@@ -13,6 +14,8 @@ import { fetchBrokerDentalProduct } from "../src/connectors/brokerdental";
 import { fetchOrtolanProduct } from "../src/connectors/ortolan";
 import { discoverSupplierProductUrls, searchDvdKlevuRecords, searchOrtolanRecords, type SearchSupplierId } from "../src/connectors/live-search";
 import { normalizeName, normalizeReference } from "../src/domain/matching/normalization";
+import { applyAnomalyStatus } from "../src/domain/anomaly";
+import type { PriceObservation } from "../src/domain/history";
 
 type Env={ALLOWED_ORIGIN?:string};
 const policyList=policies as SupplierPolicy[];
@@ -28,6 +31,21 @@ function cors(origin:string|null,env:Env){
     "cache-control":"no-store",
     "vary":"Origin"
   };
+}
+
+const history=priceHistory as PriceObservation[];
+
+function latestPreviousObservation(offer:SupplierOffer):PriceObservation|undefined{
+  const candidates=history.filter(item=>{
+    if(item.supplierId!==offer.supplierId)return false;
+    if(offer.supplierSku&&item.supplierSku)return normalizeReference(item.supplierSku)===normalizeReference(offer.supplierSku);
+    return item.sourceUrl===offer.productUrl;
+  });
+  return candidates.sort((a,b)=>new Date(b.lastSeenAt??b.observedAt).getTime()-new Date(a.lastSeenAt??a.observedAt).getTime())[0];
+}
+
+function applyLiveSafety(offer:SupplierOffer):SupplierOffer{
+  return applyAnomalyStatus(offer,latestPreviousObservation(offer));
 }
 
 function withTimeout(ms=8500):typeof fetch{
@@ -117,7 +135,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         sourceStatus:"normal",
         sourceMode:"automatic"
       };
-      return applySupplierPolicy(offer,policy);
+      return applyLiveSafety(applySupplierPolicy(offer,policy));
     })
       .filter(o=>relevantToQuery(o,query))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
@@ -151,7 +169,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         sourceStatus:"normal",
         sourceMode:"automatic"
       };
-      return applySupplierPolicy(offer,policy);
+      return applyLiveSafety(applySupplierPolicy(offer,policy));
     })
       .filter(o=>o.regularPrice>0)
       .filter(o=>relevantToQuery(o,query))
@@ -173,7 +191,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
   const policy=policyList.find(p=>p.supplierId===supplierId);
   const offers=pages.flat()
     .filter(o=>relevantToQuery(o,query))
-    .map(o=>applySupplierPolicy(o,policy))
+    .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
     .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
     .filter(o=>supplierOfferSchema.safeParse(o).success);
   return {offers,error:null,noMatch:offers.length===0,discoveredFrom:discovered.searchUrl};
