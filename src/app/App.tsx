@@ -19,6 +19,8 @@ import { UniversalSearchResults } from "../components/UniversalSearchResults";
 import { MetricsPanel } from "../components/MetricsPanel";
 import { CoverageQueue } from "../components/CoverageQueue";
 import { LiveSearchStatus, type LiveSearchState } from "../components/LiveSearchStatus";
+import { ZeroResultDiagnostics } from "../components/ZeroResultDiagnostics";
+import {evaluateCatalogOutcome} from "../services/search-outcome";
 import { BasketPanel, type BasketUiItem } from "../components/BasketPanel";
 import { optimizeBasket } from "../domain/basket";
 import { loadPublicData, type PublicData } from "../services/public-data";
@@ -98,7 +100,8 @@ export function App(){
       // All searches share one result screen, including one-off exact references.
       // Never hide a unique result before the user sees its suppliers.
       setLiveGroups(groups);
-      setLiveState(result.groups.length?(result.errors.length?"partial":"success"):"failed");
+      const outcome=evaluateCatalogOutcome(result.groups.length,result.coverage);
+      setLiveState(outcome==="results"?"success":outcome==="partial_results"?"partial":"failed");
     }catch(e){
       if(searchId!==activeSearchId.current)return;
       const message=e instanceof Error?e.message:"LIVE_SEARCH_ERROR";
@@ -216,10 +219,11 @@ export function App(){
     {liveState==="loading"&&<LiveSearchStatus state="loading" errors={[]}/>}
     {!selected&&<UniversalSearchResults key={query+"|"+searchDepth} items={liveGroups} query={query} sessionId={liveSessionId} onSelect={selectLiveGroup} searchDepth={searchDepth} coverage={supplierCoverage} onExpand={()=>{void runFederatedSearch(query,null,"extended");}}/>}
 
-    {!selected&&liveGroups.length===0&&query&&liveState!=="loading"&&<section className="card empty-card">
-      <span className="empty-icon">⌕</span><h2>No encontramos “{query}” ahora</h2>
-      <p>El producto no apareció en los buscadores accesibles de los proveedores en esta consulta. Prueba con la referencia exacta del fabricante o una descripción algo más corta.</p>
-    </section>}
+    {!selected&&liveGroups.length===0&&query&&liveState!=="loading"&&<ZeroResultDiagnostics
+      query={query} coverage={supplierCoverage} errors={liveErrors} depth={searchDepth}
+      onRetry={()=>{void runFederatedSearch(query,null,searchDepth);}}
+      onExpand={()=>{void runFederatedSearch(query,null,"extended");}}
+    />}
 
     {selected&&<section className="product-card card">
       <div className="product-main">
