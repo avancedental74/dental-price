@@ -1,5 +1,5 @@
 import { normalizeDentaltix } from "./normalizer";
-import { parseDentaltixProductHtml } from "./parser";
+import { parseDentaltixNuxtFast, parseDentaltixProductHtml } from "./parser";
 import type { DentaltixConnectorResult, DentaltixHealth } from "./types";
 
 const USER_AGENT = "DentalPrice/0.1 (+https://github.com/avancedental74/dental-price; single-user price research)";
@@ -8,7 +8,7 @@ export async function fetchDentaltixProduct(productUrl: string, fetchImpl: typeo
   const response = await fetchImpl(productUrl, { headers: { "user-agent": USER_AGENT, accept: "text/html,application/xhtml+xml" } });
   if (!response.ok) throw new Error("Dentaltix HTTP " + response.status);
   const html = await response.text();
-  const raw = parseDentaltixProductHtml(html, productUrl);
+  const raw = parseDentaltixNuxtFast(html, productUrl) ?? parseDentaltixProductHtml(html, productUrl);
   return { raw, offers: normalizeDentaltix(raw) };
 }
 
