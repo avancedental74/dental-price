@@ -235,3 +235,40 @@ jobs:
             }catch(e){console.log("NUXT_PARSE_ERR",e.message);}
           }
           NODE
+
+      - name: Inspect first Dentaltix Nuxt root graph
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const url="https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer";
+          const res=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+          const html=await res.text();
+          const $=cheerio.load(html);
+          const text=$('script[type="application/json"],script#__NUXT_DATA__').toArray().map(el=>$(el).text().trim()).find(x=>x.startsWith("["));
+          const p=JSON.parse(text);
+          const roots=p.filter(e=>e&&typeof e==="object"&&!Array.isArray(e)&&"mainVar" in e&&"variations" in e&&"slug" in e);
+          const root=roots.find(r=>p[r.name]==="Filtek Supreme XTE: Composite Restaurador Universal")||roots[0];
+          console.log("ROOT_RAW",JSON.stringify(root));
+          console.log("ROOT_KEYS",Object.keys(root));
+          console.log("MAINVAR_RAW",JSON.stringify(root.mainVar),"MAINVAR_TARGET",JSON.stringify(p[root.mainVar]));
+          console.log("VARIATIONS_RAW",JSON.stringify(root.variations),"VARIATIONS_TARGET",JSON.stringify(p[root.variations]));
+          const seen=new Set();
+          function walk(v,depth=0){
+            if(depth>5)return;
+            if(typeof v==="number"&&Number.isInteger(v)&&v>=0&&v<p.length){
+              if(seen.has(v))return;
+              seen.add(v);
+              const target=p[v];
+              if(target&&typeof target==="object"&&!Array.isArray(target)){
+                if("manRef" in target||"sku" in target||"name" in target||"type" in target){
+                  console.log("NODE",v,JSON.stringify(target));
+                }
+              }
+              walk(target,depth+1);
+              return;
+            }
+            if(Array.isArray(v)){for(const x of v)walk(x,depth+1);return;}
+            if(v&&typeof v==="object"){for(const x of Object.values(v))walk(x,depth+1);}
+          }
+          walk(root.mainVar); walk(root.variations);
+          NODE
