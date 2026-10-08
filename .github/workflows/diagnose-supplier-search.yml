@@ -405,3 +405,33 @@ jobs:
             }catch{}
           }
           NODE
+
+      - name: Inspect Ortolan tax and stock metadata
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const url="https://ortolan.es/es/busqueda?controller=search&s=Tetric%20EvoCeram";
+          const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+          const html=await r.text();
+          const $=cheerio.load(html);
+          const cards=$('article[data-id-product]').toArray().map(el=>{
+            const node=$(el);
+            return {
+              id:node.attr("data-id-product"),
+              attrs:el.attribs,
+              text:node.text().replace(/\s+/g," ").trim().slice(0,1800),
+              html:$.html(node).slice(0,6000)
+            };
+          }).filter(x=>/Tetric EvoCeram/i.test(x.text)).slice(0,3);
+          console.log("ORTOLAN_CARDS",JSON.stringify(cards,null,2));
+          for(const re of [
+            /"item_name":"TETRIC EVOCERAM".{0,2500}/gi,
+            /availability.{0,1000}/gi,
+            /stock.{0,1000}/gi,
+            /tax.{0,1000}/gi,
+            /iva.{0,1000}/gi,
+            /price_amount.{0,1000}/gi
+          ]){
+            console.log("ORTOLAN_PATTERN",String(re),JSON.stringify((html.match(re)||[]).slice(0,20),null,2));
+          }
+          NODE
