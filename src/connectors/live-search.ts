@@ -201,9 +201,49 @@ export interface OrtolanSearchRecord {
   price:number;
   variant?:string;
   url?:string;
+  stockQuantity?:number;
 }
 
-export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=5):Promise<OrtolanSearchRecord[]>{
+function decodeHtmlJson(value:string):string{
+  return value.replace(/\\u([0-9a-f]{4})/gi,(_,h)=>String.fromCharCode(parseInt(h,16))).replace(/\\\//g,"/");
+}
+
+async function expandOrtolanProductVariants(
+  productUrl:string,
+  productName:string,
+  query:string,
+  fetchImpl:typeof fetch,
+  maxResults:number
+):Promise<OrtolanSearchRecord[]>{
+  const detailUrl=productUrl.split("#")[0]!;
+  const response=await fetchImpl(detailUrl,{
+    headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36",accept:"text/html,application/xhtml+xml"},
+    redirect:"follow"
+  });
+  if(!response.ok)return [];
+  const html=await response.text();
+  const records:OrtolanSearchRecord[]=[];
+  const seen=new Set<string>();
+  const variantRe=/"id_product_attribute":\d+,"id_product":\d+,"reference":"([^"]*)"[^{}]{0,2200}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,2200}?"attribute_designation":"([^"]*)"[^{}]{0,1200}?"quantity":(-?\d+)/g;
+  for(const match of html.matchAll(variantRe)){
+    const supplierSku=decodeHtmlJson(match[1]??"").trim()||undefined;
+    const price=Number(match[2]);
+    const variant=decodeHtmlJson(match[3]??"").replace(/Color\s*-\s*/i,"").replace(/Formato\s*-\s*/i,"").replace(/\s*,\s*/g," - ").trim();
+    const stockQuantity=Number(match[4]);
+    if(!supplierSku||!Number.isFinite(price)||price<=0||!variant)continue;
+    const hay=[productName,variant,supplierSku].join(" ");
+    const score=scoreLink(hay,hay,query);
+    if(score<2)continue;
+    if(seen.has(supplierSku))continue;
+    seen.add(supplierSku);
+    records.push({supplierSku,name:productName,price,variant,url:detailUrl,stockQuantity:Number.isFinite(stockQuantity)?stockQuantity:undefined});
+  }
+  return records
+    .sort((a,b)=>scoreLink([b.name,b.variant,b.supplierSku].filter(Boolean).join(" "),"",query)-scoreLink([a.name,a.variant,a.supplierSku].filter(Boolean).join(" "),"",query))
+    .slice(0,maxResults);
+}
+
+export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=8):Promise<OrtolanSearchRecord[]>{
   const searchUrl="https://ortolan.es/es/busqueda?controller=search&s="+encodeURIComponent(query);
   const response=await fetchImpl(searchUrl,{
     headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36",accept:"text/html,application/xhtml+xml"},
@@ -213,20 +253,24 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
   const html=await response.text();
   const $=cheerio.load(html);
   const urlsByProduct=new Map<string,string>();
+  const namesByProduct=new Map<string,string>();
   $('article[data-id-product]').each((_,el)=>{
     const id=$(el).attr("data-id-product");
     const href=$(el).find('a[href*=".html"]').first().attr("href");
+    const name=$(el).find(".product-title").first().text().replace(/\s+/g," ").trim();
     if(id&&href){
       try{urlsByProduct.set(id,new URL(href,response.url||searchUrl).toString());}catch{ /* ignore */ }
+      if(name)namesByProduct.set(id,name);
     }
   });
-  const records:OrtolanSearchRecord[]=[];
+
+  const defaultRecords:OrtolanSearchRecord[]=[];
   const seen=new Set<string>();
   for(const match of html.matchAll(/"item_id":"([^"]+)","item_name":"([^"]+)"[^{}]{0,700}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,700}?"item_variant":"([^"]*)"/g)){
     const supplierSku=match[1];
-    const name=match[2];
+    const name=decodeHtmlJson(match[2]??"");
     const price=Number(match[3]);
-    const variant=match[4]||undefined;
+    const variant=decodeHtmlJson(match[4]??"")||undefined;
     if(!Number.isFinite(price)||price<=0)continue;
     const hay=[name,variant,supplierSku].filter(Boolean).join(" ");
     if(scoreLink(hay,hay,query)<2)continue;
@@ -234,10 +278,18 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
     const key=[supplierSku,name,variant].join("|");
     if(seen.has(key))continue;
     seen.add(key);
-    records.push({supplierSku,name,price,variant,url:baseId?urlsByProduct.get(baseId):undefined});
-    if(records.length>=maxResults)break;
+    defaultRecords.push({supplierSku,name,price,variant,url:baseId?urlsByProduct.get(baseId):undefined});
   }
-  return records;
+
+  const top=defaultRecords.find(record=>record.url);
+  if(top?.url){
+    try{
+      const baseId=top.supplierSku?.split("-")[0];
+      const expanded=await expandOrtolanProductVariants(top.url,namesByProduct.get(baseId??"")??top.name,query,fetchImpl,maxResults);
+      if(expanded.length)return expanded;
+    }catch{ /* fall back to lightweight search result */ }
+  }
+  return defaultRecords.slice(0,maxResults);
 }
 
 async function searchDvdKlevu(query:string,fetchImpl:typeof fetch,maxResults:number){
