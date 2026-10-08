@@ -102,9 +102,18 @@ function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVaria
           if(sales&&typeof sales==="object"&&!Array.isArray(sales))salePrice=resolveNumber((sales as Record<string,unknown>).value);
           if(recommended&&typeof recommended==="object"&&!Array.isArray(recommended))regularPrice=resolveNumber((recommended as Record<string,unknown>).value);
         }
+        const stockControl=resolve(obj.stockControl);
         const stockValue=resolve(obj.stock);
         const delivery=resolve(obj.deliveryEstimate);
-        const rawStockText=[typeof stockValue==="string"?stockValue:undefined,typeof delivery==="string"?delivery:undefined].filter(Boolean).join(" ");
+        const numericStock=typeof stockValue==="number"&&Number.isFinite(stockValue)?stockValue:undefined;
+        const structuredStockText=stockControl===true&&typeof numericStock==="number"
+          ?numericStock<=0?"Agotado (stock 0)":numericStock<=5?`Solo quedan ${numericStock} en stock`:`En stock: ${numericStock}`
+          :undefined;
+        const rawStockText=[
+          structuredStockText,
+          !structuredStockText&&typeof stockValue==="string"?stockValue:undefined,
+          typeof delivery==="string"?delivery:undefined
+        ].filter(Boolean).join(" ");
         const sku=typeof supplierSku==="string"?supplierSku:undefined;
         const key=manufacturerReference+"|"+(sku??"");
         if(seen.has(key))continue;
