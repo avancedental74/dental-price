@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { recordLiveSearchHistory } from "../../src/services/live-history";
+import { applyClientHistorySafety } from "../../src/services/live-prices";
 import type { CanonicalProduct, SupplierOffer } from "../../src/types/domain";
+import type { PriceObservation } from "../../src/domain/history";
 
 const product:CanonicalProduct={
   id:"live-demo",manufacturer:"Solventum",family:"Demo",productName:"Demo",presentation:"Jeringa",
@@ -27,4 +29,17 @@ describe("live history",()=>{
     const result=recordLiveSearchHistory([],[{product,offers:[{...offer,verificationKind:"snapshot"}]}],[product]);
     expect(result).toHaveLength(0);
   });
+
+  it("quarantines a live price that changes by a factor of ten against prior local history",()=>{
+    const previous:PriceObservation={
+      id:"prev",productId:"live-demo",supplierId:"dentaltix",supplierSku:"053M4910A3B",
+      observedAt:"2026-10-07T08:00:00.000Z",lastSeenAt:"2026-10-07T08:00:00.000Z",seenCount:1,
+      requestedQuantity:1,regularPrice:44.9,salePrice:44.9,stockStatus:"in_stock",
+      presentation:"Jeringa",quantity:3,unit:"g",packCount:1,sourceUrl:"https://example.com/demo"
+    };
+    const unsafe={...offer,regularPrice:4.49,salePrice:4.49,observedAt:"2026-10-08T08:00:00.000Z"};
+    const [checked]=applyClientHistorySafety([unsafe],[previous]);
+    expect(checked.sourceStatus).toBe("quarantined");
+  });
+
 });
