@@ -228,7 +228,10 @@ async function expandOrtolanProductVariants(
   for(const match of html.matchAll(variantRe)){
     const supplierSku=decodeHtmlJson(match[1]??"").trim()||undefined;
     const price=Number(match[2]);
-    const variant=decodeHtmlJson(match[3]??"").replace(/Color\s*-\s*/i,"").replace(/Formato\s*-\s*/i,"").replace(/\s*,\s*/g," - ").trim();
+    const designation=decodeHtmlJson(match[3]??"").trim();
+    const color=designation.match(/Color\s*-\s*(.*?)(?=,\s*Formato\s*-|$)/i)?.[1]?.trim();
+    const format=designation.match(/Formato\s*-\s*(.*)$/i)?.[1]?.trim();
+    const variant=[color,format].filter(Boolean).join(" - ")||designation;
     const stockQuantity=Number(match[4]);
     if(!supplierSku||!Number.isFinite(price)||price<=0||!variant)continue;
     const hay=[productName,variant,supplierSku].join(" ");
