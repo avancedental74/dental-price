@@ -97,4 +97,26 @@ describe("matchOfferToProduct", () => {
     expect(result.status).toBe("REJECTED");
     expect(result.conflicts).toContain("Referencia de fabricante contradictoria");
   });
+  it("does not invent conflicts when live canonical dimensions are unknown", () => {
+    const liveProduct:CanonicalProduct={
+      ...product,
+      manufacturer:"",
+      presentation:"",
+      quantity:0,
+      unit:"",
+      packCount:0,
+      variant:undefined,
+      shade:undefined
+    };
+    const result=matchOfferToProduct(liveProduct,offer({manufacturer:"Solventum",presentation:"Jeringa",quantity:3,unit:"g",packCount:1}));
+    expect(result.hardReject).toBe(false);
+    expect(result.status).toBe("EXACT");
+  });
+
+  it("still rejects a known manufacturer contradiction", () => {
+    const result=matchOfferToProduct(product,offer({manufacturer:"Ivoclar"}));
+    expect(result.status).toBe("REJECTED");
+    expect(result.conflicts).toContain("Fabricante contradictorio");
+  });
+
 });
