@@ -97,18 +97,22 @@ function looksLikeReference(query:string){
   return compact.length>=6&&/[A-Z]/.test(compact)&&/\d/.test(compact);
 }
 
-function relevantToQuery(offer:SupplierOffer,query:string){
+export function relevantToQuery(offer:SupplierOffer,query:string){
   const compact=normalizeReference(query)??"";
   if(looksLikeReference(query)){
     const manufacturerRef=normalizeReference(offer.manufacturerReference)??"";
     const supplierRef=normalizeReference(offer.supplierSku)??"";
     return Boolean((manufacturerRef&&manufacturerRef===compact)||(supplierRef&&supplierRef===compact));
   }
-  const tokens=normalizeName(query).split(" ").filter(t=>t.length>=2);
-  // Do not use normalizedName here: some connectors intentionally prefix the parent
-  // product name to every variant, which would make unrelated cross-sell variants pass.
-  const hay=normalizeName([offer.rawName,offer.manufacturer,offer.manufacturerReference,offer.supplierSku].filter(Boolean).join(" "));
-  const matched=tokens.filter(t=>hay.includes(t));
+  const searchable=(text:string)=>normalizeName(text.replace(/\b([a-d]\d)[,.](\d)\b/gi,"$1.$2"));
+  const tokens=searchable(query).split(" ").filter(t=>t.length>=2);
+  // Never use normalizedName: connectors may prefix a parent name to unrelated variants.
+  const hay=searchable([offer.rawName,offer.manufacturer,offer.manufacturerReference,offer.supplierSku].filter(Boolean).join(" "));
+  // Model codes and shades require entire identifiers, including decimal precision.
+  const codeTokens=tokens.filter(t=>/^(?:[a-d]\d(?:\.\d)?|[a-z]+\d+[a-z0-9]*|\d+[a-z][a-z0-9]*)$/.test(t));
+  const exactCode=(value:string)=>new RegExp("(^|[^a-z0-9.])"+value.replaceAll(".","\\.")+"(?=$|[^a-z0-9.])","i").test(hay);
+  if(codeTokens.some(t=>!exactCode(t)))return false;
+  const matched=tokens.filter(t=>codeTokens.includes(t)?exactCode(t):hay.includes(t));
   return matched.length>=Math.max(1,Math.ceil(tokens.length*0.6));
 }
 
