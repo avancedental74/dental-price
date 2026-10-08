@@ -14,7 +14,7 @@ import { fetchBrokerDentalProduct } from "../src/connectors/brokerdental";
 import { fetchOrtolanProduct } from "../src/connectors/ortolan";
 import { fetchDentipakProduct } from "../src/connectors/dentipak";
 import { fetchDentalBoomProduct } from "../src/connectors/dentalboom";
-import { discoverSupplierProductUrls, searchDvdKlevuRecords, searchOrtolanRecords, type SearchSupplierId } from "../src/connectors/live-search";
+import { discoverSupplierProductUrls, searchDvdKlevuRecords, searchOrtolanRecords, searchDentalBoomRecords, type SearchSupplierId } from "../src/connectors/live-search";
 import { normalizeName, normalizeReference } from "../src/domain/matching/normalization";
 import { applyAnomalyStatus } from "../src/domain/anomaly";
 import type { PriceObservation } from "../src/domain/history";
@@ -95,6 +95,22 @@ function relevantToQuery(offer:SupplierOffer,query:string){
 
 async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string){
   const fetchImpl=withTimeout();
+  if(supplierId==="dentalboom"){
+    const records=await searchDentalBoomRecords(query,fetchImpl,4);
+    const pages:SupplierOffer[][]=[];
+    for(const record of records.slice(0,2)){
+      try{
+        const pageOffers=(await fetchDentalBoomProduct(record.url,fetchImpl)).offers.filter(o=>relevantToQuery(o,query));
+        if(pageOffers.length)pages.push(pageOffers);
+      }catch{ /* try next API result */ }
+    }
+    const policy=policyList.find(p=>p.supplierId===supplierId);
+    const offers=pages.flat()
+      .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
+      .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+      .filter(o=>supplierOfferSchema.safeParse(o).success);
+    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"woocommerce-store-api+product"};
+  }
   if(supplierId==="ortolan"){
     const records=await searchOrtolanRecords(query,fetchImpl,8);
     const policy=policyList.find(p=>p.supplierId===supplierId);
