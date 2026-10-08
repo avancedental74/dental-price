@@ -11,6 +11,7 @@ on:
       - "data/products.json"
       - "data/supplier-seeds.json"
       - "data/supplier-policies.json"
+      - "data/price-history.json"
       - "wrangler.toml"
       - ".github/workflows/deploy-live-api.yml"
 
