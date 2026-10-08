@@ -84,7 +84,7 @@ export function specsForGroup(group:LiveSearchGroup,offer?:SupplierOffer):Search
     properties.presentation=expected;
   }
   const unit=normalizeUnit(offer?.unit??group.product.unit);
-  const count=offer?.quantity??group.product.quantity;
+  const count=offer?offer.quantity:group.product.quantity;
   // Do not infer a pack conversion from absent quantity or ambiguous multiple packs.
   if(unit&&typeof count==="number"&&Number.isFinite(count)&&count>0&&
      (offer?.packCount===undefined||offer.packCount===1)){
@@ -152,15 +152,16 @@ export function getAvailableFacets(products:UniversalProduct[]):Array<{key:Searc
   }).filter(f=>f.values.length>0);
 }
 export function filterProducts(products:UniversalProduct[],filters:SearchFilters):UniversalProduct[]{
-  return products.filter(p=>facetOrder.every(k=>!filters[k]||
-    p.offers.some(o=>o.properties[k]===filters[k])||
-    p.specs.properties[k]===filters[k]));
+  return products.filter(p=>p.offers.length
+    ?p.offers.some(o=>facetOrder.every(k=>!filters[k]||o.properties[k]===filters[k]))
+    :facetOrder.every(k=>!filters[k]||p.specs.properties[k]===filters[k]));
 }
 export interface AlternativeResult {profile:ProfileId;ranked:UniversalOffer[];unverified:UniversalOffer[];reason?:string;}
 export function assessAlternatives(products:UniversalProduct[],filters:SearchFilters,profileId:ProfileId):AlternativeResult{
   const profile=PROFILES.find(p=>p.id===profileId)!;
   const missing=profile.required.filter(k=>!filters[k]);
-  const candidates=products.flatMap(p=>p.offers)
+  const candidates=products.filter(p=>profileId==="general"||inferProfile(p.group.label)===profileId)
+    .flatMap(p=>p.offers)
     .filter(o=>facetOrder.every(k=>!filters[k]||o.properties[k]===filters[k]));
   // The universal UI always works. Automatic cross-brand price ranking needs
   // validated category rules, a single measurement unit, and full specs.
