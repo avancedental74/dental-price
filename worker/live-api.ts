@@ -37,13 +37,33 @@ function cors(origin:string|null,env:Env){
 
 const history=priceHistory as PriceObservation[];
 
+function observationTime(item:PriceObservation){
+  const value=new Date(item.lastSeenAt??item.observedAt).getTime();
+  return Number.isFinite(value)?value:0;
+}
+
+const latestHistoryBySku=new Map<string,PriceObservation>();
+const latestHistoryByUrl=new Map<string,PriceObservation>();
+for(const item of history){
+  if(item.supplierSku){
+    const ref=normalizeReference(item.supplierSku);
+    if(ref){
+      const key=item.supplierId+"|"+ref;
+      const previous=latestHistoryBySku.get(key);
+      if(!previous||observationTime(item)>observationTime(previous))latestHistoryBySku.set(key,item);
+    }
+  }
+  if(item.sourceUrl){
+    const key=item.supplierId+"|"+item.sourceUrl;
+    const previous=latestHistoryByUrl.get(key);
+    if(!previous||observationTime(item)>observationTime(previous))latestHistoryByUrl.set(key,item);
+  }
+}
+
 function latestPreviousObservation(offer:SupplierOffer):PriceObservation|undefined{
-  const candidates=history.filter(item=>{
-    if(item.supplierId!==offer.supplierId)return false;
-    if(offer.supplierSku&&item.supplierSku)return normalizeReference(item.supplierSku)===normalizeReference(offer.supplierSku);
-    return item.sourceUrl===offer.productUrl;
-  });
-  return candidates.sort((a,b)=>new Date(b.lastSeenAt??b.observedAt).getTime()-new Date(a.lastSeenAt??a.observedAt).getTime())[0];
+  const sku=normalizeReference(offer.supplierSku);
+  if(sku)return latestHistoryBySku.get(offer.supplierId+"|"+sku);
+  return latestHistoryByUrl.get(offer.supplierId+"|"+offer.productUrl);
 }
 
 function applyLiveSafety(offer:SupplierOffer):SupplierOffer{
