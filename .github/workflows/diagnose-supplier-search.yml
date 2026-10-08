@@ -435,3 +435,32 @@ jobs:
             console.log("ORTOLAN_PATTERN",String(re),JSON.stringify((html.match(re)||[]).slice(0,20),null,2));
           }
           NODE
+
+      - name: Inspect Ortolan product page commercial fields
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const url="https://ortolan.es/es/odontologia/3802-3814-tetric-evoceram.html#/575-formato-jeringa_de_3grm/577-color-a1";
+          const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+          const html=await r.text();
+          const $=cheerio.load(html);
+          console.log("ORTOLAN_PRODUCT_HTTP",r.status,"LEN",html.length,"TITLE",$("title").text().trim());
+          console.log("ORTOLAN_PRODUCT_TEXT",$("main,#main,.product-container").first().text().replace(/\s+/g," ").trim().slice(0,6000));
+          for(const re of [
+            /"quantity"\s*:\s*[^,}\]]+/gi,
+            /"available_for_order"\s*:\s*[^,}\]]+/gi,
+            /"availability"\s*:\s*[^,}\]]+/gi,
+            /"tax_rate"\s*:\s*[^,}\]]+/gi,
+            /"rate"\s*:\s*[0-9.]+/gi,
+            /"price_amount"\s*:\s*[^,}\]]+/gi,
+            /"price"\s*:\s*63\.72[^,}\]]*/gi,
+            /"price"\s*:\s*70\.8[^,}\]]*/gi,
+            /productPrice[^\n]{0,1200}/gi,
+            /id_product_attribute[^\n]{0,1200}/gi,
+            /out_of_stock[^\n]{0,1000}/gi
+          ]){
+            console.log("ORTOLAN_PRODUCT_PATTERN",String(re),JSON.stringify((html.match(re)||[]).slice(0,30),null,2));
+          }
+          const ld=$('script[type="application/ld+json"]').toArray().map(x=>$(x).text()).filter(Boolean);
+          console.log("ORTOLAN_PRODUCT_LD",JSON.stringify(ld.slice(0,8),null,2));
+          NODE
