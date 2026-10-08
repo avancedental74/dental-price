@@ -274,4 +274,34 @@ describe("Dentaltix connector", () => {
   });
 
 
+  it("recovers VAT rate from Nuxt taxes metadata",()=>{
+    const payload=[
+      {slug:1,name:2,mainVar:3,variations:4},
+      "tetric-evoceram-cavifil-20-x-02gr",
+      "Tetric EvoCeram",
+      {manRef:5,sku:6,name:7,type:8,price:9,stockControl:17,stock:18},
+      {selected:3},
+      "590314WW",
+      "45TE590314",
+      "Tetric EvoCeram",
+      "1 Jer. de 3 gr - Color A3",
+      {sales:10,recommended:11,taxes:12},
+      {value:13},
+      {value:14},
+      {value:15,rate:16},
+      41.9,
+      62.71,
+      4.19,
+      0.1,
+      true,
+      12
+    ];
+    const html=`<script type="application/json" data-nuxt-data="nuxt-app">${JSON.stringify(payload)}</script>`;
+    const raw=parseDentaltixNuxtFast(html,"https://www.dentaltix.com/es/ivoclar-vivadent/tetric-evoceram-cavifil-20-x-02gr");
+    expect(raw?.vatRate).toBe(10);
+    const offers=raw?normalizeDentaltix(raw):[];
+    expect(offers[0]?.vatStatus).toBe("excluded");
+    expect(offers[0]?.vatRate).toBe(10);
+  });
+
 });
