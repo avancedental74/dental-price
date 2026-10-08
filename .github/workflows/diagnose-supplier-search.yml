@@ -204,3 +204,34 @@ jobs:
             console.log("DCOST_EXACT_DOM",JSON.stringify(rows.slice(0,50)));
           } catch(e) { console.log("DCOST_DEEP_ERR",e instanceof Error?e.message:String(e)); }
           TS
+
+      - name: Inspect Dentaltix Nuxt roots
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const url="https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer";
+          const res=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+          const html=await res.text();
+          const $=cheerio.load(html);
+          const scripts=$('script[type="application/json"],script#__NUXT_DATA__').toArray();
+          for(const el of scripts){
+            const text=$(el).text().trim();
+            if(!text.startsWith("["))continue;
+            try{
+              const p=JSON.parse(text);
+              const resolve=v=>typeof v==="number"&&Number.isInteger(v)&&v>=0&&v<p.length?p[v]:v;
+              const roots=p.filter(e=>e&&typeof e==="object"&&!Array.isArray(e)&&"mainVar" in e&&"variations" in e&&"slug" in e);
+              console.log("NUXT_ROOT_COUNT",roots.length);
+              for(const root of roots.slice(0,40)){
+                const mv=resolve(root.mainVar);
+                console.log("NUXT_ROOT",JSON.stringify({
+                  slug:resolve(root.slug),
+                  name:resolve(root.name),
+                  title:resolve(root.title),
+                  mainSku:mv&&typeof mv==="object"?resolve(mv.sku):null,
+                  mainRef:mv&&typeof mv==="object"?resolve(mv.manRef):null
+                }));
+              }
+            }catch(e){console.log("NUXT_PARSE_ERR",e.message);}
+          }
+          NODE
