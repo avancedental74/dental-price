@@ -9,7 +9,7 @@ const facetLabels:Record<Attribute,string>={material:"Material",size:"Talla",pow
 const facets:Attribute[]=["material","size","powder","color","sterile","units"];
 const cleaned=(v:string)=>normalizeName(v).replace(/[.,;:()]/g," ").replace(/\s+/g," ").trim();
 const match=(text:string,re:RegExp)=>re.test(text);
-function describe(group:LiveSearchGroup):Item{
+export function describe(group:LiveSearchGroup):Item{
   const p=group.product;
   const t=cleaned([p.family,p.variant,p.presentation].filter(Boolean).join(" "));
   const glove=match(t,/\bguantes?\b/);
@@ -23,7 +23,7 @@ function describe(group:LiveSearchGroup):Item{
     ??(p.packCount>1?String(p.packCount):undefined);
   return {group,properties:glove?{material,size,powder,color,sterile,units}:{},type:glove?(sterile==="Estériles"?"Estériles":material??"Otros guantes"):"Otros productos"};
 }
-function matches(item:Item,filters:Filters):boolean{
+export function matches(item:Item,filters:Filters):boolean{
   return facets.every(k=>!filters[k]||item.properties[k]===filters[k]);
 }
 function label(item:Item):string{
