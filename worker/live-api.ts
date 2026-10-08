@@ -82,7 +82,9 @@ function relevantToQuery(offer:SupplierOffer,query:string){
     return Boolean((manufacturerRef&&manufacturerRef.includes(compact))||(supplierRef&&supplierRef.includes(compact)));
   }
   const tokens=normalizeName(query).split(" ").filter(t=>t.length>=2);
-  const hay=normalizeName([offer.rawName,offer.normalizedName,offer.manufacturer,offer.manufacturerReference,offer.supplierSku].filter(Boolean).join(" "));
+  // Do not use normalizedName here: some connectors intentionally prefix the parent
+  // product name to every variant, which would make unrelated cross-sell variants pass.
+  const hay=normalizeName([offer.rawName,offer.manufacturer,offer.manufacturerReference,offer.supplierSku].filter(Boolean).join(" "));
   const matched=tokens.filter(t=>hay.includes(t));
   return matched.length>=Math.max(1,Math.ceil(tokens.length*0.6));
 }
