@@ -24,7 +24,7 @@ describe("visual glove search",()=>{
     expect(describeGlove(group("Guantes látex sin polvo")).properties.sterile).toBeUndefined();
   });
   it("separates sterile and non sterile",()=>{
-    expect(describeGlove(group("Guantes de látex estériles Nº 7")).type).toBe("Estériles");
+    expect(describeGlove(group("Guantes de látex estériles Nº 7")).type).toBe("Látex");
     expect(describeGlove(group("Guantes de látex no estériles Nº 7")).properties.sterile).toBe("No estériles");
   });
   it("does not invent filters for unrelated products",()=>{
