@@ -111,7 +111,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         stockStatus:"unknown",
         regularPrice:record.price,
         salePrice:record.price,
-        vatStatus:"unknown",
+        vatStatus:"excluded",
         currency:"EUR",
         observedAt:new Date().toISOString(),
         sourceStatus:"normal",
