@@ -219,7 +219,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         sourceMode:"automatic"
       };
       return applyLiveSafety(applySupplierPolicy(offer,policy));
-    })
+    });
     const indexed=indexOffers.filter(o=>o.regularPrice>0).filter(o=>relevantToQuery(o,query));
     const verifiedKeys=new Set(verified.map(o=>normalizeReference(o.supplierSku)??normalizeReference(o.manufacturerReference)??o.productUrl));
     const pending=indexed.filter(o=>!verifiedKeys.has(normalizeReference(o.supplierSku)??normalizeReference(o.manufacturerReference)??o.productUrl));
