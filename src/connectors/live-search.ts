@@ -90,7 +90,7 @@ export function scoreLink(text:string,href:string,query:string):number{
     if(!hay.includes(match[1]+" "+match[2]))return 0;
   }
   // A3 must not match A3.5; note that URL slugs are also included in hay.
-  for(const shade of q.matchAll(/\b([a-d]\d)\b/g)){
+  for(const shade of q.matchAll(/\b([a-d]\d)(?![.,]\d)\b/g)){
     if(new RegExp("(^|[^a-z0-9])"+shade[1]+"\\.\\d","i").test(hay))return 0;
   }
   let score=0;
