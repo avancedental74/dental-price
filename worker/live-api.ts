@@ -12,6 +12,8 @@ import { fetchDentalIbericaProduct } from "../src/connectors/dental-iberica";
 import { fetchDentalExpressProduct } from "../src/connectors/dentalexpress";
 import { fetchBrokerDentalProduct } from "../src/connectors/brokerdental";
 import { fetchOrtolanProduct } from "../src/connectors/ortolan";
+import { fetchDentipakProduct } from "../src/connectors/dentipak";
+import { fetchDentalBoomProduct } from "../src/connectors/dentalboom";
 import { discoverSupplierProductUrls, searchDvdKlevuRecords, searchOrtolanRecords, type SearchSupplierId } from "../src/connectors/live-search";
 import { normalizeName, normalizeReference } from "../src/domain/matching/normalization";
 import { applyAnomalyStatus } from "../src/domain/anomaly";
@@ -19,7 +21,7 @@ import type { PriceObservation } from "../src/domain/history";
 
 type Env={ALLOWED_ORIGIN?:string};
 const policyList=policies as SupplierPolicy[];
-const suppliers:SearchSupplierId[]=["dentaltix","dentalcost","dvd-dental","proclinic","dental-iberica","dentalexpress","brokerdental","ortolan"];
+const suppliers:SearchSupplierId[]=["dentaltix","dentalcost","dvd-dental","proclinic","dental-iberica","dentalexpress","brokerdental","ortolan","dentipak","dentalboom"];
 
 function cors(origin:string|null,env:Env){
   const allowed=env.ALLOWED_ORIGIN??"*";
@@ -66,6 +68,8 @@ async function fetchSupplierUrl(supplierId:SearchSupplierId,productUrl:string,fe
   if(supplierId==="dentalexpress")return (await fetchDentalExpressProduct(productUrl,fetchImpl)).offers;
   if(supplierId==="brokerdental")return (await fetchBrokerDentalProduct(productUrl,fetchImpl)).offers;
   if(supplierId==="ortolan")return (await fetchOrtolanProduct(productUrl,fetchImpl)).offers;
+  if(supplierId==="dentipak")return (await fetchDentipakProduct(productUrl,fetchImpl)).offers;
+  if(supplierId==="dentalboom")return (await fetchDentalBoomProduct(productUrl,fetchImpl)).offers;
   return [];
 }
 
@@ -150,7 +154,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>supplierOfferSchema.safeParse(o).success);
     return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu+product"};
   }
-  const candidateLimit=supplierId==="dentaltix"?1:supplierId==="dentalcost"?3:3;
+  const candidateLimit=supplierId==="dentaltix"?1:supplierId==="dentalcost"?3:(supplierId==="dentipak"||supplierId==="dentalboom")?2:3;
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
   if(!discovered.urls.length){
     const message=discovered.error??"Sin resultados";
