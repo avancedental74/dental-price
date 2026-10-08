@@ -101,7 +101,7 @@ export function VisualSearchResults({items,query,onSelect,sessionId}:{
       :"Compara exclusivamente ofertas del mismo artículo y su referencia de fabricante."}</p>
     <div className="smart-categories" aria-label="Material de los guantes">
       <button type="button" className={!category?"active":""} onClick={reset}>Todos <small>{items.length} productos</small></button>
-      {counts.map(([type,count])=><button type="button" key={type} className={category===type?"active":""} onClick={()=>{setCategory(type);setFilters(old=>({...old,material:undefined}));}}>
+      {counts.map(([type,count])=><button type="button" key={type} className={category===type?"active":""} onClick={()=>{setCategory(type);setFilters(old=>({...old,material:["Nitrilo","Látex","Vinilo"].includes(type)?type:undefined}));}}>
         <strong>{type}</strong><small>{count} opciones</small>
       </button>)}
     </div>
