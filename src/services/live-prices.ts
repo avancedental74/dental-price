@@ -1,7 +1,7 @@
 import type { CanonicalProduct, SupplierOffer } from "../types/domain";
 import type { PriceObservation } from "../domain/history";
 import { applyAnomalyStatus } from "../domain/anomaly";
-import { normalizeName, normalizeReference } from "../domain/matching/normalization";
+import { normalizeManufacturer, normalizeName, normalizeReference } from "../domain/matching/normalization";
 import { browserProtectedSupplierIds, liveAutomaticSupplierIds } from "../connectors/live-supplier-registry";
 
 export interface LiveSearchGroup {
@@ -92,6 +92,8 @@ function tokenSimilarity(a:SupplierOffer,b:SupplierOffer){
 }
 
 function criticalCompatible(a:SupplierOffer,b:SupplierOffer){
+  const am=normalizeManufacturer(a.manufacturer),bm=normalizeManufacturer(b.manufacturer);
+  if(am&&bm&&am!==bm)return false;
   if(a.presentation&&b.presentation&&normalizeName(a.presentation)!==normalizeName(b.presentation))return false;
   if(a.unit&&b.unit&&normalizeName(a.unit)!==normalizeName(b.unit))return false;
   if(typeof a.quantity==="number"&&typeof b.quantity==="number"&&Math.abs(a.quantity-b.quantity)>0.001)return false;
@@ -130,7 +132,7 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
         const representative=bucket.offers[0]!;
         return {bucket,score:criticalCompatible(offer,representative)?tokenSimilarity(offer,representative):0};
       })
-      .filter(x=>x.score>=0.72)
+      .filter(x=>x.score>=0.65)
       .sort((a,b)=>b.score-a.score);
 
     const unambiguous=candidates[0]&&(!candidates[1]||candidates[0].score-candidates[1].score>=0.08);
