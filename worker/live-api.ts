@@ -153,22 +153,58 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
   if(supplierId==="dvd-dental"){
     const records=await searchDvdKlevuRecords(query,fetchImpl,5);
     const compact=normalizeReference(query)??"";
-    const exactRecords=looksLikeReference(query)
-      ? records.filter(record=>normalizeReference(record["nº_pieza_fabricante"])===compact||normalizeReference(record.sku)===compact)
-      : [];
-    const selectedRecords=(exactRecords.length?exactRecords:records).slice(0,looksLikeReference(query)?1:2);
-    const pages=await Promise.all(selectedRecords.map(async record=>{
-      if(!record.url)return [] as SupplierOffer[];
-      try{return (await fetchDvdProduct(record.url,fetchImpl)).offers;}
-      catch{return [] as SupplierOffer[];}
-    }));
     const policy=policyList.find(p=>p.supplierId===supplierId);
-    const offers=pages.flat()
+
+    if(looksLikeReference(query)){
+      const exactRecords=records.filter(record=>normalizeReference(record["nº_pieza_fabricante"])===compact||normalizeReference(record.sku)===compact).slice(0,1);
+      const pages=await Promise.all(exactRecords.map(async record=>{
+        if(!record.url)return [] as SupplierOffer[];
+        try{return (await fetchDvdProduct(record.url,fetchImpl)).offers;}
+        catch{return [] as SupplierOffer[];}
+      }));
+      const offers=pages.flat()
+        .filter(o=>relevantToQuery(o,query))
+        .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
+        .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+        .filter(o=>supplierOfferSchema.safeParse(o).success);
+      return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu+product"};
+    }
+
+    const offers=records.map(record=>{
+      const sale=Number(record.salePrice??record.price??record.basePrice);
+      const regular=Number(record.basePrice??record.price??record.salePrice);
+      const rawName=record.name??"Producto DVD Dental";
+      const manufacturerReference=record["nº_pieza_fabricante"];
+      const metric=rawName.match(/(?:x\s*)?(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i);
+      const pack=rawName.match(/\b(\d+)\s*[x×]\s*\d+(?:[.,]\d+)?\s*(?:g|gr|ml)\b/i);
+      const quantity=metric?Number(metric[1].replace(",",".")):undefined;
+      const unit=metric?(metric[2].toLowerCase().startsWith("g")?"g":"ml"):undefined;
+      const offer:SupplierOffer={
+        supplierId:"dvd-dental",
+        supplierSku:record.sku,
+        manufacturer:record.brand,
+        manufacturerReference,
+        rawName,
+        normalizedName:normalizeName([rawName,record.brand??"",manufacturerReference??"",record.sku??""].join(" ")),
+        productUrl:record.url??"https://www.dvd-dental.com/",
+        presentation:/jeringa|syringe/i.test(rawName)?"Jeringa":/cavifill|capsul|cápsul|caps\b/i.test(rawName)?"Cápsulas":undefined,
+        quantity,unit,packCount:pack?Number(pack[1]):quantity?1:undefined,
+        stockStatus:/^(?:yes|true|1)$/i.test(record.inStock??"")?"in_stock":"unknown",
+        regularPrice:Number.isFinite(regular)&&regular>0?regular:Number.isFinite(sale)&&sale>0?sale:0,
+        salePrice:Number.isFinite(sale)&&sale>0?sale:undefined,
+        vatStatus:"unknown",
+        currency:"EUR",
+        observedAt:new Date().toISOString(),
+        sourceStatus:"normal",
+        sourceMode:"automatic"
+      };
+      return applyLiveSafety(applySupplierPolicy(offer,policy));
+    })
+      .filter(o=>o.regularPrice>0)
       .filter(o=>relevantToQuery(o,query))
-      .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu+product"};
+    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu"};
   }
   const candidateLimit=supplierId==="dentaltix"?1:supplierId==="dentalcost"?3:supplierId==="dentipak"?2:3;
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
