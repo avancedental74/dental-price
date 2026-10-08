@@ -74,6 +74,8 @@ jobs:
           const fs=require("fs");
           const h=JSON.parse(fs.readFileSync("/tmp/health.json"));
           if(!h.ok||h.searchMode!=="dynamic-per-supplier") process.exit(1);
+          if(!Array.isArray(h.suppliers)||h.suppliers.length!==7) process.exit(1);
+          if(!Array.isArray(h.protectedSuppliers)||h.protectedSuppliers.length!==3) process.exit(1);
           for(const name of ["dentaltix","dentaltix_name","dentalcost","dentalexpress","ortolan","dvd","dvd_name","dentipak","dentalboom"]){
             const x=JSON.parse(fs.readFileSync("/tmp/"+name+".json"));
             console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,noMatch:x.noMatch,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
