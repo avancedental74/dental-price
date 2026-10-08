@@ -216,6 +216,12 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
       }
     };
     const attempts=await Promise.all(queries.map(term=>fetchTerm(term,depth)));
+    // A single bounded retry for temporary transport/server problems. A
+    // failure is never treated as a legitimate empty supplier catalogue.
+    const transient=(error:string|null|undefined)=>Boolean(error&&/(?:HTTP 5\\d\\d|timeout|timed out|abort|network|fetch failed|failed to fetch)/i.test(error));
+    if(depth==="standard"&&attempts.every(a=>a.offers.length===0)&&attempts.some(a=>transient(a.error))){
+      attempts.push(await fetchTerm(query,"standard"));
+    }
     // Improve coverage automatically for suppliers that returned no matches.
     // A hard error is reported, not retried indefinitely. Only one bounded
     // extended pass, with lexical alternatives where available.
