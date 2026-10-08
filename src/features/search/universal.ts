@@ -55,8 +55,9 @@ export function extractSpecs(value:string):SearchFilters {
   const shade=s.match(/\b([a-d]\d(?:\.\d)?)\b/)?.[1]?.toUpperCase();
   const size=s.match(/\btalla\s*(?:n[º°o.]?\s*)?(xxl|xl|xs|s|m|l|\d+(?:[.,]\d+)?)\b/)?.[1]
     ??s.match(/\bn[º°o.]\s*(\d+(?:[.,]\d+)?)\b/)?.[1];
-  const quantity=s.match(/\b(\d+(?:[.,]\d+)?)\s*(g|gr|ml|mg|uds?\.?|unidades)\b/)?.[0];
-  const normalizedQuantity=quantity?.replace(/\s+/g," ").replace(/\bgr\b/,"g").replace(/\b(?:uds?\.?|unidades)\b/,"ud").replace(",",".");
+  const quantity=s.match(/\b(\d+(?:[.,]\d+)?)\s*(g|gr|grs|gramos?|ml|mg|uds?\.?|unidades)\b/);
+  const metricUnit=quantity?.[2]?.replace(/^(?:gr|grs|gramos?)$/,"g").replace(/^(?:uds?\.?|unidades)$/,"ud");
+  const normalizedQuantity=quantity?Number(quantity[1].replace(",","."))+" "+metricUnit:undefined;
   return {material,powder,sterile,color,presentation,shade,size:size?.toUpperCase().replace(",","."),quantity:normalizedQuantity};
 }
 export function specsForGroup(group:LiveSearchGroup,offer?:SupplierOffer):SearchSpecs {
