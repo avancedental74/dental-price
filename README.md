@@ -11,11 +11,11 @@ Estado verificado el 07/10/2026:
 - La búsqueda principal acepta **nombre o referencia libre** y consulta proveedores en el momento de la búsqueda.
 - El Worker no necesita que el producto exista en `data/products.json`: el catálogo local queda para histórico, pruebas y datos auxiliares.
 - Cada consulta usa un `sessionId`; solo ofertas obtenidas dentro de esa sesión pueden ganar.
-- **5 proveedores permiten búsqueda automática live**: Dentaltix, DentalCost, DVD Dental, Dental Express y Ortolan.
+- **7 proveedores permiten búsqueda automática live**: Dentaltix, DentalCost, DVD Dental, Dental Express, Ortolan, Dentipak y Dental Boom.
 - **3 proveedores están protegidos por AWS WAF/CAPTCHA** frente a peticiones de servidor: Proclinic, Dental Ibérica y Broker Dental. No se intenta eludir esa verificación; quedan identificados como proveedores que requieren navegación humana.
 - Prueba end-to-end confirmada sin depender del catálogo: búsqueda de `4910A3B` en Dentaltix → variante exacta `053M4910A3B` → Filtek Supreme XTE A3 Body 3 g → precio live 44,90 € en la ejecución de verificación.
 - DentalCost y Dental Express también devuelven referencias exactas en pruebas live; DVD usa su API pública Klevu y Ortolan sus datos estructurados de búsqueda para evitar cargas pesadas y falsos positivos.
-- El último smoke test del Worker consulta los cinco proveedores live y terminó correctamente.
+- El smoke test del Worker consulta los siete proveedores live y exige respuestas válidas antes de considerar correcto el despliegue.
 - El snapshot programado y su histórico continúan existiendo, pero **no sustituyen a una consulta live** ni pueden declarar el ganador de una búsqueda actual.
 - CI completo en verde para el frontend y las reglas de dominio.
 
@@ -50,9 +50,11 @@ El estado real y las limitaciones verificadas están en `docs/HARDENING_STATUS.m
 3. DVD Dental — búsqueda live mediante su API pública Klevu; no se descarga la página de resultados completa.
 4. Dental Express — búsqueda live; referencia del fabricante y referencia interna separadas.
 5. Ortolan — búsqueda live usando resultados estructurados de su buscador.
-6. Proclinic — AWS WAF exige verificación humana a las peticiones de servidor.
-7. Dental Ibérica — AWS WAF exige verificación humana a las peticiones de servidor.
-8. Broker Dental — AWS WAF exige verificación humana a las peticiones de servidor.
+6. Dentipak — búsqueda live con validación de referencia, precio y stock en el smoke test.
+7. Dental Boom — búsqueda live mediante API pública de WooCommerce + verificación en ficha.
+8. Proclinic — AWS WAF exige verificación humana a las peticiones de servidor.
+9. Dental Ibérica — AWS WAF exige verificación humana a las peticiones de servidor.
+10. Broker Dental — AWS WAF exige verificación humana a las peticiones de servidor.
 
 ## Funciones ya operativas
 
@@ -83,4 +85,4 @@ La comparación interactiva usa un backend serverless separado del snapshot prog
 - Backend desplegado: Cloudflare Workers; frontend en GitHub Pages.
 - El frontend lee el endpoint desde `VITE_LIVE_API_URL`.
 - Los despliegues del Worker están serializados para evitar que una ejecución antigua sobrescriba una versión más nueva.
-- El smoke test de despliegue exige respuesta válida de Dentaltix, DentalCost, Dental Express, Ortolan y DVD antes de considerar correcto el despliegue.
+- El smoke test de despliegue exige respuesta válida de Dentaltix, DentalCost, Dental Express, Ortolan, DVD, Dentipak y Dental Boom antes de considerar correcto el despliegue.
