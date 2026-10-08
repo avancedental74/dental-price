@@ -167,3 +167,40 @@ jobs:
             }
           }
           TS
+
+      - name: Deep inspect Dentaltix and DentalCost exact search
+        run: |
+          npx tsx <<'TS'
+          import * as cheerio from "cheerio";
+          import { fetchDentaltixProduct } from "./src/connectors/dentaltix/index.ts";
+          const dtxUrl="https://www.dentaltix.com/es/3m/filtek-supreme-xte-kit-composite-profesional-12-jer";
+          try {
+            const dtx=await fetchDentaltixProduct(dtxUrl);
+            console.log("DTX_RAW",JSON.stringify({
+              title:dtx.raw.title,
+              pageSupplierSku:dtx.raw.pageSupplierSku,
+              pageManufacturerReference:dtx.raw.pageManufacturerReference,
+              variants:dtx.raw.variants.length,
+              refs:dtx.raw.variants.slice(0,80).map(v=>({sku:v.supplierSku,ref:v.manufacturerReference,title:v.title}))
+            }));
+            console.log("DTX_MATCH_4910",JSON.stringify(dtx.offers.filter(o=>(o.manufacturerReference||"").includes("4910A3B")||(o.supplierSku||"").includes("4910A3B"))));
+          } catch(e) { console.log("DTX_DEEP_ERR",e instanceof Error?e.message:String(e)); }
+
+          try {
+            const url="https://www.dentalcost.es/?controller=search&search_query=4910A3B";
+            const res=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+            const html=await res.text();
+            const $=cheerio.load(html);
+            const rows=[];
+            $("a[href]").each((_,a)=>{
+              const href=$(a).attr("href")||"";
+              const text=$(a).text().replace(/\s+/g," ").trim();
+              const parent=$(a).closest("article,li,div.product-container,div.product-miniature,div.ajax_block_product,div.product-box").first();
+              const parentText=parent.text().replace(/\s+/g," ").trim().slice(0,500);
+              if(/687-|filtek|4910a3b|supreme/i.test(href+" "+text+" "+parentText)){
+                rows.push({href,text,tag:parent.prop("tagName"),cls:parent.attr("class"),parentText});
+              }
+            });
+            console.log("DCOST_EXACT_DOM",JSON.stringify(rows.slice(0,50)));
+          } catch(e) { console.log("DCOST_DEEP_ERR",e instanceof Error?e.message:String(e)); }
+          TS
