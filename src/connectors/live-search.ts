@@ -75,7 +75,9 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
       'article[data-id-product] a[href]',
       '.product-container a[href]',
       '.product-title a[href]',
-      'a.product-item-link[href]'
+      'a.product-item-link[href]',
+      'li.ajax_block_product a[href]',
+      '.ajax_block_product a[href]'
     ]).join(",");
   const productUrls=new Set<string>();
   $(productSelectors).each((_,el)=>{
@@ -94,7 +96,10 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
     if(new URL(url).origin!==new URL(origin).origin)return;
     if(url===base||url.endsWith("/")||isSearchOrNavigationUrl(url,base))return;
     const isProductResult=productUrls.has(url);
-    const baseScore=scoreLink(text,url,query);
+    const cardText=isProductResult
+      ?$(el).closest('article,li.ajax_block_product,.product-item,.product-miniature,.product-container').first().text().replace(/\s+/g," ").trim().slice(0,1200)
+      :"";
+    const baseScore=scoreLink([text,cardText].filter(Boolean).join(" "),url,query);
     if(origin.includes("ortolan.es")&&(!isProductResult||baseScore<2))return;
     const score=baseScore+(isProductResult?8:0);
     if(score<2)return;
