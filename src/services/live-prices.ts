@@ -2,6 +2,7 @@ import type { CanonicalProduct, SupplierOffer } from "../types/domain";
 import type { PriceObservation } from "../domain/history";
 import { applyAnomalyStatus } from "../domain/anomaly";
 import { normalizeName, normalizeReference } from "../domain/matching/normalization";
+import { browserProtectedSupplierIds, liveAutomaticSupplierIds } from "../connectors/live-supplier-registry";
 
 export interface LivePriceResponse {
   productId:string;
@@ -40,8 +41,8 @@ interface SupplierSearchResponse {
   noMatch?:boolean;
 }
 
-export const liveAutomaticSuppliers=["dentaltix","dentalcost","dvd-dental","dentalexpress","ortolan","dentipak","dentalboom"] as const;
-export const browserVerificationSuppliers=["proclinic","dental-iberica","brokerdental"] as const;
+export const liveAutomaticSuppliers=liveAutomaticSupplierIds;
+export const browserVerificationSuppliers=browserProtectedSupplierIds;
 
 function apiBase(){
   const raw=import.meta.env.VITE_LIVE_API_URL as string|undefined;
