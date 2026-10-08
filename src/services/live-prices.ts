@@ -1,4 +1,6 @@
 import type { CanonicalProduct, SupplierOffer } from "../types/domain";
+import type { PriceObservation } from "../domain/history";
+import { applyAnomalyStatus } from "../domain/anomaly";
 import { normalizeName, normalizeReference } from "../domain/matching/normalization";
 
 export interface LivePriceResponse {
@@ -45,6 +47,19 @@ function apiBase(){
   const raw=import.meta.env.VITE_LIVE_API_URL as string|undefined;
   if(!raw) throw new Error("LIVE_API_NOT_CONFIGURED");
   return raw.endsWith("/")?raw.slice(0,-1):raw;
+}
+
+function latestPreviousObservation(offer:SupplierOffer,history:PriceObservation[]):PriceObservation|undefined{
+  const candidates=history.filter(item=>{
+    if(item.supplierId!==offer.supplierId)return false;
+    if(offer.supplierSku&&item.supplierSku)return normalizeReference(item.supplierSku)===normalizeReference(offer.supplierSku);
+    return item.sourceUrl===offer.productUrl;
+  });
+  return candidates.sort((a,b)=>new Date(b.lastSeenAt??b.observedAt).getTime()-new Date(a.lastSeenAt??a.observedAt).getTime())[0];
+}
+
+export function applyClientHistorySafety(offers:SupplierOffer[],history:PriceObservation[]):SupplierOffer[]{
+  return offers.map(offer=>applyAnomalyStatus(offer,latestPreviousObservation(offer,history)));
 }
 
 function safeId(value:string){
@@ -144,7 +159,7 @@ export async function fetchLivePrices(productId:string):Promise<LivePriceRespons
   return response.json() as Promise<LivePriceResponse>;
 }
 
-export async function searchLiveCatalog(query:string):Promise<LiveCatalogSearchResponse>{
+export async function searchLiveCatalog(query:string,previousHistory:PriceObservation[]=[]):Promise<LiveCatalogSearchResponse>{
   const base=apiBase();
   const sessionId=crypto.randomUUID();
   const requestedAt=new Date().toISOString();
@@ -159,7 +174,7 @@ export async function searchLiveCatalog(query:string):Promise<LiveCatalogSearchR
       return {supplierId,offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR"};
     }
   }));
-  const offers=settled.flatMap(x=>x.offers);
+  const offers=applyClientHistorySafety(settled.flatMap(x=>x.offers),previousHistory);
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
     groups:groupOffers(offers),
