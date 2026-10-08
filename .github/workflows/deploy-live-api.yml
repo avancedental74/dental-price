@@ -63,6 +63,7 @@ jobs:
           check health "https://dental-price-live.avance-dental74.workers.dev/health"
           check dentaltix "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentaltix&sessionId=smoke-search"
           check dentaltix_name "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=dentaltix&sessionId=smoke-search"
+          check dentaltix_model "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Z250&supplier=dentaltix&sessionId=smoke-search"
           check dentalcost "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=4910A3B&supplier=dentalcost&sessionId=smoke-search"
           check dentalexpress "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=41294&supplier=dentalexpress&sessionId=smoke-search"
           check ortolan "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=ortolan&sessionId=smoke-search"
@@ -77,7 +78,7 @@ jobs:
           if(!h.ok||h.searchMode!=="dynamic-per-supplier") process.exit(1);
           if(!Array.isArray(h.suppliers)||h.suppliers.length!==7) process.exit(1);
           if(!Array.isArray(h.protectedSuppliers)||h.protectedSuppliers.length!==3) process.exit(1);
-          for(const name of ["dentaltix","dentaltix_name","dentalcost","dentalexpress","ortolan","dvd","dvd_name","dentipak","dentalboom"]){
+          for(const name of ["dentaltix","dentaltix_name","dentaltix_model","dentalcost","dentalexpress","ortolan","dvd","dvd_name","dentipak","dentalboom"]){
             const x=JSON.parse(fs.readFileSync("/tmp/"+name+".json"));
             console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,noMatch:x.noMatch,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
             if(x.sessionId!=="smoke-search"||!Array.isArray(x.offers)||x.error) process.exit(1);
@@ -90,6 +91,8 @@ jobs:
               return hay.includes("tetric")&&hay.includes("evoceram");
             })) process.exit(1);
           }
+          const dtxModel=JSON.parse(fs.readFileSync("/tmp/dentaltix_model.json"));
+          if(!dtxModel.offers.length||!dtxModel.offers.every(o=>(o.rawName||"").toLowerCase().includes("z250"))) process.exit(1);
           const dtx=JSON.parse(fs.readFileSync("/tmp/dentaltix.json"));
           if(!dtx.offers.some(o=>o.manufacturerReference==="4910A3B"&&o.vatStatus==="excluded"&&o.vatRate===10)) process.exit(1);
           const dtxName=JSON.parse(fs.readFileSync("/tmp/dentaltix_name.json"));
