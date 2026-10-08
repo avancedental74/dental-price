@@ -34,7 +34,7 @@ export function ComparisonTable({items}:{items:MatchedSupplierOffer[]}){
         <td>{item.offer.priceVerification==="search_index"?"Por comprobar":(item.offer.salePrice ?? item.offer.regularPrice).toFixed(2)+" €"}</td>
         <td>{item.offer.priceVerification==="search_index"?"—":item.pricing ? `${item.pricing.effectiveTotalCost.toFixed(2)} €` : "—"}</td>
         <td>{item.offer.stockStatus==="in_stock"?"Disponible":item.offer.stockStatus==="low_stock"?"Pocas unidades":item.offer.stockStatus}</td>
-        <td>{item.offer.verificationKind==="live" ? <><b>Ahora</b><small className="source-note">{item.offer.verifiedAt?new Date(item.offer.verifiedAt).toLocaleTimeString("es-ES"):"sesión live"}</small></> : <><span>Snapshot</span><small className="source-note">{new Date(item.offer.observedAt).toLocaleString("es-ES")}</small></>}</td>
+        <td>{item.offer.priceVerification==="search_index"?<><b>Índice del proveedor</b><small className="source-note">Precio no contrastado en ficha</small></>:item.offer.verificationKind==="live" ? <><b>Ficha consultada</b><small className="source-note">{item.offer.verifiedAt?new Date(item.offer.verifiedAt).toLocaleTimeString("es-ES"):"sesión live"}</small></> : <><span>Snapshot</span><small className="source-note">{new Date(item.offer.observedAt).toLocaleString("es-ES")}</small></>}</td>
         <td><span className={item.eligibleForRanking?"pill good":"pill"}>{eligibilityLabel(item)}</span></td>
       </tr>)}</tbody></table></div>
   </section>;
