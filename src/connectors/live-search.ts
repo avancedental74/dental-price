@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 import { normalizeName, normalizeReference } from "../domain/matching/normalization";
 
-export type SearchSupplierId="dentaltix"|"dentalcost"|"dvd-dental"|"proclinic"|"dental-iberica"|"dentalexpress"|"brokerdental"|"ortolan";
+export type SearchSupplierId="dentaltix"|"dentalcost"|"dvd-dental"|"proclinic"|"dental-iberica"|"dentalexpress"|"brokerdental"|"ortolan"|"dentipak"|"dentalboom";
 
 const configs:Record<SearchSupplierId,{origin:string;home:string;templates:string[]}>={
   dentaltix:{origin:"https://www.dentaltix.com",home:"https://www.dentaltix.com/es",templates:[
@@ -27,6 +27,12 @@ const configs:Record<SearchSupplierId,{origin:string;home:string;templates:strin
   ]},
   ortolan:{origin:"https://ortolan.es",home:"https://ortolan.es/es/",templates:[
     "https://ortolan.es/es/busqueda?controller=search&s={q}"
+  ]},
+  dentipak:{origin:"https://www.dentipak.es",home:"https://www.dentipak.es/shop",templates:[
+    "https://www.dentipak.es/shop?search={q}"
+  ]},
+  dentalboom:{origin:"https://dentalboom.com",home:"https://dentalboom.com/",templates:[
+    "https://dentalboom.com/?s={q}&post_type=product"
   ]}
 };
 
@@ -193,6 +199,23 @@ export async function searchDvdKlevuRecords(query:string,fetchImpl:typeof fetch=
   return (data.queryResults?.flatMap(x=>x.records??[])??[])
     .filter(record=>record.url&&scoreLink([record.name,record.sku,record["nº_pieza_fabricante"]].filter(Boolean).join(" "),record.url!,query)>=2)
     .slice(0,maxResults);
+}
+
+export interface DentalBoomRecord {
+  sku?:string;
+  name:string;
+  url:string;
+}
+
+export async function searchDentalBoomRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=5):Promise<DentalBoomRecord[]>{
+  const url="https://dentalboom.com/wp-json/wc/store/v1/products?search="+encodeURIComponent(query);
+  const response=await fetchImpl(url,{headers:{"user-agent":"Mozilla/5.0","accept":"application/json"}});
+  if(!response.ok)throw new Error("DENTALBOOM_API_HTTP_"+response.status);
+  const data=await response.json() as Array<{sku?:string;name?:string;permalink?:string}>;
+  return data
+    .filter(item=>item.name&&item.permalink&&scoreLink([item.name,item.sku].filter(Boolean).join(" "),item.permalink!,query)>=2)
+    .slice(0,maxResults)
+    .map(item=>({sku:item.sku,name:item.name!,url:item.permalink!}));
 }
 
 export interface OrtolanSearchRecord {
