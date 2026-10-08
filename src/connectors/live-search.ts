@@ -334,7 +334,7 @@ async function expandOrtolanProductVariants(
     .slice(0,maxResults);
 }
 
-export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=8):Promise<OrtolanSearchRecord[]>{
+export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=8,includeDetailVariants=true):Promise<OrtolanSearchRecord[]>{
   const searchUrl="https://ortolan.es/es/busqueda?controller=search&s="+encodeURIComponent(query);
   const response=await fetchImpl(searchUrl,{
     headers:{"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36",accept:"text/html,application/xhtml+xml"},
@@ -376,7 +376,7 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
   }
 
   const top=defaultRecords.find(record=>record.url);
-  if(top?.url){
+  if(includeDetailVariants&&top?.url){
     try{
       const baseId=top.supplierSku?.split("-")[0];
       const expanded=await expandOrtolanProductVariants(top.url,namesByProduct.get(baseId??"")??top.name,query,fetchImpl,maxResults);
