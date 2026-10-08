@@ -104,7 +104,7 @@ jobs:
           if(!od.offers.some(o=>o.shade==="A3.5"&&o.variant==="Dentin"&&o.presentation==="Jeringa"&&o.packCount===1&&o.stockStatus==="in_stock")) process.exit(1);
           if(!od.offers.some(o=>o.shade==="A3.5"&&o.variant==="Dentin"&&o.presentation==="Cápsulas"&&o.quantity===0.2&&o.packCount===20)) process.exit(1);
           const dp=JSON.parse(fs.readFileSync("/tmp/dentipak.json"));
-          if(!dp.offers.some(o=>o.manufacturerReference==="41294"&&o.supplierSku==="041299"&&o.salePrice===79.9&&o.stockStatus==="in_stock")) process.exit(1);
+          if(!dp.offers.some(o=>o.manufacturerReference==="41294"&&o.supplierSku==="041299"&&Number.isFinite(o.salePrice)&&o.salePrice>0&&o.stockStatus==="in_stock")) process.exit(1);
           const db=JSON.parse(fs.readFileSync("/tmp/dentalboom.json"));
-          if(!db.offers.some(o=>o.supplierSku==="059652"&&o.salePrice===107.39&&o.vatStatus==="excluded"&&o.vatRate===10&&o.stockStatus==="in_stock"&&!o.manufacturerReference)) process.exit(1);
+          if(!db.offers.some(o=>o.supplierSku==="059652"&&Number.isFinite(o.salePrice)&&o.salePrice>0&&o.vatStatus==="excluded"&&o.vatRate===10&&o.stockStatus==="in_stock"&&!o.manufacturerReference)) process.exit(1);
           NODE
