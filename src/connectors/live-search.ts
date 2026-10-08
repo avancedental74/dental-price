@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 import { normalizeName, normalizeReference } from "../domain/matching/normalization";
-
-export type SearchSupplierId="dentaltix"|"dentalcost"|"dvd-dental"|"proclinic"|"dental-iberica"|"dentalexpress"|"brokerdental"|"ortolan"|"dentipak"|"dentalboom";
+import type { SearchSupplierId } from "./live-supplier-registry";
+export type { SearchSupplierId } from "./live-supplier-registry";
 
 const configs:Record<SearchSupplierId,{origin:string;home:string;templates:string[]}>={
   dentaltix:{origin:"https://www.dentaltix.com",home:"https://www.dentaltix.com/es",templates:[
