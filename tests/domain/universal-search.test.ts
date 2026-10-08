@@ -102,4 +102,16 @@ describe("universal dental price comparison",()=>{
     });
     expect(assessProducts([missing],"live1")[0].offers[0].normalizedCost).toBeUndefined();
   });
+  it("does not invent normalized cost for a multi-pack measured per capsule",()=>{
+    const multi=group("CAP20","Composite cápsulas A3 20 unidades 0.2 g",38,0.2,{
+      quantity:0.2,unit:"g",packCount:20
+    });
+    multi.product.packCount=20;
+    multi.product.unit="g";
+    const result=assessProducts([multi],"live1");
+    expect(result[0].best?.eligible).toBe(true);
+    expect(result[0].offers[0].normalizedCost).toBeUndefined();
+    expect(result[0].offers[0].effectiveTotal).toBeGreaterThan(0);
+  });
+
 });
