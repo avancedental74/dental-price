@@ -49,17 +49,32 @@ function apiBase(){
   return raw.endsWith("/")?raw.slice(0,-1):raw;
 }
 
-function latestPreviousObservation(offer:SupplierOffer,history:PriceObservation[]):PriceObservation|undefined{
-  const candidates=history.filter(item=>{
-    if(item.supplierId!==offer.supplierId)return false;
-    if(offer.supplierSku&&item.supplierSku)return normalizeReference(item.supplierSku)===normalizeReference(offer.supplierSku);
-    return item.sourceUrl===offer.productUrl;
-  });
-  return candidates.sort((a,b)=>new Date(b.lastSeenAt??b.observedAt).getTime()-new Date(a.lastSeenAt??a.observedAt).getTime())[0];
+function observationTime(item:PriceObservation){
+  const value=new Date(item.lastSeenAt??item.observedAt).getTime();
+  return Number.isFinite(value)?value:0;
 }
 
 export function applyClientHistorySafety(offers:SupplierOffer[],history:PriceObservation[]):SupplierOffer[]{
-  return offers.map(offer=>applyAnomalyStatus(offer,latestPreviousObservation(offer,history)));
+  const bySku=new Map<string,PriceObservation>();
+  const byUrl=new Map<string,PriceObservation>();
+  for(const item of history){
+    const sku=normalizeReference(item.supplierSku);
+    if(sku){
+      const key=item.supplierId+"|"+sku;
+      const previous=bySku.get(key);
+      if(!previous||observationTime(item)>observationTime(previous))bySku.set(key,item);
+    }
+    if(item.sourceUrl){
+      const key=item.supplierId+"|"+item.sourceUrl;
+      const previous=byUrl.get(key);
+      if(!previous||observationTime(item)>observationTime(previous))byUrl.set(key,item);
+    }
+  }
+  return offers.map(offer=>{
+    const sku=normalizeReference(offer.supplierSku);
+    const previous=sku?bySku.get(offer.supplierId+"|"+sku):byUrl.get(offer.supplierId+"|"+offer.productUrl);
+    return applyAnomalyStatus(offer,previous);
+  });
 }
 
 function safeId(value:string){
