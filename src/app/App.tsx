@@ -36,6 +36,7 @@ export function App(){
   const [manualHistory,setManualHistory]=useState<PriceObservation[]>(()=>loadManualHistory());
   const [liveHistory,setLiveHistory]=useState<PriceObservation[]>(()=>loadLiveHistory());
   const [basket,setBasket]=useState<BasketUiItem[]>([]);
+  const [basketOffers,setBasketOffers]=useState<Record<string,SupplierOffer[]>>({});
   const [liveOffers,setLiveOffers]=useState<SupplierOffer[]>([]);
   const [liveSessionId,setLiveSessionId]=useState<string|null>(null);
   const [liveState,setLiveState]=useState<LiveSearchState>("idle");
@@ -115,9 +116,9 @@ export function App(){
   const basketComputation=useMemo(()=>{
     if(!basket.length)return {result:null,error:null as string|null};
     try{
-      return {result:optimizeBasket(basket.map(item=>({product:item.product,quantity:item.quantity,offers:liveOffers.filter(o=>normalizeReference(o.manufacturerReference)===normalizeReference(item.product.manufacturerReference))}))),error:null};
+      return {result:optimizeBasket(basket.map(item=>({product:item.product,quantity:item.quantity,offers:basketOffers[item.product.id]??[]}))),error:null};
     }catch(e){return {result:null,error:e instanceof Error?e.message:"La cesta necesita precios live de todos los productos"};}
-  },[basket,liveOffers]);
+  },[basket,basketOffers]);
 
   const winner=comparison?.ranked[0];
   const historyProductId=useMemo(()=>{
@@ -142,10 +143,14 @@ export function App(){
 
   const addSelectedToBasket=()=>{
     if(!selected)return;
+    setBasketOffers(current=>({...current,[selected.id]:liveOffers}));
     setBasket(items=>{const existing=items.find(x=>x.product.id===selected.id);return existing?items.map(x=>x.product.id===selected.id?{...x,quantity:x.quantity+quantity}:x):[...items,{product:selected,quantity}];});
   };
   const changeBasketQuantity=(id:string,q:number)=>setBasket(items=>items.map(x=>x.product.id===id?{...x,quantity:q}:x));
-  const removeBasketItem=(id:string)=>setBasket(items=>items.filter(x=>x.product.id!==id));
+  const removeBasketItem=(id:string)=>{
+    setBasket(items=>items.filter(x=>x.product.id!==id));
+    setBasketOffers(current=>{const next={...current};delete next[id];return next;});
+  };
   const onSelectCoverage=(id:string)=>{const product=data?.products.find(p=>p.id===id);if(product)void runSeededLiveSearch(product);};
 
   if(error)return <main className="app-shell"><section className="card state-card"><span className="state-icon">!</span><h2>No se pudieron cargar los datos auxiliares</h2><p>{error}</p></section></main>;
