@@ -27,7 +27,7 @@ function SupplierRows({offers}: {offers:UniversalOffer[]}){
 }
 export function UniversalSearchResults({items,query,onSelect,sessionId,searchDepth,coverage,onExpand}:{
   items:LiveSearchGroup[];query:string;sessionId:string|null;onSelect:(group:LiveSearchGroup)=>void;
-  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number}>;onExpand:()=>void;
+  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"error"}>;onExpand:()=>void;
 }){
   const [filters,setFilters]=useState<SearchFilters>({});
   const [mode,setMode]=useState<"offers"|"alternatives">("offers");
@@ -70,6 +70,13 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
       </div>
       {searchDepth==="standard"&&<button type="button" className="secondary-button" onClick={onExpand}>Ampliar resultados ↗</button>}
     </div>
+    <details className="universal-protected-suppliers">
+      <summary>Consultar estado de los {coverage.length} depósitos automáticos</summary>
+      <div className="provider-status-list">{coverage.map(item=><div key={item.supplierId}>
+        <strong>{supplierNames[item.supplierId]??item.supplierId}</strong>
+        <span>{item.status==="results"?item.offers+" ofertas recuperadas":item.status==="error"?"Consulta fallida":"Sin coincidencias recuperadas"} · {item.queries} intento(s){item.partialErrors>0?" · "+item.partialErrors+" error(es)":""}</span>
+      </div>)}</div>
+    </details>
     <details className="universal-protected-suppliers">
       <summary>Otros 3 depósitos requieren acceso desde su web</summary>
       <p>Estas búsquedas se abren en el sitio del proveedor. Sus precios no se incorporan automáticamente ni se consideran verificados en Dental Price.</p>
