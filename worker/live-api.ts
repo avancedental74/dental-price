@@ -134,7 +134,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
     const policy=policyList.find(p=>p.supplierId===supplierId);
     const offers=pages.flat()
       .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
-      .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+      .map(o=>({...o,priceVerification:"detail" as const,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
     return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"woocommerce-store-api+product",candidateLimitReached:records.length>=limitFor(5,12)};
   }
@@ -167,7 +167,8 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         vatStatus:"unknown",
         currency:"EUR",
         observedAt:new Date().toISOString(),
-        sourceStatus:"normal",
+        sourceStatus:record.fromDetail?"normal":"suspicious",
+        priceVerification:record.fromDetail?"detail":"search_index",
         sourceMode:"automatic"
       };
       return applyLiveSafety(applySupplierPolicy(offer,policy));
@@ -252,7 +253,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
   }
   const offers=verified
     .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
-    .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+    .map(o=>({...o,priceVerification:"detail" as const,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
     .filter(o=>supplierOfferSchema.safeParse(o).success);
   return {offers,error:null,noMatch:offers.length===0,discoveredFrom:discovered.searchUrl,candidateLimitReached:discovered.urls.length>=candidateLimit};
 }
