@@ -181,7 +181,10 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
   if(supplierId==="dvd-dental"){
     const records=await searchDvdKlevuRecords(query,fetchImpl,limitFor(10,20));
     const policy=policyList.find(p=>p.supplierId===supplierId);
-    const chosen=records.slice(0,limitFor(5,9));
+    // Product detail HTML can exceed the free Worker CPU budget.
+    // Generic discovery must remain cheap; index prices stay marked as
+    // orientative. Only a narrow extended reference query fetches one detail.
+    const chosen=looksLikeReference(query)&&extended?records.slice(0,1):[];
     // The discovery index is never price evidence for a specific variant.
     const pages=await Promise.all(chosen.map(async record=>{
       if(!record.url)return [] as SupplierOffer[];
@@ -232,7 +235,9 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       discoveredFrom:"klevu-discovery+sku-verified-detail",
       candidateLimitReached:records.length>=limitFor(10,20)};
   }
-  const candidateLimit=extended?10:5;
+  // Keep each request within a small CPU budget. Search depth expands
+  // through multiple bounded supplier calls, not long HTML-parsing loops.
+  const candidateLimit=extended?3:(supplierId==="dentalcost"?2:1);
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
   if(!discovered.urls.length){
     const message=discovered.error??"Sin resultados";
