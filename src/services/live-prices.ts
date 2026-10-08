@@ -200,30 +200,36 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
   const settled=await Promise.all(liveAutomaticSuppliers.map(async supplierId=>{
     // In extended mode try at most two semantics-preserving terms per provider.
     // The requests share a session so validation remains scoped to this search.
-    const attempts=await Promise.all(queries.map(async term=>{
+    const fetchTerm=async(term:string,requestDepth:SearchDepth)=>{
       try{
         const url=base+"/search-supplier?q="+encodeURIComponent(term)
           +"&supplier="+encodeURIComponent(supplierId)
-          +"&sessionId="+encodeURIComponent(sessionId)+"&depth="+depth;
+          +"&sessionId="+encodeURIComponent(sessionId)+"&depth="+requestDepth;
         const response=await fetch(url,{method:"GET",headers:{accept:"application/json"},cache:"no-store"});
         if(!response.ok)return {offers:[] as SupplierOffer[],error:"HTTP "+response.status,candidateLimitReached:false};
         const data=await response.json() as SupplierSearchResponse;
-        // Reject an unexpected supplier/session response instead of accidentally
-        // mixing a prior result into the latest ranking.
         if(data.supplierId!==supplierId||data.sessionId!==sessionId)
           return {offers:[] as SupplierOffer[],error:"RESPONSE_IDENTITY_MISMATCH",candidateLimitReached:false};
         return {offers:data.offers??[],error:data.error??null,candidateLimitReached:Boolean(data.candidateLimitReached)};
       }catch(error){
         return {offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR",candidateLimitReached:false};
       }
-    }));
+    };
+    const attempts=await Promise.all(queries.map(term=>fetchTerm(term,depth)));
+    // Improve coverage automatically for suppliers that returned no matches.
+    // A hard error is reported, not retried indefinitely. Only one bounded
+    // extended pass, with lexical alternatives where available.
+    if(depth==="standard"&&attempts.every(a=>!a.error&&a.offers.length===0)){
+      const fallbacks=planSupplierQueries(query,true);
+      attempts.push(...await Promise.all(fallbacks.map(term=>fetchTerm(term,"extended"))));
+    }
     const good=attempts.filter(a=>!a.error);
     const combined=mergeSupplierQueryOffers(good.flatMap(a=>a.offers));
     return {
       supplierId,offers:combined,
       error:good.length?null:attempts.map(a=>a.error).filter(Boolean).join("; "),
       partialErrors:attempts.filter(a=>a.error).length,
-      queries:queries.length,
+      queries:attempts.length,
       candidateLimitReached:attempts.some(a=>a.candidateLimitReached)
     };
   }));
