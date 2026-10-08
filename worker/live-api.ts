@@ -69,24 +69,6 @@ async function fetchSupplierUrl(supplierId:SearchSupplierId,productUrl:string,fe
   return [];
 }
 
-function inferLightAttributes(rawName:string){
-  const compact=rawName.replace(/\s+/g," ");
-  const multi=compact.match(/(\d+)\s*x\s*(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i);
-  const single=compact.match(/(\d+(?:[.,]\d+)?)\s*(g|gr|ml)\b/i);
-  const quantityMatch=multi?.[2]??single?.[1];
-  const unitMatch=multi?.[3]??single?.[2];
-  const presentation=/jeringa|syringe/i.test(compact)?"Jeringa":/cavifil|caps?\.?|c[aá]psul/i.test(compact)?"Cápsulas":/bote|frasco|botella/i.test(compact)?"Frasco":undefined;
-  const shade=compact.match(/\b(A\d(?:[.,]5)?|B\d(?:[.,]5)?|C\d(?:[.,]5)?|D\d(?:[.,]5)?)\b/i)?.[1]?.replace(",",".").toUpperCase();
-  const variant=/\bbody\b/i.test(compact)?"Body":/dentina|dentin/i.test(compact)?"Dentin":/esmalte|enamel/i.test(compact)?"Enamel":undefined;
-  return {
-    presentation,
-    quantity:quantityMatch?Number(quantityMatch.replace(",",".")):undefined,
-    unit:unitMatch?(unitMatch.toLowerCase().startsWith("g")?"g":"ml"):undefined,
-    packCount:multi?Number(multi[1]):single?1:undefined,
-    shade,variant
-  };
-}
-
 function looksLikeReference(query:string){
   const compact=normalizeReference(query)??"";
   return compact.length>=4&&/\d/.test(compact)&&!query.trim().includes(" ");
