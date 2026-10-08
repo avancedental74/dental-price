@@ -272,3 +272,31 @@ jobs:
           }
           walk(root.mainVar); walk(root.variations);
           NODE
+
+      - name: Inspect Dental Express Tetric prices
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const urls=[
+            "https://dentalexpress.es/tetric-evoceram-jeringa-3g-ivoclar",
+            "https://dentalexpress.es/tetric-evoceram-capsulas-ivoclar",
+            "https://dentalexpress.es/tetric-evoceram-3-jeringas-ivoclar"
+          ];
+          for(const url of urls){
+            const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+            const html=await r.text(); const $=cheerio.load(html);
+            const body=$("body").text().replace(/\s+/g," ");
+            const ld=$('script[type="application/ld+json"]').toArray().map(x=>$(x).text()).filter(Boolean);
+            console.log("DEX_TETRIC",JSON.stringify({
+              url,status:r.status,title:$("h1").first().text().replace(/\s+/g," ").trim(),
+              visiblePrices:[...body.matchAll(/(\d{1,5}(?:[.,]\d{2})?)\s*€/g)].slice(0,20).map(m=>m[0]),
+              priceSelectors:[
+                [".price",$(".price").first().text()],
+                [".special-price",$(".special-price").first().text()],
+                [".old-price",$(".old-price").first().text()],
+                ["[itemprop=price]",$("[itemprop=price]").first().attr("content")||$("[itemprop=price]").first().text()]
+              ],
+              ld:ld.filter(x=>/Product|Offer|price/i.test(x)).slice(0,6)
+            }));
+          }
+          NODE
