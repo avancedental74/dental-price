@@ -49,7 +49,14 @@ function isSearchOrNavigationUrl(url:string,base:string):boolean{
 }
 
 export function scoreLink(text:string,href:string,query:string):number{
-  const q=normalizeName(query);
+  // Search-only formatting: keep manufacturer/model/shade tokens intact while
+  // treating common quantity spellings as the same request.
+  const searchText=(value:string)=>normalizeName(value)
+    .replace(/(\\d+(?:[.,]\\d+)?)\\s*(?:gramos?|grs?|gr|g)\\b/g,"$1 g")
+    .replace(/(\\d+(?:[.,]\\d+)?)\\s*(?:mililitros?|ml)\\b/g,"$1 ml")
+    .replace(/\\bcomposites\\b/g,"composite")
+    .replace(/\\s+/g," ").trim();
+  const q=searchText(query);
   let hrefIdentity=href;
   try{
     const u=new URL(href);
@@ -57,7 +64,7 @@ export function scoreLink(text:string,href:string,query:string):number{
     // Scoring query/hash would make every unrelated result look relevant.
     hrefIdentity=u.origin+u.pathname;
   }catch{ /* non-URL strings are scored as provided */ }
-  const hay=normalizeName(text+" "+hrefIdentity);
+  const hay=searchText(text+" "+hrefIdentity);
   const compact=normalizeReference(query)??"";
   const normalizedHay=normalizeReference(hay)??"";
   let score=0;
@@ -75,9 +82,12 @@ export function scoreLink(text:string,href:string,query:string):number{
   // references formatted using separators by the supplier.
   const wholeToken=(token:string)=>hay.split(" ").includes(token);
   const matched=tokens.filter(wholeToken);
-  // Short product/model names are precise enough that accepting only one token
+  // Product identity matters even in verbose searches: enforce substantial coverage.
   // creates false positives such as Tetric EvoFlow for "Tetric EvoCeram".
-  if(tokens.length>=2&&tokens.length<=4&&matched.length<Math.ceil(tokens.length*0.75))return 0;
+  if(tokens.length>=2&&matched.length<Math.ceil(tokens.length*0.75))return 0;
+  // Never accept a different shade or a different mass/volume when specified.
+  const critical=tokens.filter(t=>/^(?:[a-d]\\d(?:\\.\\d)?|body|dentin|enamel|\\d+(?:[.,]\\d+)?)$/.test(t));
+  if(critical.some(t=>!wholeToken(t)))return 0;
   if(q.length>=5&&hay.includes(q))score+=16;
   for(const token of matched)score+=token.length>=5?3:1;
   const coverage=tokens.length?matched.length/tokens.length:0;
