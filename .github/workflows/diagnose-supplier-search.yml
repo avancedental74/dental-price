@@ -300,3 +300,21 @@ jobs:
             }));
           }
           NODE
+
+      - name: Inspect Dental Express 90 euro context
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const url="https://dentalexpress.es/tetric-evoceram-jeringa-3g-ivoclar";
+          const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+          const html=await r.text(),$=cheerio.load(html);
+          const body=$("body").text().replace(/\s+/g," ");
+          const pos=body.indexOf("90€");
+          console.log("DEX_90_CONTEXT",body.slice(Math.max(0,pos-800),pos+800));
+          const matches=[];
+          $("*").each((_,el)=>{
+            const t=$(el).clone().children().remove().end().text().replace(/\s+/g," ").trim();
+            if(/\b90\s*€/.test(t)) matches.push({tag:el.tagName,id:$(el).attr("id"),cls:$(el).attr("class"),text:t.slice(0,700)});
+          });
+          console.log("DEX_90_ELEMENTS",JSON.stringify(matches.slice(0,30)));
+          NODE
