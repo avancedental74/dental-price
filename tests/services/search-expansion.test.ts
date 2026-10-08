@@ -1,5 +1,6 @@
 import {describe,it,expect} from "vitest";
 import {mergeSupplierQueryOffers,planSupplierQueries} from "../../src/services/search-expansion";
+import {applyAnomalyStatus} from "../../src/domain/anomaly";
 import type {SupplierOffer} from "../../src/types/domain";
 function offer(overrides:Partial<SupplierOffer>={}):SupplierOffer{
   return {
@@ -43,4 +44,9 @@ describe("safe universal search expansion",()=>{
     ]);
     expect(rows).toHaveLength(3);
   });
+  it("historical checks do not clear a previously suspicious or quarantined source",()=>{
+    expect(applyAnomalyStatus(offer({sourceStatus:"suspicious"})).sourceStatus).toBe("suspicious");
+    expect(applyAnomalyStatus(offer({sourceStatus:"quarantined"})).sourceStatus).toBe("quarantined");
+  });
+
 });
