@@ -59,4 +59,28 @@ describe("live search result scoring",()=>{
     expect(scoreLink("Tetric EvoCeram A3.5 Jeringa", "https://example.com/tetric-evoceram-a3-5", "Tetric EvoCeram A3")).toBe(0);
   });
 
+  it("understands verbose supplier names with equivalent gram notation",()=>{
+    expect(scoreLink(
+      "Composite 3M Filtek Supreme XTE A3 Body Jeringa 3gr",
+      "https://example.com/filtek-supreme-xte-a3-body",
+      "Composite 3M Filtek Supreme A3 Body 3 g"
+    )).toBeGreaterThan(0);
+  });
+
+  it("rejects a different package weight even for the same family and shade",()=>{
+    expect(scoreLink(
+      "Composite 3M Filtek Supreme XTE A3 Body 4 g",
+      "https://example.com/filtek-supreme-xte-a3-body",
+      "Composite 3M Filtek Supreme A3 Body 3 g"
+    )).toBe(0);
+  });
+
+  it("rejects a different shade or variant in verbose queries",()=>{
+    expect(scoreLink(
+      "Composite 3M Filtek Supreme XTE A3.5 Dentin 3 g",
+      "https://example.com/filtek-supreme-xte-a3-5",
+      "Composite 3M Filtek Supreme A3 Body 3 g"
+    )).toBe(0);
+  });
+
 });
