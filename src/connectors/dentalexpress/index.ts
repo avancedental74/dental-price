@@ -20,8 +20,16 @@ export async function fetchDentalExpressProduct(productUrl:string,fetchImpl:type
  const offers=ld?.offers;
  const ldOffer=Array.isArray(offers)?offers[0]:offers;
  const priceFromLd=euro(String(ldOffer?.price??""));
- const visible=[...body.matchAll(/(\d{1,5}(?:[.,]\d{2})?)\s*€/g)].map(m=>euro(m[1])).filter((v):v is number=>typeof v==="number"&&v>0);
- const salePrice=priceFromLd??visible[0];
+ const productPriceCandidates=[
+   $('[data-price-type="finalPrice"] [data-price-amount]').first().attr("data-price-amount"),
+   $('[data-price-amount]').first().attr("data-price-amount"),
+   $('.product-info-price .price').first().text(),
+   $('.product-price .price').first().text(),
+   $('.current-price').first().text()
+ ].map(v=>euro(v)).filter((v):v is number=>typeof v==="number"&&v>0);
+ // Never use the first arbitrary € amount from the whole body: shipping thresholds,
+ // promos or menu copy can look like product prices (e.g. "90€").
+ const salePrice=priceFromLd??productPriceCandidates[0];
  if(!salePrice)return {offers:[]};
  const grossMatch=body.match(/(?:Precio\s+con\s+IVA\s+incluido|IVA\s+incluido)\s*:?\s*(\d{1,5}(?:[.,]\d{2})?)\s*€/i);
  const grossPrice=grossMatch?euro(grossMatch[1]):undefined;
