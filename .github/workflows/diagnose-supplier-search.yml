@@ -350,13 +350,15 @@ jobs:
           npx tsx -e '
             import { discoverSupplierProductUrls } from "./src/connectors/live-search";
             import { fetchDentalCostProduct } from "./src/connectors/dentalcost";
-            const query="Tetric EvoCeram";
-            const found=await discoverSupplierProductUrls("dentalcost",query,fetch,5);
-            console.log("DISCOVERED",JSON.stringify(found,null,2));
-            for(const url of found.urls){
-              try{
-                const result=await fetchDentalCostProduct(url,fetch);
-                console.log("CANDIDATE",url,JSON.stringify(result.offers.map(o=>({name:o.rawName,sku:o.supplierSku,ref:o.manufacturerReference,price:o.salePrice??o.regularPrice,presentation:o.presentation,quantity:o.quantity,unit:o.unit,shade:o.shade})).slice(0,12),null,2));
-              }catch(e){console.log("CANDIDATE_ERROR",url,e instanceof Error?e.message:String(e));}
-            }
+            (async()=>{
+              const query="Tetric EvoCeram";
+              const found=await discoverSupplierProductUrls("dentalcost",query,fetch,5);
+              console.log("DISCOVERED",JSON.stringify(found,null,2));
+              for(const url of found.urls){
+                try{
+                  const result=await fetchDentalCostProduct(url,fetch);
+                  console.log("CANDIDATE",url,JSON.stringify(result.offers.map(o=>({name:o.rawName,sku:o.supplierSku,ref:o.manufacturerReference,price:o.salePrice??o.regularPrice,presentation:o.presentation,quantity:o.quantity,unit:o.unit,shade:o.shade})).slice(0,12),null,2));
+                }catch(e){console.log("CANDIDATE_ERROR",url,e instanceof Error?e.message:String(e));}
+              }
+            })().catch(e=>{console.error(e);process.exit(1);});
           '
