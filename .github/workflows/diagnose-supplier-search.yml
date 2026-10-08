@@ -318,3 +318,29 @@ jobs:
           });
           console.log("DEX_90_ELEMENTS",JSON.stringify(matches.slice(0,30)));
           NODE
+
+      - name: Inspect Dental Express Magento price config
+        run: |
+          node --input-type=module <<'NODE'
+          const urls=[
+            "https://dentalexpress.es/adhesivo-scotchbond-universal-plus-5ml-solventum",
+            "https://dentalexpress.es/tetric-evoceram-jeringa-3g-ivoclar"
+          ];
+          for(const url of urls){
+            const r=await fetch(url,{headers:{"user-agent":"Mozilla/5.0","accept":"text/html,application/xhtml+xml"}});
+            const html=await r.text();
+            console.log("\nDEX_MAGENTO_URL",url,"HTTP",r.status,"LEN",html.length);
+            for(const re of [
+              /priceConfig.{0,3000}/gi,
+              /finalPrice.{0,1800}/gi,
+              /basePrice.{0,1800}/gi,
+              /priceAmount.{0,1200}/gi,
+              /data-price-amount.{0,500}/gi,
+              /productId.{0,1000}/gi,
+              /priceBox.{0,1500}/gi
+            ]){
+              const m=html.match(re)||[];
+              console.log("PATTERN",String(re),JSON.stringify(m.slice(0,12)));
+            }
+          }
+          NODE
