@@ -1,0 +1,2402 @@
+{
+  "generatedAt": "2026-10-08T16:49:48.254Z",
+  "startedAt": "2026-10-08T16:45:22.265Z",
+  "endpoint": "https://dental-price-live.avance-dental74.workers.dev",
+  "depth": "standard",
+  "queryCount": 30,
+  "supplierCount": 7,
+  "rows": [
+    {
+      "query": "4910A3B",
+      "sessionId": "matrix-1791477922266-0",
+      "totals": {
+        "suppliersWithResults": 1,
+        "suppliersNoMatch": 1,
+        "suppliersWithErrors": 5,
+        "totalOffers": 1,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 538,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 365,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "results",
+          "offers": 1,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 420,
+          "sample": [
+            {
+              "name": "Composite Filtek supreme XTE jeringas (3g)",
+              "reference": "4910A3B",
+              "sku": "M-072",
+              "price": 83.36,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            }
+          ]
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1025,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 596,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 479,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 738,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "Filtek Supreme XTE A3 Body 3 g",
+      "sessionId": "matrix-1791477929640-1",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 5,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 87,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 357,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 180,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 3416,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 475,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 147,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 588,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "Filtek Z250 A3 4 g",
+      "sessionId": "matrix-1791477938088-2",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 5,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1694,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 352,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 334,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 3195,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 441,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 148,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 463,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "Scotchbond Universal Plus 41294",
+      "sessionId": "matrix-1791477947935-3",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 404,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 394,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 220,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1737,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 462,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 360,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 521,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "RelyX Universal A1 56972",
+      "sessionId": "matrix-1791477955248-4",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 5,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 409,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 380,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 365,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2158,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 455,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 163,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 617,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "Tetric EvoCeram A3,5 Dentina jeringa",
+      "sessionId": "matrix-1791477962999-5",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 5,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 531,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 432,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 273,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2948,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 419,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 175,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 598,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "composite fluido A2",
+      "sessionId": "matrix-1791477971576-6",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 5,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1570,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 495,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 470,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2526,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 340,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 170,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 582,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "adhesivo universal dental",
+      "sessionId": "matrix-1791477980935-7",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2048,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 430,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 562,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2009,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 423,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 862,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 516,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "cemento resina dual",
+      "sessionId": "matrix-1791477990979-8",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1237,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 519,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 242,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2356,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 308,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 226,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 546,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "articaina 1:100000",
+      "sessionId": "matrix-1791477999634-9",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 457,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 499,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 933,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2367,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 454,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 166,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 513,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "lidocaina dental carpules",
+      "sessionId": "matrix-1791478008232-10",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1921,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 390,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 964,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2571,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 460,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 151,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 500,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "agujas dentales 30G cortas",
+      "sessionId": "matrix-1791478018417-11",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 482,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 406,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 213,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2829,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 492,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 201,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 690,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "Peeso 28 mm n 1",
+      "sessionId": "matrix-1791478026954-12",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1921,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 380,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 288,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2575,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 447,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 153,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 506,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "limas K 25 mm nº 15",
+      "sessionId": "matrix-1791478036431-13",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 440,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 403,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 455,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 4174,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 427,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 822,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 479,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "fresas diamantadas grano fino",
+      "sessionId": "matrix-1791478046846-14",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1607,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 368,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 465,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2955,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 383,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 889,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 592,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "fresa tungsteno cirugía",
+      "sessionId": "matrix-1791478057306-15",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1430,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 373,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 233,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2342,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 375,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 858,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 558,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "alginato 500 g",
+      "sessionId": "matrix-1791478066657-16",
+      "totals": {
+        "suppliersWithResults": 2,
+        "suppliersNoMatch": 1,
+        "suppliersWithErrors": 4,
+        "totalOffers": 10,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1747,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 417,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "results",
+          "offers": 9,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 427,
+          "sample": [
+            {
+              "name": "Alginato Turboprint Chroma (500g)",
+              "sku": "3139000",
+              "price": 9.24,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            },
+            {
+              "name": "Alginato Orthoprint (500g)",
+              "sku": "16-144",
+              "price": 13.14,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            },
+            {
+              "name": "Alginato Turboprint Ortho Speed (500g)",
+              "sku": "3139014",
+              "price": 9.68,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            }
+          ]
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2145,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 416,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 221,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "results",
+          "offers": 1,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 566,
+          "sample": [
+            {
+              "name": "Cavex Impressional Alginato 500 g",
+              "sku": "IMPRESSIONAL",
+              "price": 11.57,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "query": "silicona adicion pesada",
+      "sessionId": "matrix-1791478075797-17",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1485,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 481,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 391,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2349,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 425,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 148,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 519,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "cubetas impresion perforadas",
+      "sessionId": "matrix-1791478084812-18",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 856,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 370,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 451,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2740,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 480,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 180,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 676,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "sutura seda 3/0",
+      "sessionId": "matrix-1791478093753-19",
+      "totals": {
+        "suppliersWithResults": 1,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 4,
+        "totalOffers": 3,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 665,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 342,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "results",
+          "offers": 3,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 508,
+          "sample": [
+            {
+              "name": "Sutura Seda",
+              "reference": "HY-80021",
+              "sku": "3144379",
+              "price": 23.73,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            },
+            {
+              "name": "Sutura de seda no absorbibles DemeSilk (12 uds.)",
+              "reference": "SK263015B4P",
+              "sku": "3131337",
+              "price": 32.96,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            },
+            {
+              "name": "Sutura de seda negra americana (12 uds.)",
+              "reference": "LECS20CT18(12",
+              "sku": "5-947",
+              "price": 35.48,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            }
+          ]
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2823,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 446,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 165,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 702,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "hojas bisturi 15C",
+      "sessionId": "matrix-1791478102609-20",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 497,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 370,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 266,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1928,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 427,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 239,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 569,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "implante titanio 4.0 10 mm",
+      "sessionId": "matrix-1791478110114-21",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1993,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 523,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 709,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1969,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 438,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 949,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 719,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "tornillo cicatrizacion implante",
+      "sessionId": "matrix-1791478120605-22",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 446,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 386,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 642,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2127,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 483,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 892,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 564,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "guantes nitrilo talla M sin polvo",
+      "sessionId": "matrix-1791478129336-23",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 543,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 391,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 704,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 3153,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 471,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 189,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 609,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "mascarillas quirurgicas tipo IIR",
+      "sessionId": "matrix-1791478138588-24",
+      "totals": {
+        "suppliersWithResults": 1,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 4,
+        "totalOffers": 6,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 458,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 382,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "results",
+          "offers": 6,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 267,
+          "sample": [
+            {
+              "name": "Mascarillas quirúrgicas Tipo IIR (50 uds.)",
+              "sku": "3149512",
+              "price": 2.2,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            },
+            {
+              "name": "Mascarillas Tipo IIR de colores (50 uds.)",
+              "reference": "3145682",
+              "sku": "3145682",
+              "price": 6.04,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            },
+            {
+              "name": "Mascarillas KLMD Tipo IIR (50 uds.)",
+              "reference": "400467",
+              "sku": "3176372",
+              "price": 1.9,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            }
+          ]
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2943,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 521,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 161,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 974,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "desinfectante instrumental dental",
+      "sessionId": "matrix-1791478147485-25",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1857,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 397,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 484,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2184,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 397,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 157,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 585,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "hipoclorito sodico endodoncia",
+      "sessionId": "matrix-1791478156738-26",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 474,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 499,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 229,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1943,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 471,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 143,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 463,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "clorhexidina gel",
+      "sessionId": "matrix-1791478164176-27",
+      "totals": {
+        "suppliersWithResults": 1,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 4,
+        "totalOffers": 1,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 502,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 373,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "results",
+          "offers": 1,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 216,
+          "sample": [
+            {
+              "name": "Bucomed Pro Curasept Clorhexidina Gel Bucal",
+              "reference": "68000",
+              "sku": "3188440",
+              "price": 19.68,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            }
+          ]
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1733,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 385,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 159,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 576,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "lampara polimerizar",
+      "sessionId": "matrix-1791478171320-28",
+      "totals": {
+        "suppliersWithResults": 1,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 4,
+        "totalOffers": 1,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1034,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 415,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "results",
+          "offers": 1,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 292,
+          "sample": [
+            {
+              "name": "Lámpara de polimerizar Mestra",
+              "sku": "ZV-496",
+              "price": 356.36,
+              "verification": "search_index",
+              "sourceStatus": "suspicious"
+            }
+          ]
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 1933,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 438,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 355,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 463,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "contraangulo 1:1",
+      "sessionId": "matrix-1791478179454-29",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 3,
+        "suppliersWithErrors": 4,
+        "totalOffers": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 859,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 366,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 229,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 2354,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 469,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "error",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": "HTTP 503",
+          "elapsedMs": 152,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 1177,
+          "sample": []
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalOffers": 22,
+    "resultCells": 7,
+    "noMatchCells": 77,
+    "errorCells": 126,
+    "candidateLimitCells": 0
+  }
+}

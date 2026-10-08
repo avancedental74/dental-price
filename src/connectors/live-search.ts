@@ -150,6 +150,37 @@ function extractProductLinks(html:string,base:string,origin:string,query:string,
   return [...found.values()].sort((a,b)=>b.score-a.score).slice(0,maxResults).map(x=>x.url);
 }
 
+function decodeHtmlText(value:string):string{
+  return value
+    .replace(/&amp;/g,"&")
+    .replace(/&quot;/g,'"')
+    .replace(/&#39;|&apos;/g,"'")
+    .replace(/&lt;/g,"<")
+    .replace(/&gt;/g,">");
+}
+
+function extractProductLinksFast(html:string,base:string,origin:string,query:string,maxResults:number):string[]{
+  const found=new Map<string,{url:string;score:number}>();
+  const originUrl=new URL(origin);
+  const hrefRe=/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]{0,900}?)<\/a>/gi;
+  let match:RegExpExecArray|null;
+  while((match=hrefRe.exec(html))){
+    const raw=decodeHtmlText(match[1]??"");
+    if(!raw||raw.startsWith("#")||deniedParts.some(x=>raw.toLowerCase().includes(x)))continue;
+    let url:string;
+    try{url=new URL(raw,base).toString();}catch{continue;}
+    const parsed=new URL(url);
+    if(parsed.origin!==originUrl.origin||url===base||isSearchOrNavigationUrl(url,base))continue;
+    const text=decodeHtmlText((match[2]??"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim());
+    const score=scoreLink(text,url,query);
+    if(score<2)continue;
+    const previous=found.get(url);
+    if(!previous||score>previous.score)found.set(url,{url,score});
+    if(found.size>=maxResults*3)break;
+  }
+  return [...found.values()].sort((a,b)=>b.score-a.score).slice(0,maxResults).map(x=>x.url);
+}
+
 async function trySearchRequest(
   url:string,
   query:string,
@@ -162,7 +193,9 @@ async function trySearchRequest(
   const response=await fetchImpl(url,{...init,headers,redirect:"follow"});
   if(!response.ok)throw new Error("HTTP "+response.status);
   const html=await response.text();
-  return {urls:extractProductLinks(html,response.url||url,origin,query,maxResults),html,responseUrl:response.url||url};
+  const responseUrl=response.url||url;
+  const fast=extractProductLinksFast(html,responseUrl,origin,query,maxResults);
+  return {urls:fast.length?fast:extractProductLinks(html,responseUrl,origin,query,maxResults),html,responseUrl};
 }
 
 // Only explicit search pagination; same origin, same route and a strict page cap.

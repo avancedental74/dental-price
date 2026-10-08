@@ -145,4 +145,14 @@ describe("live search result scoring",()=>{
     expect(requests).toBe(1);
   });
 
+  it("uses lightweight anchor discovery before DOM parsing on large result pages",async()=>{
+    const filler="<div>"+"x".repeat(100_000)+"</div>";
+    const fetchImpl=(async()=>new Response(
+      filler+'<a href="https://www.dentaltix.com/es/3m/filtek-supreme-xte?sku=053M4910A3B">Filtek Supreme XTE 4910A3B A3 Body</a>',
+      {status:200}
+    )) as typeof fetch;
+    const found=await discoverSupplierProductUrls("dentaltix","4910A3B",fetchImpl,1);
+    expect(found.urls).toEqual(["https://www.dentaltix.com/es/3m/filtek-supreme-xte?sku=053M4910A3B"]);
+  });
+
 });

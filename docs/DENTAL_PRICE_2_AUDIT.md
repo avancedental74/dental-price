@@ -28,3 +28,53 @@ Commit base: `83e8f50e7a777c2bbd77fb717813d2d045e05de4`
 - `npm.cmd test -- tests/services/live-prices.test.ts tests/domain/universal-search.test.ts tests/components/all-supplier-prices.test.ts tests/components/visual-search.test.ts tests/domain/glove-alternatives.test.ts`
 
 Resultado: ambos comandos pasan tras instalar dependencias con `npm.cmd ci`.
+
+## Fase 2 - cobertura live y UX inmediata
+
+Fecha: 2026-10-08
+
+### Implementado
+
+- Se anade `npm run validate:live` para ejecutar una matriz reproducible de 30 consultas dentales contra los 7 proveedores automaticos.
+- La matriz distingue `results`, `no_match`, `error` y `partial`; un HTTP no OK ya no se clasifica como ausencia de coincidencias.
+- La UI de resultados se simplifica: cada producto muestra sus proveedores inmediatamente, con precio publicado, coste total, precio unitario normalizado cuando es fiable y nivel A/B/C.
+- La tabla "Todos los precios encontrados" se alimenta de todos los productos recuperados, incluidos accesorios/relacionados, para que las ofertas no desaparezcan por filtros visuales.
+- Los accesorios y relacionados conservan sus proveedores accesibles dentro del panel secundario.
+
+### Validacion externa real
+
+Comando ejecutado:
+
+```bash
+npm.cmd run validate:live
+```
+
+Resultado guardado en `docs/live-search-matrix.latest.json`.
+
+Resumen de la ejecucion standard:
+
+- Consultas: 30
+- Proveedores automaticos por consulta: 7
+- Ofertas recuperadas: 22
+- Celdas con resultados: 7
+- Celdas sin coincidencias: 77
+- Celdas con error: 126
+- Celdas con limite de candidatos: 0
+
+Lectura tecnica:
+
+- `dvd-dental` y `dentalboom` responden como fuentes ligeras/API.
+- `dentaltix`, `dentalcost`, `dentalexpress` y `dentipak` devolvieron HTTP 503 en la ruta live publicada para todas las consultas de la matriz.
+- `ortolan` devolvio una mezcla de `no_match` y HTTP 503.
+- Una consulta puntual a `dentaltix` para `4910A3B` devolvio `error code: 1102` desde Cloudflare, compatible con limite de CPU del Worker publicado.
+
+Conclusion:
+
+La matriz no permite afirmar ausencia de producto en los proveedores HTML cuando aparece HTTP 503/1102. Se registra como fallo operativo de ejecucion del Worker o del conector, pendiente de optimizacion antes de considerar la cobertura real satisfactoria.
+
+### Validacion local de esta fase
+
+- `npm.cmd run typecheck`
+- `npm.cmd test -- tests/components/all-supplier-prices.test.ts tests/domain/universal-search.test.ts tests/components/comparison-table.test.ts`
+
+Resultado: OK.
