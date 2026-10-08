@@ -91,8 +91,10 @@ async function fetchSupplierUrl(supplierId:SearchSupplierId,productUrl:string,fe
 }
 
 function looksLikeReference(query:string){
+  if(query.trim().includes(" "))return false;
   const compact=normalizeReference(query)??"";
-  return compact.length>=4&&/\d/.test(compact)&&!query.trim().includes(" ");
+  if(/^\d{4,}$/.test(compact))return true;
+  return compact.length>=6&&/[A-Z]/.test(compact)&&/\d/.test(compact);
 }
 
 function relevantToQuery(offer:SupplierOffer,query:string){
