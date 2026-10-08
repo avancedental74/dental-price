@@ -136,7 +136,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
       .map(o=>({...o,priceVerification:"detail" as const,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"woocommerce-store-api+product",candidateLimitReached:records.length>=limitFor(5,12)};
+    return {offers,error:records.length>0&&!offers.length?"PRODUCT_DETAILS_UNVERIFIED":null,noMatch:records.length===0,discoveredFrom:"woocommerce-store-api+product",candidateLimitReached:records.length>=limitFor(5,12)};
   }
   if(supplierId==="ortolan"){
     const records=await searchOrtolanRecords(query,fetchImpl,limitFor(12,20));
@@ -176,7 +176,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>relevantToQuery(o,query))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"ortolan-structured-search",candidateLimitReached:records.length>=limitFor(12,20)};
+    return {offers,error:records.length>0&&!offers.length?"PRODUCT_VARIANTS_NOT_VERIFIED":null,noMatch:records.length===0,discoveredFrom:"ortolan-structured-search",candidateLimitReached:records.length>=limitFor(12,20)};
   }
   if(supplierId==="dvd-dental"){
     const records=await searchDvdKlevuRecords(query,fetchImpl,limitFor(10,20));
@@ -228,7 +228,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,
+    return {offers,error:records.length>0&&!offers.length?"DISCOVERED_WITHOUT_PRICE":null,noMatch:records.length===0,
       discoveredFrom:"klevu-discovery+sku-verified-detail",
       candidateLimitReached:records.length>=limitFor(10,20)};
   }
@@ -255,7 +255,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
     .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
     .map(o=>({...o,priceVerification:"detail" as const,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
     .filter(o=>supplierOfferSchema.safeParse(o).success);
-  return {offers,error:null,noMatch:offers.length===0,discoveredFrom:discovered.searchUrl,candidateLimitReached:discovered.urls.length>=candidateLimit};
+  return {offers,error:!offers.length?"CANDIDATE_PRODUCT_PAGES_NOT_VERIFIED":null,noMatch:false,discoveredFrom:discovered.searchUrl,candidateLimitReached:discovered.urls.length>=candidateLimit};
 }
 
 export default {
