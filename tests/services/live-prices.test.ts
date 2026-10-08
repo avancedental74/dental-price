@@ -125,4 +125,12 @@ describe("groupLiveOffers",()=>{
     expect(groups).toHaveLength(2);
   });
 
+  it("does not put different internal SKUs from the same supplier into one price row",()=>{
+    const groups=groupLiveOffers([
+      offer({supplierId:"dvd-dental",supplierSku:"A1",manufacturerReference:undefined,rawName:"Alginato Turboprint 500g"}),
+      offer({supplierId:"dvd-dental",supplierSku:"A2",manufacturerReference:undefined,rawName:"Alginato Turboprint 500g"})
+    ]);
+    expect(groups).toHaveLength(2);
+  });
+
 });
