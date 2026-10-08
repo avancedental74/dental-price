@@ -105,4 +105,17 @@ describe("live search result scoring",()=>{
     expect(scoreLink("Producto distinto", "https://example.com/product?search=4910A3B", "4910A3B")).toBe(0);
   });
 
+  it("accepts an explicitly requested decimal shade written with a comma",()=>{
+    expect(scoreLink(
+      "Tetric EvoCeram Color - A3,5, Formato - Jeringa",
+      "https://ortolan.es/es/odontologia/tetric-evoceram.html",
+      "Tetric EvoCeram A3,5"
+    )).toBeGreaterThan(0);
+    expect(scoreLink(
+      "Tetric EvoCeram Color - A3,5, Formato - Jeringa",
+      "https://ortolan.es/es/odontologia/tetric-evoceram.html",
+      "Tetric EvoCeram A3"
+    )).toBe(0);
+  });
+
 });
