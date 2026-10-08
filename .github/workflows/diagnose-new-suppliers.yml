@@ -1,0 +1,53 @@
+name: Diagnose new supplier candidates
+
+on:
+  push:
+    paths:
+      - ".github/workflows/diagnose-new-suppliers.yml"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22.13.1"
+          cache: npm
+      - run: npm ci
+      - name: Probe candidate supplier search and product pages
+        run: |
+          node --input-type=module <<'NODE'
+          import * as cheerio from "cheerio";
+          const ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154.0 Safari/537.36";
+          const cases=[
+            {id:"dentipak",search:"https://www.dentipak.es/shop?search=41294",match:/scotch|41294/i},
+            {id:"dentalboom",search:"https://dentalboom.com/?s=Scotchbond+Universal+Plus&post_type=product",match:/scotch/i},
+            {id:"dentalsegurite",search:"https://dentalsegurite.es/?s=Scotchbond+Universal+Plus&post_type=product",match:/scotch/i},
+            {id:"dentaldeposito",search:"https://dentaldeposito.com/?s=Scotchbond+Universal+Plus&post_type=product",match:/scotch/i}
+          ];
+          for(const item of cases){
+            console.log("\n### CANDIDATE",item.id);
+            try{
+              const r=await fetch(item.search,{redirect:"follow",headers:{"user-agent":ua,"accept":"text/html,application/xhtml+xml"}});
+              const html=await r.text(),$=cheerio.load(html);
+              const links=$("a[href]").toArray().map(a=>({href:$(a).attr("href"),text:$(a).text().replace(/\s+/g," ").trim()}))
+                .filter(x=>item.match.test((x.text||"")+" "+(x.href||""))).slice(0,15);
+              console.log("SEARCH",JSON.stringify({status:r.status,final:r.url,len:html.length,title:$("title").text().trim(),links},null,2));
+              const product=links.map(x=>x.href).find(Boolean);
+              if(product){
+                let url;
+                try{url=new URL(product,r.url).toString();}catch{url=product;}
+                const pr=await fetch(url,{redirect:"follow",headers:{"user-agent":ua,"accept":"text/html,application/xhtml+xml"}});
+                const ph=await pr.text(),p$=cheerio.load(ph);
+                const body=p$("body").text().replace(/\s+/g," ").trim();
+                console.log("PRODUCT",JSON.stringify({
+                  status:pr.status,url:pr.url,len:ph.length,title:p$("h1").first().text().replace(/\s+/g," ").trim(),
+                  text:body.slice(0,6000),
+                  ld:p$('script[type="application/ld+json"]').toArray().map(x=>p$(x).text()).filter(x=>/Product|Offer|price|sku|mpn/i.test(x)).slice(0,5)
+                },null,2));
+              }
+            }catch(e){console.log("ERROR",e instanceof Error?e.message:String(e));}
+          }
+          NODE
