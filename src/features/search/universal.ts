@@ -126,7 +126,7 @@ export function assessProducts(groups:LiveSearchGroup[],sessionId:string|null):U
       return {
         id:group.id+"|"+o.supplierId+"|"+(o.supplierSku??index),groupId:group.id,
         name:o.rawName,reference:o.manufacturerReference??o.supplierSku,
-        supplierId:o.supplierId,productUrl:o.productUrl,
+        supplierId:o.supplierId,productUrl:validHttps(o.productUrl)?o.productUrl:"",
         publishedPrice:o.salePrice??o.regularPrice,properties:spec.properties,
         unit,count,eligible,issues,
         effectiveTotal:eligible?match.pricing?.effectiveTotalCost:undefined,
