@@ -98,6 +98,9 @@ function tokenSimilarity(a:SupplierOffer,b:SupplierOffer){
 }
 
 function criticalCompatible(a:SupplierOffer,b:SupplierOffer){
+  // Separate distinct seller SKUs from the same shop even when their names match.
+  if(a.supplierId===b.supplierId&&a.supplierSku&&b.supplierSku&&
+     normalizeReference(a.supplierSku)!==normalizeReference(b.supplierSku))return false;
   const am=normalizeManufacturer(a.manufacturer),bm=normalizeManufacturer(b.manufacturer);
   if(am&&bm&&am!==bm)return false;
   if(a.eanGtin&&b.eanGtin&&normalizeReference(a.eanGtin)!==normalizeReference(b.eanGtin))return false;
