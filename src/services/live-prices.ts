@@ -4,6 +4,7 @@ import { applyAnomalyStatus } from "../domain/anomaly";
 import { normalizeManufacturer, normalizeName, normalizeReference } from "../domain/matching/normalization";
 import { browserProtectedSupplierIds, liveAutomaticSupplierIds } from "../connectors/live-supplier-registry";
 import {planSupplierQueries,mergeSupplierQueryOffers} from "./search-expansion";
+import {mapWithConcurrency} from "./supplier-concurrency";
 
 export interface LiveSearchGroup {
   id:string;
@@ -197,7 +198,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
   const sessionId=sessionIdOverride?.trim()||crypto.randomUUID();
   const requestedAt=new Date().toISOString();
   const queries=planSupplierQueries(query,depth==="extended");
-  const settled=await Promise.all(liveAutomaticSuppliers.map(async supplierId=>{
+  const settled=await mapWithConcurrency(liveAutomaticSuppliers,async supplierId=>{
     // In extended mode try at most two semantics-preserving terms per provider.
     // The requests share a session so validation remains scoped to this search.
     const fetchTerm=async(term:string,requestDepth:SearchDepth)=>{
@@ -238,7 +239,7 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
       queries:attempts.length,
       candidateLimitReached:attempts.some(a=>a.candidateLimitReached)
     };
-  }));
+  },2);
   const offers=applyClientHistorySafety(settled.flatMap(x=>x.offers),previousHistory);
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
