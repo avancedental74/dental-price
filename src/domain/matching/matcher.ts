@@ -71,7 +71,7 @@ export function matchOfferToProduct(product: CanonicalProduct, offer: SupplierOf
   const manufacturerMatch = Boolean(pm && om && pm === om);
   addReason(reasons, "manufacturer", "Fabricante", 10, manufacturerMatch);
   if (manufacturerMatch) rawScore += 10;
-  else if (om && pm !== om) {
+  else if (pm && om && pm !== om) {
     hardReject = true;
     conflicts.push("Fabricante contradictorio");
   }
