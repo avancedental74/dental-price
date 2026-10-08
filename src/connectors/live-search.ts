@@ -269,17 +269,30 @@ export interface DentalBoomRecord {
   sku?:string;
   name:string;
   url:string;
+  publishedPrice?:number;
+  regularPrice?:number;
+  inStock?:boolean;
 }
 
 export async function searchDentalBoomRecords(query:string,fetchImpl:typeof fetch=fetch,maxResults=5):Promise<DentalBoomRecord[]>{
   const url="https://dentalboom.com/wp-json/wc/store/v1/products?search="+encodeURIComponent(query);
   const response=await fetchImpl(url,{headers:{"user-agent":"Mozilla/5.0","accept":"application/json"}});
   if(!response.ok)throw new Error("DENTALBOOM_API_HTTP_"+response.status);
-  const data=await response.json() as Array<{sku?:string;name?:string;permalink?:string}>;
+  const data=await response.json() as Array<{sku?:string;name?:string;permalink?:string;prices?:{price?:string;regular_price?:string;currency_minor_unit?:number};is_in_stock?:boolean}>;
   return data
     .filter(item=>item.name&&item.permalink&&scoreLink([item.name,item.sku].filter(Boolean).join(" "),item.permalink!,query)>=2)
     .slice(0,maxResults)
-    .map(item=>({sku:item.sku,name:item.name!,url:item.permalink!}));
+    .map(item=>{
+      const divisor=Math.pow(10,Math.max(0,Math.min(item.prices?.currency_minor_unit??2,4)));
+      const value=Number(item.prices?.price)/divisor;
+      const regular=Number(item.prices?.regular_price)/divisor;
+      return {
+        sku:item.sku,name:item.name!,url:item.permalink!,
+        publishedPrice:Number.isFinite(value)&&value>0?value:undefined,
+        regularPrice:Number.isFinite(regular)&&regular>0?regular:undefined,
+        inStock:item.is_in_stock
+      };
+    });
 }
 
 export interface OrtolanSearchRecord {
