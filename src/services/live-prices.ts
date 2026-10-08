@@ -10,8 +10,34 @@ export interface LiveSearchGroup {
   id:string;
   label:string;
   manufacturerReference?:string;
+  identityLevel:LiveIdentityLevel;
+  identityReasons:string[];
   product:CanonicalProduct;
   offers:SupplierOffer[];
+}
+
+export type LiveIdentityLevel=
+  |"exact_identity"
+  |"probable_identity"
+  |"insufficient_identity";
+
+export interface LiveDiscoveryRecord {
+  id:string;
+  supplierId:string;
+  supplierSku?:string;
+  manufacturerReference?:string;
+  rawName:string;
+  productUrl:string;
+  groupId?:string;
+  classification:
+    |"exact_identity"
+    |"probable_identity"
+    |"identity_insufficient"
+    |"related_accessory"
+    |"not_comparable";
+  reasons:string[];
+  priceVerification?:SupplierOffer["priceVerification"];
+  sourceStatus:SupplierOffer["sourceStatus"];
 }
 
 export interface LiveCatalogSearchResponse {
@@ -20,6 +46,7 @@ export interface LiveCatalogSearchResponse {
   requestedAt:string;
   completedAt:string;
   groups:LiveSearchGroup[];
+  discovery:LiveDiscoveryRecord[];
   errors:Array<{supplierId:string;message:string}>;
   depth:SearchDepth;
   coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number;status:"results"|"no_match"|"error"}>;
@@ -127,8 +154,40 @@ function offerIdentityCompleteness(offer:SupplierOffer){
   return score;
 }
 
+function mergeIdentityLevel(current:LiveIdentityLevel,next:LiveIdentityLevel):LiveIdentityLevel{
+  if(current==="insufficient_identity"||next==="insufficient_identity")return "insufficient_identity";
+  if(current==="probable_identity"||next==="probable_identity")return "probable_identity";
+  return "exact_identity";
+}
+
+function discoveryId(offer:SupplierOffer,index:number){
+  return [
+    offer.supplierId,
+    normalizeReference(offer.supplierSku)??safeId(offer.productUrl||offer.rawName),
+    normalizeReference(offer.manufacturerReference)??"",
+    index
+  ].join("|");
+}
+
+export function buildDiscoveryRecords(groups:LiveSearchGroup[]):LiveDiscoveryRecord[]{
+  return groups.flatMap(group=>group.offers.map((offer,index):LiveDiscoveryRecord=>({
+    id:discoveryId(offer,index),
+    supplierId:offer.supplierId,
+    supplierSku:offer.supplierSku,
+    manufacturerReference:offer.manufacturerReference,
+    rawName:offer.rawName,
+    productUrl:offer.productUrl,
+    groupId:group.id,
+    classification:group.identityLevel==="exact_identity"?"exact_identity":
+      group.identityLevel==="probable_identity"?"probable_identity":"identity_insufficient",
+    reasons:group.identityReasons,
+    priceVerification:offer.priceVerification,
+    sourceStatus:offer.sourceStatus
+  })));
+}
+
 export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
-  const buckets:Array<{key:string;ref?:string;offers:SupplierOffer[]}>=[];
+  const buckets:Array<{key:string;ref?:string;offers:SupplierOffer[];identityLevel:LiveIdentityLevel;reasons:Set<string>}>=[];
 
   for(const offer of offers.filter(o=>Boolean(normalizeReference(o.manufacturerReference)))){
     const ref=normalizeReference(offer.manufacturerReference)!;
@@ -138,7 +197,11 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     if(existing)existing.offers.push(offer);
     else{
       const conflicting=buckets.filter(bucket=>bucket.ref===ref).length;
-      buckets.push({key:"ref:"+ref+(conflicting?"|variant-"+conflicting:""),ref,offers:[offer]});
+      buckets.push({
+        key:"ref:"+ref+(conflicting?"|variant-"+conflicting:""),
+        ref,offers:[offer],identityLevel:"exact_identity",
+        reasons:new Set([conflicting?"Referencia fuerte compartida, pero variante separada por atributos críticos":"Referencia de fabricante acreditada"])
+      });
     }
   }
 
@@ -154,20 +217,30 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     const unambiguous=candidates[0]&&(!candidates[1]||candidates[0].score-candidates[1].score>=0.08);
     if(unambiguous){
       candidates[0].bucket.offers.push(offer);
+      candidates[0].bucket.identityLevel=mergeIdentityLevel(candidates[0].bucket.identityLevel,"probable_identity");
+      candidates[0].bucket.reasons.add("Oferta sin referencia de fabricante agrupada por nombre compatible y atributos críticos no contradictorios");
       continue;
     }
 
     const fallback=normalizeName(offer.rawName).replace(/\b(?:oferta|promo|promocion)\b/g,"").trim().slice(0,100);
     const existing=buckets.find(bucket=>bucket.key.startsWith("name:"+fallback)&&
       bucket.offers.every(other=>criticalCompatible(offer,other)));
-    if(existing)existing.offers.push(offer);
+    if(existing){
+      existing.offers.push(offer);
+      existing.identityLevel=mergeIdentityLevel(existing.identityLevel,"insufficient_identity");
+      existing.reasons.add("Sin identificador fuerte; agrupación conservadora por nombre y atributos");
+    }
     else{
       const variants=buckets.filter(bucket=>bucket.key.startsWith("name:"+fallback)).length;
-      buckets.push({key:"name:"+fallback+(variants?"|variant-"+variants:""),offers:[offer]});
+      buckets.push({
+        key:"name:"+fallback+(variants?"|variant-"+variants:""),
+        offers:[offer],identityLevel:"insufficient_identity",
+        reasons:new Set(["Sin referencia de fabricante ni EAN; identidad insuficiente para ranking exacto"])
+      });
     }
   }
 
-  return buckets.map(({key,offers:group})=>{
+  return buckets.map(({key,offers:group,identityLevel,reasons})=>{
     const representative=[...group].sort((a,b)=>offerIdentityCompleteness(b)-offerIdentityCompleteness(a))[0]!;
     const product:CanonicalProduct={
       id:"live-"+safeId(key),
@@ -185,7 +258,10 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
       normalizedName:representative.normalizedName||normalizeName(representative.rawName),
       active:true
     };
-    return {id:product.id,label:representative.rawName,manufacturerReference:representative.manufacturerReference,product,offers:group};
+    return {
+      id:product.id,label:representative.rawName,manufacturerReference:representative.manufacturerReference,
+      identityLevel,identityReasons:[...reasons],product,offers:group
+    };
   }).sort((a,b)=>{
     const suppliersA=new Set(a.offers.map(o=>o.supplierId)).size;
     const suppliersB=new Set(b.offers.map(o=>o.supplierId)).size;
@@ -241,9 +317,10 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
     };
   },2);
   const offers=applyClientHistorySafety(settled.flatMap(x=>x.offers),previousHistory);
+  const groups=groupLiveOffers(offers);
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
-    groups:groupLiveOffers(offers),depth,
+    groups,discovery:buildDiscoveryRecords(groups),depth,
     coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached,queries:x.queries,partialErrors:x.partialErrors,status:x.error?"error" as const:x.offers.length?"results" as const:"no_match" as const})),
     errors:settled.filter(x=>x.error).map(x=>({supplierId:x.supplierId,message:x.error!}))
   };

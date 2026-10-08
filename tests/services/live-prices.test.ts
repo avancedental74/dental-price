@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { SupplierOffer } from "../../src/types/domain";
-import { groupLiveOffers } from "../../src/services/live-prices";
+import { buildDiscoveryRecords, groupLiveOffers } from "../../src/services/live-prices";
 
 function offer(overrides:Partial<SupplierOffer>):SupplierOffer{
   return {
@@ -47,6 +47,8 @@ describe("groupLiveOffers",()=>{
     expect(groups).toHaveLength(1);
     expect(new Set(groups[0].offers.map(x=>x.supplierId))).toEqual(new Set(["dentaltix","ortolan"]));
     expect(groups[0].manufacturerReference).toBe("590323WW");
+    expect(groups[0].identityLevel).toBe("probable_identity");
+    expect(groups[0].identityReasons.join(" ").toLowerCase()).toContain("sin referencia");
   });
 
   it("does not merge capsules with a syringe even when names are similar",()=>{
@@ -66,6 +68,7 @@ describe("groupLiveOffers",()=>{
       })
     ]);
     expect(groups).toHaveLength(2);
+    expect(groups.every(g=>g.identityLevel!=="probable_identity")).toBe(true);
   });
 
   it("uses the most complete offer to build the live canonical product",()=>{
@@ -90,6 +93,8 @@ describe("groupLiveOffers",()=>{
     expect(groups[0].product.presentation).toBe("Jeringa");
     expect(groups[0].product.quantity).toBe(3);
     expect(groups[0].product.shade).toBe("A2");
+    expect(buildDiscoveryRecords(groups)).toHaveLength(2);
+    expect(buildDiscoveryRecords(groups).every(record=>record.groupId===groups[0].id)).toBe(true);
   });
   it("separates identical reference codes when manufacturer, shade, EAN or pack differs",()=>{
     const base={manufacturerReference:"SAME123",manufacturer:"Maker A",presentation:"Jeringa",
@@ -116,6 +121,7 @@ describe("groupLiveOffers",()=>{
     const groups=groupLiveOffers([first,second]);
     expect(groups).toHaveLength(2);
     expect(new Set(groups.map(g=>g.id)).size).toBe(2);
+    expect(groups.every(g=>g.identityLevel==="insufficient_identity")).toBe(true);
   });
   it("checks a new supplier against all members, not just the first with sparse attributes",()=>{
     const basic=offer({supplierId:"dentaltix",manufacturerReference:"SAME",quantity:undefined});

@@ -16,6 +16,11 @@ const supplierNames:Record<string,string>={
   dentalboom:"Dental Boom",proclinic:"Proclinic","dental-iberica":"Dental Ibérica",
   brokerdental:"Broker Dental"
 };
+const identityLabels={
+  exact_identity:"Misma referencia acreditada",
+  probable_identity:"Coincidencia probable",
+  insufficient_identity:"Identidad insuficiente"
+};
 function SupplierRows({offers}: {offers:UniversalOffer[]}){
   return <><p className="alternatives-footnote">Si el depósito muestra varias variantes, selecciona la referencia y presentación de esta fila antes de comparar el importe con la ficha.</p><div className="table-wrap"><table className="universal-offers-table"><thead><tr>
     <th>Depósito</th><th>Precio publicado</th><th>Coste efectivo</th><th>Estado</th><th>Ficha</th>
@@ -123,11 +128,13 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
               <strong>{product.group.label}</strong>
               <small>{[
                 product.group.manufacturerReference?"Ref. "+product.group.manufacturerReference:null,
+                identityLabels[product.group.identityLevel],
                 new Set(product.group.offers.map(o=>o.supplierId)).size+" proveedor(es)",
                 product.specs.properties.quantity,
                 product.specs.properties.shade,
                 product.specs.properties.presentation
               ].filter(Boolean).join(" · ")}</small>
+              {product.group.identityReasons.length>0&&<small className="identity-reasons">{product.group.identityReasons.join("; ")}</small>}
             </div>
             <div className="universal-product-price">
               {product.best?.effectiveTotal!==undefined

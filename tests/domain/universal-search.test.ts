@@ -23,7 +23,11 @@ function group(id:string,name:string,price=20,quantity=100,opts:Partial<Supplier
     observedAt:now(),verifiedAt:now(),sourceStatus:"normal",sourceMode:"automatic",
     verificationKind:"live",verificationSessionId:"live1",...opts
   };
-  return {id,label:name,manufacturerReference:id,product,offers:[offer]};
+  return {
+    id,label:name,manufacturerReference:id,
+    identityLevel:"exact_identity",identityReasons:["Referencia de fabricante acreditada"],
+    product,offers:[offer]
+  };
 }
 describe("universal dental price comparison",()=>{
   it("uses the same category detection interface for any dental search",()=>{

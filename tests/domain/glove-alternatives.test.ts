@@ -20,7 +20,11 @@ function makeGroup(name:string,count:number,price:number,supplierId:string,ref:s
     sourceMode:"automatic",verificationKind:"live",verificationSessionId:"session-a",
     verifiedAt:now(),...opts
   };
-  return {id:ref,label:name,manufacturerReference:ref,product,offers:[offer]};
+  return {
+    id:ref,label:name,manufacturerReference:ref,
+    identityLevel:"exact_identity",identityReasons:["Referencia de fabricante acreditada"],
+    product,offers:[offer]
+  };
 }
 const filters={material:"Nitrilo",size:"M",powder:"Sin polvo",sterile:"No estériles"} as const;
 describe("safe cross-brand glove comparison",()=>{

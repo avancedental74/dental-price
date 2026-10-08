@@ -13,7 +13,11 @@ function group():LiveSearchGroup{
  const suppliers=["dentipak","dvd-dental","ortolan","dentaltix"];
  const prices=[10,9.24,8.9,11.6];
  const offers:SupplierOffer[]=suppliers.map((supplierId,i)=>({supplierId,supplierSku:"SKU-"+i,rawName:name,normalizedName:name.toLowerCase(),productUrl:"https://example.com/"+i,regularPrice:prices[i]!,stockStatus:"unknown",vatStatus:"unknown",currency:"EUR",observedAt:now,sourceStatus:i===1||i===2?"suspicious":"normal",priceVerification:i===1||i===2?"search_index":"detail",verificationKind:"live",verificationSessionId:"latest"}));
- return {id:"A",label:name,product,offers};
+ return {
+   id:"A",label:name,identityLevel:"insufficient_identity",
+   identityReasons:["Sin referencia de fabricante ni EAN"],
+   product,offers
+ };
 }
 describe("complete price visibility",()=>{
  it("shows every recovered supplier even without checkout verification",()=>{
@@ -21,7 +25,7 @@ describe("complete price visibility",()=>{
    expect(rows).toHaveLength(4);
    expect(rows.every(r=>r.offer.effectiveTotal===undefined)).toBe(true);
    const html=renderToStaticMarkup(createElement(AllSupplierPrices,{rows}));
-   for(const text of ["Dentipak","DVD Dental","Ortolan","Dentaltix","9,24","8,90","Índice del proveedor"])expect(html).toContain(text);
+   for(const text of ["Dentipak","DVD Dental","Ortolan","Dentaltix","9,24","8,90","Nivel C"])expect(html).toContain(text);
  });
  it("allows an advertised number while preserving ranking safeguards",()=>{
    const rows=collectPublishedPrices(assessProducts([group()],"latest"));

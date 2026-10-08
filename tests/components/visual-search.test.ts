@@ -3,7 +3,9 @@ import {describe as describeGlove,matches} from "../../src/components/VisualSear
 import type {LiveSearchGroup} from "../../src/services/live-prices";
 
 function group(family:string):LiveSearchGroup{
-  return {id:family,label:family,offers:[],product:{
+  return {id:family,label:family,identityLevel:"insufficient_identity",
+  identityReasons:["Fixture sin ofertas"],
+  offers:[],product:{
     id:family,family,productName:family,manufacturer:"",presentation:"Caja",
     quantity:100,unit:"unit",packCount:1,category:"Búsqueda live",
     normalizedName:family.toLowerCase(),active:true

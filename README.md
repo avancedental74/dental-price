@@ -43,6 +43,8 @@ La fuente de verdad del proyecto está en `docs/DENTAL_PRICE_MASTER_SPEC.md`.
 
 El estado real y las limitaciones verificadas están en `docs/HARDENING_STATUS.md`.
 
+La auditoría de la evolución Dental Price 2.0 queda registrada en `docs/DENTAL_PRICE_2_AUDIT.md`.
+
 ## Proveedores
 
 1. Dentaltix — búsqueda live por nombre o referencia; variantes exactas recuperadas también desde el payload Nuxt.

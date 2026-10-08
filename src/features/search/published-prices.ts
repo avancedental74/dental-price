@@ -28,10 +28,9 @@ export function collectPublishedPrices(products:UniversalProduct[],filters:Searc
 }
 
 export function advertisedPriceLabel(offer:UniversalOffer):string{
-  if(offer.priceVerification==="search_index")return "Índice del proveedor · orientativo";
-  if(offer.eligible)return "Coste final calculable";
-  if(offer.priceVerification==="detail")return "Ficha consultada · coste final pendiente";
-  return "Precio recuperado · sin confirmar";
+  if(offer.verificationLevel==="A")return "Nivel A - precio de compra contrastado";
+  if(offer.verificationLevel==="B")return "Nivel B - precio de ficha";
+  return "Nivel C - precio orientativo";
 }
 
 export function hasAdvertisedPrice(offer:UniversalOffer):boolean{

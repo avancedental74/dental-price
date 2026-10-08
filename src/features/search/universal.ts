@@ -101,7 +101,8 @@ export function specsForGroup(group:LiveSearchGroup,offer?:SupplierOffer):Search
 export interface UniversalOffer {
   id:string;groupId:string;name:string;reference?:string;supplierId:string;
   productUrl:string;publishedPrice:number;vatStatus?:"included"|"excluded"|"unknown";properties:SearchFilters;
-  unit?:string;count?:number;priceVerification?:"detail"|"search_index";effectiveTotal?:number;normalizedCost?:number;
+  unit?:string;count?:number;priceVerification?:"detail"|"search_index";verificationLevel:"A"|"B"|"C";
+  effectiveTotal?:number;normalizedCost?:number;
   normalizedBasis?:string;eligible:boolean;issues:string[];
 }
 export interface UniversalProduct {
@@ -121,6 +122,8 @@ export function assessProducts(groups:LiveSearchGroup[],sessionId:string|null):U
       if(!validHttps(o.productUrl))issues.push("URL no verificada");
       if(o.priceVerification==="search_index")issues.push("Precio tomado del índice de búsqueda, no comprobado en la ficha");
       const eligible=issues.length===0&&!!match.pricing;
+      const verificationLevel:UniversalOffer["verificationLevel"]=eligible?"A":
+        o.priceVerification==="detail"?"B":"C";
       const count=spec.count;
       const unit=spec.unit;
       // Multi-packs often publish quantity per capsule/syringe rather than the
@@ -133,7 +136,7 @@ export function assessProducts(groups:LiveSearchGroup[],sessionId:string|null):U
         name:o.rawName,reference:o.manufacturerReference??o.supplierSku,
         supplierId:o.supplierId,productUrl:validHttps(o.productUrl)?o.productUrl:"",
         publishedPrice:o.salePrice??o.regularPrice,vatStatus:o.vatStatus,properties:spec.properties,
-        unit,count,priceVerification:o.priceVerification,eligible,issues,
+        unit,count,priceVerification:o.priceVerification,verificationLevel,eligible,issues,
         effectiveTotal:eligible?match.pricing?.effectiveTotalCost:undefined,
         normalizedBasis:normalizable?(unit==="unit"?"100 ud":"1 "+unit):undefined,
         normalizedCost:normalizable?Math.round(match.pricing!.effectiveTotalCost/(count!)*(unit==="unit"?100:1)*100)/100:undefined

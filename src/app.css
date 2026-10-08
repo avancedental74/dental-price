@@ -297,6 +297,7 @@ button.smart-result:hover{border-color:#92c8ff}
 .universal-product-title{display:grid;gap:6px;min-width:0}
 .universal-product-title strong{font-size:14px;line-height:1.5;overflow-wrap:anywhere}
 .universal-product-title small{font-size:11px;color:var(--muted);line-height:1.5}
+.universal-product-title .identity-reasons{color:#68778a}
 .universal-product-price{display:grid;gap:4px;max-width:170px;text-align:right}
 .universal-product-price strong{font-size:18px;letter-spacing:-.03em}
 .universal-product-price small{font-size:10px;color:var(--muted);line-height:1.4}
