@@ -188,7 +188,7 @@ export function parseDentaltixNuxtFast(html:string,productUrl:string):DentaltixP
         manufacturer=resolveString((brandValue as Record<string,unknown>).name);
       }
       const vatRateMatch=html.match(/(?:Price VAT included|Precio IVA incluido)\s*\(?\s*(\d{1,2})\s*%/i);
-      const vatRate=vatRateMatch?Number(vatRateMatch[1]):undefined;
+      let detectedVatRate=vatRateMatch?Number(vatRateMatch[1]):undefined;
 
       const candidates:Record<string,unknown>[]=[];
       const addCandidate=(value:unknown)=>{
@@ -226,8 +226,19 @@ export function parseDentaltixNuxtFast(html:string,productUrl:string):DentaltixP
           const priceObj=priceResolved as Record<string,unknown>;
           const sales=resolve(priceObj.sales);
           const recommended=resolve(priceObj.recommended);
+          const taxes=resolve(priceObj.taxes);
           if(sales&&typeof sales==="object"&&!Array.isArray(sales))salePrice=resolveNumber((sales as Record<string,unknown>).value);
           if(recommended&&typeof recommended==="object"&&!Array.isArray(recommended))regularPrice=resolveNumber((recommended as Record<string,unknown>).value);
+          if(taxes&&typeof taxes==="object"&&!Array.isArray(taxes)){
+            const rawRate=resolveNumber((taxes as Record<string,unknown>).rate);
+            if(typeof rawRate==="number"){
+              const normalizedRate=rawRate>0&&rawRate<=1?rawRate*100:rawRate;
+              if([4,10,21].some(rate=>Math.abs(rate-normalizedRate)<0.01)){
+                if(detectedVatRate===undefined)detectedVatRate=normalizedRate;
+                else if(Math.abs(detectedVatRate-normalizedRate)>=0.01)detectedVatRate=undefined;
+              }
+            }
+          }
         }
 
         const stockControl=resolve(obj.stockControl);
@@ -253,7 +264,7 @@ export function parseDentaltixNuxtFast(html:string,productUrl:string):DentaltixP
       return {
         title,
         manufacturer,
-        vatRate:Number.isFinite(vatRate)?vatRate:undefined,
+        vatRate:Number.isFinite(detectedVatRate)?detectedVatRate:undefined,
         vatIncluded:false,
         productUrl,
         variants
