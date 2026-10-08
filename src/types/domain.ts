@@ -93,6 +93,8 @@ export interface SupplierOffer {
   observedAt: string;
   sourceStatus: "normal" | "suspicious" | "quarantined";
   sourceMode?: "automatic" | "manual";
+  // Was the monetary amount checked on the actual product/variant page?
+  priceVerification?: "detail" | "search_index";
   verificationKind?: VerificationKind;
   verificationSessionId?: string;
   verifiedAt?: string;
