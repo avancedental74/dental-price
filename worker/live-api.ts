@@ -170,7 +170,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>supplierOfferSchema.safeParse(o).success);
     return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu+product"};
   }
-  const candidateLimit=supplierId==="dentaltix"?1:supplierId==="dentalcost"?3:(supplierId==="dentipak"||supplierId==="dentalboom")?2:3;
+  const candidateLimit=supplierId==="dentaltix"?1:supplierId==="dentalcost"?3:supplierId==="dentipak"?2:3;
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
   if(!discovered.urls.length){
     const message=discovered.error??"Sin resultados";
