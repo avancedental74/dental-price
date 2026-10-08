@@ -83,4 +83,26 @@ describe("live search result scoring",()=>{
     )).toBe(0);
   });
 
+  it("accepts only lexical synonyms, not different product variants",()=>{
+    expect(scoreLink(
+      "Resina compuesta Filtek Supreme A3 Body 3 gramos",
+      "https://example.com/filtek-supreme-a3-body",
+      "Composite Filtek Supreme A3 Body 3gr"
+    )).toBeGreaterThan(0);
+    expect(scoreLink(
+      "Resina compuesta Filtek Supreme A3 Dentin 3 gramos",
+      "https://example.com/filtek-supreme-a3-dentin",
+      "Composite Filtek Supreme A3 Body 3gr"
+    )).toBe(0);
+  });
+
+  it("supports Spanish shade wording without treating enamel as dentin",()=>{
+    expect(scoreLink("Tetric EvoCeram Esmalte A3", "https://example.com/tetric-evoceram", "Tetric EvoCeram Enamel A3")).toBeGreaterThan(0);
+    expect(scoreLink("Tetric EvoCeram Dentina A3", "https://example.com/tetric-evoceram", "Tetric EvoCeram Enamel A3")).toBe(0);
+  });
+
+  it("rejects reference echoes in URL query parameters",()=>{
+    expect(scoreLink("Producto distinto", "https://example.com/product?search=4910A3B", "4910A3B")).toBe(0);
+  });
+
 });
