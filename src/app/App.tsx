@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CanonicalProduct, SupplierOffer } from "../types/domain";
 import { compareSupplierOffers } from "../domain/comparison";
 import { getFreshnessStatus } from "../domain/comparison/compare";
@@ -35,6 +35,7 @@ export function App(){
   const [liveGroups,setLiveGroups]=useState<LiveSearchGroup[]>([]);
   const [searchDepth,setSearchDepth]=useState<SearchDepth>("standard");
   const [supplierCoverage,setSupplierCoverage]=useState<Array<{supplierId:string;offers:number;candidateLimitReached:boolean}>>([]);
+  const activeSearchId=useRef(0);
   const [manualOffers,setManualOffers]=useState<SupplierOffer[]>(()=>loadManualOffers());
   const [manualHistory,setManualHistory]=useState<PriceObservation[]>(()=>loadManualHistory());
   const [liveHistory,setLiveHistory]=useState<PriceObservation[]>(()=>loadLiveHistory());
@@ -60,6 +61,7 @@ export function App(){
 
   const runFederatedSearch=async(q:string,keepSelection?:CanonicalProduct|null,depth:SearchDepth="standard")=>{
     if(!q.trim())return;
+    const searchId=++activeSearchId.current;
     setQuery(q.trim());
     setSearchDepth(depth);
     setSupplierCoverage([]);
@@ -72,6 +74,7 @@ export function App(){
     setLiveState("loading");
     try{
       const result=await searchLiveCatalog(q.trim(),data?[...data.history,...liveHistory]:liveHistory,undefined,depth);
+      if(searchId!==activeSearchId.current)return;
       setSupplierCoverage(result.coverage);
       setLiveSessionId(result.sessionId);
       setLiveCompletedAt(result.completedAt);
@@ -97,6 +100,7 @@ export function App(){
       setLiveGroups(groups);
       setLiveState(result.groups.length?(result.errors.length?"partial":"success"):"failed");
     }catch(e){
+      if(searchId!==activeSearchId.current)return;
       const message=e instanceof Error?e.message:"LIVE_SEARCH_ERROR";
       setLiveState(message==="LIVE_API_NOT_CONFIGURED"?"unavailable":"failed");
       setLiveErrors(message==="LIVE_API_NOT_CONFIGURED"?[]:[{supplierId:"live-api",message}]);
