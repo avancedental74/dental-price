@@ -121,7 +121,10 @@ export function assessProducts(groups:LiveSearchGroup[],sessionId:string|null):U
       const eligible=issues.length===0&&!!match.pricing;
       const count=spec.count;
       const unit=spec.unit;
-      const normalizable=eligible&&!!unit&&count!==undefined&&count>0&&
+      // Multi-packs often publish quantity per capsule/syringe rather than the
+      // whole purchased package. Without verified pack semantics, do not divide
+      // delivered cost by a single component as if it were the full pack.
+      const normalizable=eligible&&o.packCount===1&&!!unit&&count!==undefined&&count>0&&
         ["unit","g","ml","mg"].includes(unit);
       return {
         id:group.id+"|"+o.supplierId+"|"+(o.supplierSku??index),groupId:group.id,

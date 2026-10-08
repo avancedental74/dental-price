@@ -318,3 +318,12 @@ button.smart-result:hover{border-color:#92c8ff}
 .universal-coverage small{color:#526274;font-size:11px;line-height:1.5}
 .universal-coverage button{white-space:nowrap;flex-shrink:0}
 @media(max-width:600px){.universal-coverage{align-items:stretch;flex-direction:column}.universal-coverage button{width:100%}}
+
+
+.universal-protected-suppliers{border:1px solid var(--line);border-radius:14px;background:#fff;margin:10px 0 18px;padding:13px 15px}
+.universal-protected-suppliers summary{cursor:pointer;color:#495261;font-size:12px;font-weight:700}
+.universal-protected-suppliers p{font-size:12px;color:var(--muted);line-height:1.5;margin:10px 0}
+.universal-protected-links{display:flex;gap:10px;flex-wrap:wrap}
+.universal-protected-links a{font-size:12px;font-weight:650;color:var(--blue);padding:9px 10px;background:#f0f6ff;border-radius:9px;text-decoration:none}
+.universal-protected-links a:hover{text-decoration:underline}
+@media(max-width:520px){.universal-protected-links{flex-direction:column}.universal-protected-links a{display:block}}

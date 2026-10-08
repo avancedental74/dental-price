@@ -3,6 +3,7 @@ import type { PriceObservation } from "../domain/history";
 import { applyAnomalyStatus } from "../domain/anomaly";
 import { normalizeManufacturer, normalizeName, normalizeReference } from "../domain/matching/normalization";
 import { browserProtectedSupplierIds, liveAutomaticSupplierIds } from "../connectors/live-supplier-registry";
+import {planSupplierQueries,mergeSupplierQueryOffers} from "./search-expansion";
 
 export interface LiveSearchGroup {
   id:string;
@@ -20,7 +21,7 @@ export interface LiveCatalogSearchResponse {
   groups:LiveSearchGroup[];
   errors:Array<{supplierId:string;message:string}>;
   depth:SearchDepth;
-  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean}>;
+  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number}>;
 }
 
 export type SearchDepth="standard"|"extended";
@@ -129,7 +130,7 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     const ref=normalizeReference(offer.manufacturerReference)!;
     // Identical-looking references are not enough if the brand, EAN, shade
     // or pack details contradict each other.
-    const existing=buckets.find(bucket=>bucket.ref===ref&&criticalCompatible(offer,bucket.offers[0]!));
+    const existing=buckets.find(bucket=>bucket.ref===ref&&bucket.offers.every(existing=>criticalCompatible(offer,existing)));
     if(existing)existing.offers.push(offer);
     else{
       const conflicting=buckets.filter(bucket=>bucket.ref===ref).length;
@@ -141,7 +142,7 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     const candidates=buckets
       .map(bucket=>{
         const representative=bucket.offers[0]!;
-        return {bucket,score:criticalCompatible(offer,representative)?tokenSimilarity(offer,representative):0};
+        return {bucket,score:bucket.offers.every(existing=>criticalCompatible(offer,existing))?tokenSimilarity(offer,representative):0};
       })
       .filter(x=>x.score>=0.65)
       .sort((a,b)=>b.score-a.score);
@@ -153,9 +154,13 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
     }
 
     const fallback=normalizeName(offer.rawName).replace(/\b(?:oferta|promo|promocion)\b/g,"").trim().slice(0,100);
-    const existing=buckets.find(bucket=>bucket.key==="name:"+fallback);
+    const existing=buckets.find(bucket=>bucket.key.startsWith("name:"+fallback)&&
+      bucket.offers.every(other=>criticalCompatible(offer,other)));
     if(existing)existing.offers.push(offer);
-    else buckets.push({key:"name:"+fallback,offers:[offer]});
+    else{
+      const variants=buckets.filter(bucket=>bucket.key.startsWith("name:"+fallback)).length;
+      buckets.push({key:"name:"+fallback+(variants?"|variant-"+variants:""),offers:[offer]});
+    }
   }
 
   return buckets.map(({key,offers:group})=>{
@@ -188,22 +193,42 @@ export async function searchLiveCatalog(query:string,previousHistory:PriceObserv
   const base=apiBase();
   const sessionId=sessionIdOverride?.trim()||crypto.randomUUID();
   const requestedAt=new Date().toISOString();
+  const queries=planSupplierQueries(query,depth==="extended");
   const settled=await Promise.all(liveAutomaticSuppliers.map(async supplierId=>{
-    try{
-      const url=base+"/search-supplier?q="+encodeURIComponent(query)+"&supplier="+encodeURIComponent(supplierId)+"&sessionId="+encodeURIComponent(sessionId)+"&depth="+depth;
-      const response=await fetch(url,{method:"GET",headers:{accept:"application/json"},cache:"no-store"});
-      if(!response.ok) return {supplierId,offers:[] as SupplierOffer[],error:"HTTP "+response.status,candidateLimitReached:false};
-      const data=await response.json() as SupplierSearchResponse;
-      return {supplierId,offers:data.offers??[],error:data.error??null,noMatch:Boolean(data.noMatch),candidateLimitReached:Boolean(data.candidateLimitReached)};
-    }catch(error){
-      return {supplierId,offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR",candidateLimitReached:false};
-    }
+    // In extended mode try at most two semantics-preserving terms per provider.
+    // The requests share a session so validation remains scoped to this search.
+    const attempts=await Promise.all(queries.map(async term=>{
+      try{
+        const url=base+"/search-supplier?q="+encodeURIComponent(term)
+          +"&supplier="+encodeURIComponent(supplierId)
+          +"&sessionId="+encodeURIComponent(sessionId)+"&depth="+depth;
+        const response=await fetch(url,{method:"GET",headers:{accept:"application/json"},cache:"no-store"});
+        if(!response.ok)return {offers:[] as SupplierOffer[],error:"HTTP "+response.status,candidateLimitReached:false};
+        const data=await response.json() as SupplierSearchResponse;
+        // Reject an unexpected supplier/session response instead of accidentally
+        // mixing a prior result into the latest ranking.
+        if(data.supplierId!==supplierId||data.sessionId!==sessionId)
+          return {offers:[] as SupplierOffer[],error:"RESPONSE_IDENTITY_MISMATCH",candidateLimitReached:false};
+        return {offers:data.offers??[],error:data.error??null,candidateLimitReached:Boolean(data.candidateLimitReached)};
+      }catch(error){
+        return {offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR",candidateLimitReached:false};
+      }
+    }));
+    const good=attempts.filter(a=>!a.error);
+    const combined=mergeSupplierQueryOffers(good.flatMap(a=>a.offers));
+    return {
+      supplierId,offers:combined,
+      error:good.length?null:attempts.map(a=>a.error).filter(Boolean).join("; "),
+      partialErrors:attempts.filter(a=>a.error).length,
+      queries:queries.length,
+      candidateLimitReached:attempts.some(a=>a.candidateLimitReached)
+    };
   }));
   const offers=applyClientHistorySafety(settled.flatMap(x=>x.offers),previousHistory);
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
     groups:groupLiveOffers(offers),depth,
-    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached})),
+    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached,queries:x.queries,partialErrors:x.partialErrors})),
     errors:settled.filter(x=>x.error).map(x=>({supplierId:x.supplierId,message:x.error!}))
   };
 }

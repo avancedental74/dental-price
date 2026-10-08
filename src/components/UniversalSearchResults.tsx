@@ -26,7 +26,7 @@ function SupplierRows({offers}: {offers:UniversalOffer[]}){
 }
 export function UniversalSearchResults({items,query,onSelect,sessionId,searchDepth,coverage,onExpand}:{
   items:LiveSearchGroup[];query:string;sessionId:string|null;onSelect:(group:LiveSearchGroup)=>void;
-  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean}>;onExpand:()=>void;
+  searchDepth:SearchDepth;coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean;queries:number;partialErrors:number}>;onExpand:()=>void;
 }){
   const [filters,setFilters]=useState<SearchFilters>({});
   const [mode,setMode]=useState<"offers"|"alternatives">("offers");
@@ -61,11 +61,21 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
     <p className="universal-intro">Consulta cualquier referencia o nombre. Cada producto se compara con sus propios proveedores; otras marcas aparecen por separado.</p>
     <div className="universal-coverage">
       <div><strong>Alcance real de la búsqueda</strong>
-        <small>{coverage.filter(c=>c.offers>0).length} de {coverage.length} proveedores consultados devolvieron productos · {coverage.filter(c=>c.candidateLimitReached).length} alcanzaron su límite de revisión de candidatos. Los resultados no representan todo el mercado.</small>
+        <small>{coverage.filter(c=>c.offers>0).length} de {coverage.length} proveedores automáticos devolvieron productos · {coverage.filter(c=>c.candidateLimitReached).length} alcanzaron su límite de revisión de candidatos.</small>
+        <small>{coverage.reduce((n,c)=>n+c.queries,0)} consultas enviadas; {coverage.reduce((n,c)=>n+c.partialErrors,0)} consultas con errores parciales. La cobertura no equivale a todo el catálogo.</small>
         {searchDepth==="extended"&&<small>Consulta ampliada aplicada. Algunas webs pueden restringir la cantidad de resultados o requerir verificación.</small>}
       </div>
       {searchDepth==="standard"&&<button type="button" className="secondary-button" onClick={onExpand}>Ampliar resultados ↗</button>}
     </div>
+    <details className="universal-protected-suppliers">
+      <summary>Otros 3 depósitos requieren acceso desde su web</summary>
+      <p>Estas búsquedas se abren en el sitio del proveedor. Sus precios no se incorporan automáticamente ni se consideran verificados en Dental Price.</p>
+      <div className="universal-protected-links">
+        <a href={"https://www.proclinic.es/tienda/catalogsearch/result/?q="+encodeURIComponent(query)} target="_blank" rel="noopener noreferrer">Buscar en Proclinic ↗</a>
+        <a href={"https://dentaliberica.com/?s="+encodeURIComponent(query)+"&post_type=product"} target="_blank" rel="noopener noreferrer">Buscar en Dental Ibérica ↗</a>
+        <a href={"https://www.brokerdental.es/catalogsearch/result/?q="+encodeURIComponent(query)} target="_blank" rel="noopener noreferrer">Buscar en Broker Dental ↗</a>
+      </div>
+    </details>
     <div className="smart-mode-toggle" role="group" aria-label="Tipo de comparación">
       <button type="button" aria-pressed={mode==="offers"} className={mode==="offers"?"active":""} onClick={()=>setMode("offers")}>Ofertas por producto</button>
       <button type="button" aria-pressed={mode==="alternatives"} className={mode==="alternatives"?"active":""} onClick={()=>setMode("alternatives")}>Explorar alternativas</button>
@@ -140,6 +150,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
         <div className="alternatives-pending-list">
           {alternatives.unverified.map(o=><div key={o.id}><strong>{o.name}</strong>
             <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
+            {o.normalizedCost!==undefined&&<small>Coste orientativo por {o.normalizedBasis}: {money(o.normalizedCost)} (no acredita equivalencia con otros productos)</small>}
             <small>{[
               ...o.issues,
               alternatives.reason??"Sin homologación de características entre marcas"

@@ -108,4 +108,21 @@ describe("groupLiveOffers",()=>{
     expect(groups.every(g=>g.offers.every(o=>o.manufacturerReference==="SAME123"))).toBe(true);
   });
 
+  it("does not merge identical names with incompatible packs when both lack a manufacturer reference",()=>{
+    const first=offer({supplierId:"dentaltix",rawName:"Jeringas de composite A3",
+      manufacturerReference:undefined,presentation:"Jeringa",quantity:3,unit:"g",packCount:1});
+    const second=offer({supplierId:"dentalcost",rawName:"Jeringas de composite A3",
+      manufacturerReference:undefined,presentation:"Jeringa",quantity:4,unit:"g",packCount:1});
+    const groups=groupLiveOffers([first,second]);
+    expect(groups).toHaveLength(2);
+    expect(new Set(groups.map(g=>g.id)).size).toBe(2);
+  });
+  it("checks a new supplier against all members, not just the first with sparse attributes",()=>{
+    const basic=offer({supplierId:"dentaltix",manufacturerReference:"SAME",quantity:undefined});
+    const specified=offer({supplierId:"dentalcost",manufacturerReference:"SAME",quantity:3,unit:"g"});
+    const conflict=offer({supplierId:"dvd-dental",manufacturerReference:"SAME",quantity:4,unit:"g"});
+    const groups=groupLiveOffers([basic,specified,conflict]);
+    expect(groups).toHaveLength(2);
+  });
+
 });
