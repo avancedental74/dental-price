@@ -186,7 +186,7 @@ describe("Dentaltix connector", () => {
     const payload=[
       {slug:1,mainVar:2,variations:3},
       "demo",
-      {manRef:4,sku:5,name:6,type:7,price:8},
+      {manRef:4,sku:5,name:6,type:7,price:8,stockControl:21,stock:22},
       {selected:2},
       "4910A3B",
       "053M4910A3B",
@@ -204,7 +204,9 @@ describe("Dentaltix connector", () => {
       "1 Jer. de 2 gr",
       {sales:19},
       {value:20},
-      9.99
+      9.99,
+      true,
+      7
     ];
     const html=`<html><body><h1>Filtek Supreme XTE</h1><script type="application/json" data-nuxt-data="nuxt-app">${JSON.stringify(payload)}</script></body></html>`;
     const offers=normalizeDentaltix(parseDentaltixProductHtml(html,"https://www.dentaltix.com/es/demo"));
@@ -214,6 +216,8 @@ describe("Dentaltix connector", () => {
     expect(exact?.regularPrice).toBe(64.14);
     expect(exact?.shade).toBe("A3");
     expect(exact?.variant).toBe("Body");
+    expect(exact?.stockStatus).toBe("in_stock");
+    expect(exact?.rawStockText).toContain("En stock: 7");
     expect(exact?.productUrl).toContain("sku=053M4910A3B");
     expect(offers.some(o=>o.manufacturerReference==="UNRELATED-REF")).toBe(false);
   });
