@@ -22,6 +22,7 @@ import { BasketPanel, type BasketUiItem } from "../components/BasketPanel";
 import { optimizeBasket } from "../domain/basket";
 import { loadPublicData, type PublicData } from "../services/public-data";
 import { searchLiveCatalog, type LiveSearchGroup } from "../services/live-prices";
+import { loadLiveHistory, recordLiveSearchHistory, saveLiveHistory } from "../services/live-history";
 import { loadManualHistory, loadManualOffers, saveManualHistory, saveManualOffers } from "../services/manual-offers";
 
 export function App(){
@@ -33,6 +34,7 @@ export function App(){
   const [liveGroups,setLiveGroups]=useState<LiveSearchGroup[]>([]);
   const [manualOffers,setManualOffers]=useState<SupplierOffer[]>(()=>loadManualOffers());
   const [manualHistory,setManualHistory]=useState<PriceObservation[]>(()=>loadManualHistory());
+  const [liveHistory,setLiveHistory]=useState<PriceObservation[]>(()=>loadLiveHistory());
   const [basket,setBasket]=useState<BasketUiItem[]>([]);
   const [liveOffers,setLiveOffers]=useState<SupplierOffer[]>([]);
   const [liveSessionId,setLiveSessionId]=useState<string|null>(null);
@@ -64,6 +66,13 @@ export function App(){
       setLiveSessionId(result.sessionId);
       setLiveCompletedAt(result.completedAt);
       setLiveErrors(result.errors);
+      if(data){
+        setLiveHistory(current=>{
+          const next=recordLiveSearchHistory(current,result.groups,data.products);
+          saveLiveHistory(next);
+          return next;
+        });
+      }
       let groups=result.groups;
       if(keepSelection){
         const ref=normalizeReference(keepSelection.manufacturerReference);
@@ -117,7 +126,7 @@ export function App(){
     return data.products.find(p=>normalizeReference(p.manufacturerReference)===ref)?.id??selected.id;
   },[data,selected]);
 
-  const history=useMemo(()=>data&&selected&&winner?[...data.history,...manualHistory].filter(h=>h.productId===historyProductId&&h.requestedQuantity===quantity&&h.supplierId===winner.offer.supplierId):[],[data,selected,winner,historyProductId,quantity,manualHistory]);
+  const history=useMemo(()=>data&&selected&&winner?[...data.history,...liveHistory,...manualHistory].filter(h=>h.productId===historyProductId&&h.requestedQuantity===quantity&&h.supplierId===winner.offer.supplierId):[],[data,selected,winner,historyProductId,quantity,manualHistory,liveHistory]);
   const stats=useMemo(()=>calculateHistoryStats(history),[history]);
   const score=useMemo(()=>opportunityFromHistory(history,{isFresh:winner?getFreshnessStatus(winner.offer)==="fresh":false,inStock:Boolean(winner&&(winner.offer.stockStatus==="in_stock"||winner.offer.stockStatus==="low_stock")),hasActivePromotion:Boolean(winner?.offer.promotion)}),[history,winner]);
 
