@@ -101,6 +101,19 @@ function criticalCompatible(a:SupplierOffer,b:SupplierOffer){
   return true;
 }
 
+function offerIdentityCompleteness(offer:SupplierOffer){
+  let score=0;
+  if(offer.manufacturerReference)score+=40;
+  if(offer.eanGtin)score+=50;
+  if(offer.manufacturer)score+=8;
+  if(offer.presentation)score+=6;
+  if(typeof offer.quantity==="number"&&offer.quantity>0&&offer.unit)score+=6;
+  if(typeof offer.packCount==="number"&&offer.packCount>0)score+=5;
+  if(offer.variant)score+=4;
+  if(offer.shade)score+=4;
+  return score;
+}
+
 function groupOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
   const buckets:Array<{key:string;offers:SupplierOffer[]}>=[];
 
@@ -133,18 +146,18 @@ function groupOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
   }
 
   return buckets.map(({key,offers:group})=>{
-    const representative=group.find(o=>o.manufacturerReference)??group[0]!;
+    const representative=[...group].sort((a,b)=>offerIdentityCompleteness(b)-offerIdentityCompleteness(a))[0]!;
     const product:CanonicalProduct={
       id:"live-"+safeId(key),
-      manufacturer:representative.manufacturer??"Desconocido",
+      manufacturer:representative.manufacturer??"",
       family:representative.rawName,
       productName:representative.rawName,
       variant:representative.variant,
       shade:representative.shade,
-      presentation:representative.presentation??"No confirmada",
-      quantity:representative.quantity??1,
-      unit:representative.unit??"ud",
-      packCount:representative.packCount??1,
+      presentation:representative.presentation??"",
+      quantity:representative.quantity??0,
+      unit:representative.unit??"",
+      packCount:representative.packCount??0,
       manufacturerReference:representative.manufacturerReference,
       category:"Búsqueda live",
       normalizedName:representative.normalizedName||normalizeName(representative.rawName),
