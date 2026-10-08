@@ -15,7 +15,7 @@ import { ScoreBadge } from "../components/ScoreBadge";
 import { SearchBar } from "../components/SearchBar";
 import { WinnerCard } from "../components/WinnerCard";
 import { ManualOfferPanel } from "../components/ManualOfferPanel";
-import { VisualSearchResults } from "../components/VisualSearchResults";
+import { UniversalSearchResults } from "../components/UniversalSearchResults";
 import { MetricsPanel } from "../components/MetricsPanel";
 import { CoverageQueue } from "../components/CoverageQueue";
 import { LiveSearchStatus, type LiveSearchState } from "../components/LiveSearchStatus";
@@ -78,28 +78,17 @@ export function App(){
           return next;
         });
       }
-      let groups=result.groups;
+      const groups=result.groups;
       if(keepSelection){
         const ref=normalizeReference(keepSelection.manufacturerReference);
         const refreshed=groups.find(g=>ref&&normalizeReference(g.manufacturerReference)===ref);
         if(refreshed){
           setSelected(refreshed.product);
           setLiveOffers(refreshed.offers);
-          setLiveState(refreshed.offers.length?(result.errors.length?"partial":"success"):"failed");
-          return;
         }
       }
-      const compact=normalizeReference(q);
-      const exact=groups.filter(g=>g.manufacturerReference&&normalizeReference(g.manufacturerReference)===compact);
-      if(exact.length===1){
-        setSelected(exact[0].product);
-        setLiveOffers(exact[0].offers);
-        groups=groups.filter(g=>g.id!==exact[0].id);
-      }else if(groups.length===1){
-        setSelected(groups[0].product);
-        setLiveOffers(groups[0].offers);
-        groups=[];
-      }
+      // All searches share one result screen, including one-off exact references.
+      // Never hide a unique result before the user sees its suppliers.
       setLiveGroups(groups);
       setLiveState(result.groups.length?(result.errors.length?"partial":"success"):"failed");
     }catch(e){
@@ -216,7 +205,7 @@ export function App(){
     </section>
 
     {liveState==="loading"&&<LiveSearchStatus state="loading" errors={[]}/>}
-    {!selected&&<VisualSearchResults key={query} items={liveGroups} query={query} sessionId={liveSessionId} onSelect={selectLiveGroup}/>}
+    {!selected&&<UniversalSearchResults key={query} items={liveGroups} query={query} sessionId={liveSessionId} onSelect={selectLiveGroup}/>}
 
     {!selected&&liveGroups.length===0&&query&&liveState!=="loading"&&<section className="card empty-card">
       <span className="empty-icon">⌕</span><h2>No encontramos “{query}” ahora</h2>
