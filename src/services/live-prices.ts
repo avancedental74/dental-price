@@ -19,7 +19,11 @@ export interface LiveCatalogSearchResponse {
   completedAt:string;
   groups:LiveSearchGroup[];
   errors:Array<{supplierId:string;message:string}>;
+  depth:SearchDepth;
+  coverage:Array<{supplierId:string;offers:number;candidateLimitReached:boolean}>;
 }
+
+export type SearchDepth="standard"|"extended";
 
 interface SupplierSearchResponse {
   query:string;
@@ -30,6 +34,7 @@ interface SupplierSearchResponse {
   offers:SupplierOffer[];
   error?:string|null;
   noMatch?:boolean;
+  candidateLimitReached?:boolean;
 }
 
 export const liveAutomaticSuppliers=liveAutomaticSupplierIds;
@@ -94,6 +99,7 @@ function tokenSimilarity(a:SupplierOffer,b:SupplierOffer){
 function criticalCompatible(a:SupplierOffer,b:SupplierOffer){
   const am=normalizeManufacturer(a.manufacturer),bm=normalizeManufacturer(b.manufacturer);
   if(am&&bm&&am!==bm)return false;
+  if(a.eanGtin&&b.eanGtin&&normalizeReference(a.eanGtin)!==normalizeReference(b.eanGtin))return false;
   if(a.presentation&&b.presentation&&normalizeName(a.presentation)!==normalizeName(b.presentation))return false;
   if(a.unit&&b.unit&&normalizeName(a.unit)!==normalizeName(b.unit))return false;
   if(typeof a.quantity==="number"&&typeof b.quantity==="number"&&Math.abs(a.quantity-b.quantity)>0.001)return false;
@@ -117,13 +123,18 @@ function offerIdentityCompleteness(offer:SupplierOffer){
 }
 
 export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
-  const buckets:Array<{key:string;offers:SupplierOffer[]}>=[];
+  const buckets:Array<{key:string;ref?:string;offers:SupplierOffer[]}>=[];
 
   for(const offer of offers.filter(o=>Boolean(normalizeReference(o.manufacturerReference)))){
     const ref=normalizeReference(offer.manufacturerReference)!;
-    const existing=buckets.find(bucket=>bucket.key==="ref:"+ref);
+    // Identical-looking references are not enough if the brand, EAN, shade
+    // or pack details contradict each other.
+    const existing=buckets.find(bucket=>bucket.ref===ref&&criticalCompatible(offer,bucket.offers[0]!));
     if(existing)existing.offers.push(offer);
-    else buckets.push({key:"ref:"+ref,offers:[offer]});
+    else{
+      const conflicting=buckets.filter(bucket=>bucket.ref===ref).length;
+      buckets.push({key:"ref:"+ref+(conflicting?"|variant-"+conflicting:""),ref,offers:[offer]});
+    }
   }
 
   for(const offer of offers.filter(o=>!normalizeReference(o.manufacturerReference))){
@@ -173,25 +184,26 @@ export function groupLiveOffers(offers:SupplierOffer[]):LiveSearchGroup[]{
   });
 }
 
-export async function searchLiveCatalog(query:string,previousHistory:PriceObservation[]=[],sessionIdOverride?:string):Promise<LiveCatalogSearchResponse>{
+export async function searchLiveCatalog(query:string,previousHistory:PriceObservation[]=[],sessionIdOverride?:string,depth:SearchDepth="standard"):Promise<LiveCatalogSearchResponse>{
   const base=apiBase();
   const sessionId=sessionIdOverride?.trim()||crypto.randomUUID();
   const requestedAt=new Date().toISOString();
   const settled=await Promise.all(liveAutomaticSuppliers.map(async supplierId=>{
     try{
-      const url=base+"/search-supplier?q="+encodeURIComponent(query)+"&supplier="+encodeURIComponent(supplierId)+"&sessionId="+encodeURIComponent(sessionId);
+      const url=base+"/search-supplier?q="+encodeURIComponent(query)+"&supplier="+encodeURIComponent(supplierId)+"&sessionId="+encodeURIComponent(sessionId)+"&depth="+depth;
       const response=await fetch(url,{method:"GET",headers:{accept:"application/json"},cache:"no-store"});
-      if(!response.ok) return {supplierId,offers:[] as SupplierOffer[],error:"HTTP "+response.status};
+      if(!response.ok) return {supplierId,offers:[] as SupplierOffer[],error:"HTTP "+response.status,candidateLimitReached:false};
       const data=await response.json() as SupplierSearchResponse;
-      return {supplierId,offers:data.offers??[],error:data.error??null,noMatch:Boolean(data.noMatch)};
+      return {supplierId,offers:data.offers??[],error:data.error??null,noMatch:Boolean(data.noMatch),candidateLimitReached:Boolean(data.candidateLimitReached)};
     }catch(error){
-      return {supplierId,offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR"};
+      return {supplierId,offers:[] as SupplierOffer[],error:error instanceof Error?error.message:"SEARCH_ERROR",candidateLimitReached:false};
     }
   }));
   const offers=applyClientHistorySafety(settled.flatMap(x=>x.offers),previousHistory);
   return {
     query,sessionId,requestedAt,completedAt:new Date().toISOString(),
-    groups:groupLiveOffers(offers),
+    groups:groupLiveOffers(offers),depth,
+    coverage:settled.map(x=>({supplierId:x.supplierId,offers:x.offers.length,candidateLimitReached:x.candidateLimitReached})),
     errors:settled.filter(x=>x.error).map(x=>({supplierId:x.supplierId,message:x.error!}))
   };
 }
