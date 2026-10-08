@@ -7,6 +7,7 @@ import { supplierOfferSchema } from "../src/domain/schemas";
 import { fetchDentaltixProduct } from "../src/connectors/dentaltix";
 import { fetchDentalCostProduct } from "../src/connectors/dentalcost";
 import { fetchDvdProduct } from "../src/connectors/dvd-dental";
+import { verifiedDvdDetailOffers } from "../src/connectors/dvd-dental/verify-record";
 import { fetchDentalExpressProduct } from "../src/connectors/dentalexpress";
 import { fetchOrtolanProduct } from "../src/connectors/ortolan";
 import { fetchDentipakProduct } from "../src/connectors/dentipak";
@@ -178,25 +179,18 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
   }
   if(supplierId==="dvd-dental"){
     const records=await searchDvdKlevuRecords(query,fetchImpl,limitFor(10,20));
-    const compact=normalizeReference(query)??"";
     const policy=policyList.find(p=>p.supplierId===supplierId);
-
-    if(looksLikeReference(query)){
-      const exactRecords=records.filter(record=>normalizeReference(record["nº_pieza_fabricante"])===compact||normalizeReference(record.sku)===compact).slice(0,1);
-      const pages=await Promise.all(exactRecords.map(async record=>{
-        if(!record.url)return [] as SupplierOffer[];
-        try{return (await fetchDvdProduct(record.url,fetchImpl)).offers;}
-        catch{return [] as SupplierOffer[];}
-      }));
-      const offers=pages.flat()
-        .filter(o=>relevantToQuery(o,query))
-        .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
-        .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
-        .filter(o=>supplierOfferSchema.safeParse(o).success);
-      return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu+product",candidateLimitReached:records.length>=limitFor(10,20)};
-    }
-
-    const offers=records.map(record=>{
+    const chosen=records.slice(0,limitFor(5,9));
+    // The discovery index is never price evidence for a specific variant.
+    const pages=await Promise.all(chosen.map(async record=>{
+      if(!record.url)return [] as SupplierOffer[];
+      try{
+        const raw=(await fetchDvdProduct(record.url,fetchImpl)).offers;
+        return verifiedDvdDetailOffers(record,raw).filter(o=>relevantToQuery(o,query));
+      }catch{return [] as SupplierOffer[];}
+    }));
+    const verified=pages.flat();
+    const indexOffers=records.map(record=>{
       const sale=Number(record.salePrice??record.price??record.basePrice);
       const regular=Number(record.basePrice??record.price??record.salePrice);
       const rawName=record.name??"Producto DVD Dental";
@@ -221,16 +215,21 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
         vatStatus:"unknown",
         currency:"EUR",
         observedAt:new Date().toISOString(),
-        sourceStatus:"normal",
+        sourceStatus:"suspicious",priceVerification:"search_index",
         sourceMode:"automatic"
       };
       return applyLiveSafety(applySupplierPolicy(offer,policy));
     })
-      .filter(o=>o.regularPrice>0)
-      .filter(o=>relevantToQuery(o,query))
+    const indexed=indexOffers.filter(o=>o.regularPrice>0).filter(o=>relevantToQuery(o,query));
+    const verifiedKeys=new Set(verified.map(o=>normalizeReference(o.supplierSku)??normalizeReference(o.manufacturerReference)??o.productUrl));
+    const pending=indexed.filter(o=>!verifiedKeys.has(normalizeReference(o.supplierSku)??normalizeReference(o.manufacturerReference)??o.productUrl));
+    const offers=[...verified,...pending]
+      .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu",candidateLimitReached:records.length>=limitFor(10,20)};
+    return {offers,error:null,noMatch:offers.length===0,
+      discoveredFrom:"klevu-discovery+sku-verified-detail",
+      candidateLimitReached:records.length>=limitFor(10,20)};
   }
   const candidateLimit=extended?10:5;
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
