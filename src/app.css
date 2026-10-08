@@ -255,3 +255,30 @@ button.smart-result:hover{border-color:#92c8ff}
 .smart-inline-comparison{padding:12px 16px 20px;border-top:1px solid var(--line);background:#fcfcfd}
 .smart-inline-comparison p{font-size:12px;color:var(--muted);margin:0 0 10px}
 @media(max-width:600px){.smart-result-actions{width:100%;flex-direction:column}.smart-result-actions button{width:100%}}
+
+
+/* Two explicit buying modes: exact SKU versus verified alternatives */
+.smart-mode-toggle{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;padding:5px;border-radius:16px;background:#f0f1f4}
+.smart-mode-toggle button{flex:1 1 190px;min-height:47px;padding:10px 15px;border:1px solid transparent;border-radius:12px;background:transparent;color:#555b66;font-size:13px;font-weight:700}
+.smart-mode-toggle button.active{color:#005ebc;background:white;border-color:rgba(0,113,227,.18);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.smart-mode-explain{font-size:13px;color:var(--muted);line-height:1.6;margin:13px 0 4px}
+.alternatives-section{padding-top:5px}
+.alternatives-hint{padding:20px;border:1px dashed #9abfe9;background:#f0f7ff;border-radius:17px}
+.alternatives-hint strong{font-size:14px}
+.alternatives-hint p{font-size:12px;color:#50637a;line-height:1.55;margin:8px 0 0}
+.alternatives-count{font-size:12px;font-weight:700;color:#434950;margin:6px 0 12px}
+.alternative-table table{min-width:900px}
+.alternative-table td:first-child{max-width:280px;white-space:normal;line-height:1.45}
+.alternative-table td{vertical-align:middle}
+.alternative-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.alternative-actions a{font-size:12px;font-weight:700;color:var(--blue);text-decoration:none}
+.alternative-actions a:hover{text-decoration:underline}
+.alternative-actions button{background:#f1f2f5;color:#333;border:0;border-radius:8px;padding:8px 10px;font-size:12px}
+.alternatives-pending{margin-top:16px;border:1px solid var(--line);border-radius:14px;padding:13px 15px;background:#fff}
+.alternatives-pending summary{font-size:12px;cursor:pointer;font-weight:700}
+.alternatives-pending-list{display:grid;gap:10px;margin-top:13px}
+.alternatives-pending-list>div{display:grid;gap:4px;border-top:1px solid var(--line);padding-top:10px}
+.alternatives-pending-list strong{font-size:12px}
+.alternatives-pending-list small{font-size:11px;color:var(--muted);line-height:1.55}
+.alternatives-footnote{font-size:11px;color:var(--muted);line-height:1.65;margin:14px 0 0}
+@media(max-width:600px){.smart-mode-toggle button{flex-basis:100%}.alternative-table{margin-left:-4px;margin-right:-4px}}
