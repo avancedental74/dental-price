@@ -159,9 +159,9 @@ export async function fetchLivePrices(productId:string):Promise<LivePriceRespons
   return response.json() as Promise<LivePriceResponse>;
 }
 
-export async function searchLiveCatalog(query:string,previousHistory:PriceObservation[]=[]):Promise<LiveCatalogSearchResponse>{
+export async function searchLiveCatalog(query:string,previousHistory:PriceObservation[]=[],sessionIdOverride?:string):Promise<LiveCatalogSearchResponse>{
   const base=apiBase();
-  const sessionId=crypto.randomUUID();
+  const sessionId=sessionIdOverride?.trim()||crypto.randomUUID();
   const requestedAt=new Date().toISOString();
   const settled=await Promise.all(liveAutomaticSuppliers.map(async supplierId=>{
     try{
