@@ -345,3 +345,29 @@ button.smart-result:hover{border-color:#92c8ff}
 .all-supplier-prices-table .pill{display:inline-flex;margin-bottom:3px}
 .all-supplier-prices>.alternatives-footnote{padding:12px 18px 17px;margin:0;background:#fbfbfc;border-top:1px solid var(--line)}
 @media(max-width:600px){.all-supplier-prices-heading{padding:16px 14px}.all-supplier-prices-heading h4{font-size:17px}}
+
+
+/* Honest diagnostics when a product search returns no usable offers */
+.status-chip.warning{color:#8a4d00;background:#fff4e4;border-color:#ffd7a1}
+.status-chip.warning .status-dot{background:#ee982e}
+.zero-result-diagnostics{padding:32px}
+.zero-result-heading{display:flex;align-items:flex-start;gap:20px}
+.zero-result-heading h2{font-size:25px;margin:6px 0 10px;line-height:1.3}
+.zero-result-heading p:not(.eyebrow){color:var(--muted);font-size:14px;line-height:1.65;margin:0}
+.zero-result-actions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 24px}
+.zero-result-errors{display:grid;gap:6px;padding:12px 4px 4px}
+.zero-result-errors small{color:#925020;font-size:11px;overflow-wrap:anywhere}
+.zero-result-diagnostics .universal-protected-suppliers{margin-top:12px}
+.provider-status-list{display:grid;gap:8px;padding-top:14px}
+.provider-status-list>div{display:flex;gap:14px;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:7px 0}
+.provider-status-list>div strong{font-size:12px}
+.provider-status-list>div span{font-size:12px;color:var(--muted);text-align:right}
+@media(max-width:600px){
+ .zero-result-diagnostics{padding:18px}
+ .zero-result-heading{gap:12px}
+ .zero-result-heading h2{font-size:21px}
+ .zero-result-actions{flex-direction:column}
+ .zero-result-actions button{width:100%}
+ .provider-status-list>div{align-items:flex-start;flex-direction:column;gap:4px}
+ .provider-status-list>div span{text-align:left}
+}
