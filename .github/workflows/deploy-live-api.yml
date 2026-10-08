@@ -73,6 +73,8 @@ jobs:
           check dvd_name "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Tetric%20EvoCeram&supplier=dvd-dental&sessionId=smoke-search"
           check dentipak "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=41294&supplier=dentipak&sessionId=smoke-search"
           check dentalboom "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=Scotchbond%20Universal%20Plus&supplier=dentalboom&sessionId=smoke-search"
+          check broad_gloves_dvd "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=guantes&supplier=dvd-dental&sessionId=smoke-search"
+          check broad_gloves_boom "https://dental-price-live.avance-dental74.workers.dev/search-supplier?q=guantes&supplier=dentalboom&sessionId=smoke-search"
           node <<'NODE'
           const fs=require("fs");
           const h=JSON.parse(fs.readFileSync("/tmp/health.json"));
@@ -91,6 +93,13 @@ jobs:
               const hay=((o.rawName||"")+" "+(o.manufacturer||"")).toLowerCase();
               return hay.includes("tetric")&&hay.includes("evoceram");
             })) process.exit(1);
+          }
+          // A generic term must still recover visible supplier offers after deployment.
+          const broadDvd=JSON.parse(fs.readFileSync("/tmp/broad_gloves_dvd.json"));
+          const broadBoom=JSON.parse(fs.readFileSync("/tmp/broad_gloves_boom.json"));
+          if((broadDvd.offers?.length??0)+(broadBoom.offers?.length??0)===0){
+            console.error("REGRESSION: no generic glove offers recovered from public indexes");
+            process.exit(1);
           }
           const dtxModel=JSON.parse(fs.readFileSync("/tmp/dentaltix_model.json"));
           if(!dtxModel.offers.length||!dtxModel.offers.every(o=>(o.rawName||"").toLowerCase().includes("z250"))) process.exit(1);
