@@ -43,7 +43,15 @@ function isSearchOrNavigationUrl(url:string,base:string):boolean{
 }
 
 function scoreLink(text:string,href:string,query:string):number{
-  const q=normalizeName(query),hay=normalizeName(text+" "+href);
+  const q=normalizeName(query);
+  let hrefIdentity=href;
+  try{
+    const u=new URL(href);
+    // Search engines often echo the user's query in every result URL.
+    // Scoring query/hash would make every unrelated result look relevant.
+    hrefIdentity=u.origin+u.pathname;
+  }catch{ /* non-URL strings are scored as provided */ }
+  const hay=normalizeName(text+" "+hrefIdentity);
   const compact=normalizeReference(query)??"";
   const normalizedHay=normalizeReference(hay)??"";
   let score=0;
