@@ -48,7 +48,7 @@ function isSearchOrNavigationUrl(url:string,base:string):boolean{
   }catch{return true;}
 }
 
-function scoreLink(text:string,href:string,query:string):number{
+export function scoreLink(text:string,href:string,query:string):number{
   const q=normalizeName(query);
   let hrefIdentity=href;
   try{
