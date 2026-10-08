@@ -283,6 +283,7 @@ export async function searchDentalBoomRecords(query:string,fetchImpl:typeof fetc
 }
 
 export interface OrtolanSearchRecord {
+  fromDetail?:boolean;
   supplierSku?:string;
   name:string;
   price:number;
@@ -326,7 +327,7 @@ async function expandOrtolanProductVariants(
     if(score<2)continue;
     if(seen.has(supplierSku))continue;
     seen.add(supplierSku);
-    records.push({supplierSku,name:productName,price,variant,url:detailUrl,stockQuantity:Number.isFinite(stockQuantity)?stockQuantity:undefined});
+    records.push({supplierSku,name:productName,price,variant,url:detailUrl,stockQuantity:Number.isFinite(stockQuantity)?stockQuantity:undefined,fromDetail:true});
   }
   return records
     .sort((a,b)=>scoreLink([b.name,b.variant,b.supplierSku].filter(Boolean).join(" "),"",query)-scoreLink([a.name,a.variant,a.supplierSku].filter(Boolean).join(" "),"",query))
