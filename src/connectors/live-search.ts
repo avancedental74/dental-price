@@ -64,7 +64,11 @@ export function scoreLink(text:string,href:string,query:string):number{
   const tokens=[...new Set(q.split(" ").filter(t=>t.length>=2))];
   if(tokens.length===1&&compact.length>=4&&/\d/.test(compact)&&!normalizedHay.includes(compact))return 0;
   if(compact&&normalizedHay.includes(compact))score+=12;
-  const matched=tokens.filter(token=>hay.includes(token));
+  // Match whole normalized tokens: Z250 must not match Z2500 and A3 must not match A3.5.
+  // Boundaries are spaces after normalizeName, with a second compact check for
+  // references formatted using separators by the supplier.
+  const wholeToken=(token:string)=>hay.split(" ").includes(token);
+  const matched=tokens.filter(wholeToken);
   // Short product/model names are precise enough that accepting only one token
   // creates false positives such as Tetric EvoFlow for "Tetric EvoCeram".
   if(tokens.length>=2&&tokens.length<=4&&matched.length<Math.ceil(tokens.length*0.75))return 0;
