@@ -49,4 +49,14 @@ describe("live search result scoring",()=>{
       "4910A3B"
     )).toBeGreaterThan(0);
   });
+  it("does not confuse model suffixes such as Z250 and Z2500",()=>{
+    expect(scoreLink("Composite Filtek Z250", "https://example.com/filtek-z250", "Z250")).toBeGreaterThan(0);
+    expect(scoreLink("Composite Filtek Z2500", "https://example.com/filtek-z2500", "Z250")).toBe(0);
+  });
+
+  it("does not substitute a different shade when searching an exact shade token",()=>{
+    expect(scoreLink("Tetric EvoCeram A3 Jeringa", "https://example.com/tetric-evoceram-a3", "Tetric EvoCeram A3")).toBeGreaterThan(0);
+    expect(scoreLink("Tetric EvoCeram A3.5 Jeringa", "https://example.com/tetric-evoceram-a3-5", "Tetric EvoCeram A3")).toBe(0);
+  });
+
 });
