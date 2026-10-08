@@ -39,10 +39,21 @@ function nuxtVariants($: cheerio.CheerioAPI, productUrl: string): DentaltixVaria
         const obj=entry as Record<string,unknown>;
         return "mainVar" in obj&&"variations" in obj&&"slug" in obj;
       });
-      const root=roots.find(obj=>{
+      const exactRoot=roots.find(obj=>{
         const slug=resolve(obj.slug);
         return typeof slug==="string"&&slug.length>3&&productPath.includes(slug.toLowerCase());
       });
+      const productTokens=new Set(productPath.split(/[^a-z0-9]+/).filter(t=>t.length>=3));
+      const scoredRoots=roots.map(obj=>{
+        const slug=resolve(obj.slug);
+        if(typeof slug!=="string")return {obj,score:0,matches:0};
+        const slugTokens=slug.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>=3);
+        const meaningful=slugTokens.filter(t=>!["kit","composite","profesional","universal","producto"].includes(t));
+        const matches=meaningful.filter(t=>productTokens.has(t)).length;
+        const score=meaningful.length?matches/meaningful.length:0;
+        return {obj,score,matches};
+      }).sort((a,b)=>b.score-a.score||b.matches-a.matches);
+      const root=exactRoot??(scoredRoots[0]&&scoredRoots[0].matches>=2&&scoredRoots[0].score>=0.45?scoredRoots[0].obj:undefined);
       if(!root) continue;
 
       const candidates:Record<string,unknown>[]=[];
