@@ -40,7 +40,7 @@ interface SupplierSearchResponse {
   noMatch?:boolean;
 }
 
-export const liveAutomaticSuppliers=["dentaltix","dentalcost","dvd-dental","dentalexpress","ortolan"] as const;
+export const liveAutomaticSuppliers=["dentaltix","dentalcost","dvd-dental","dentalexpress","ortolan","dentipak","dentalboom"] as const;
 export const browserVerificationSuppliers=["proclinic","dental-iberica","brokerdental"] as const;
 
 function apiBase(){
