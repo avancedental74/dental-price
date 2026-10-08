@@ -50,7 +50,7 @@ function isSearchOrNavigationUrl(url:string,base:string):boolean{
 
 // Search aliases are lexical only. They do not establish product equivalence.
 function searchWords(value:string):string{
-  return normalizeName(value)
+  return normalizeName(value.replace(/\b([a-d]\d),(\d)\b/gi,"$1.$2"))
     .replace(/\b(\d+(?:[.,]\d+)?)\s*(?:gr|g)\b/g,"$1 g")
     .replace(/\b(\d+(?:[.,]\d+)?)\s*(?:mililitros?|ml)\b/g,"$1 ml")
     .replace(/\bcomposites\b/g,"composite")
@@ -325,6 +325,9 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
     }
   });
 
+  // A search card can show only its default shade (e.g. A1). Discover the
+  // family first, then confirm the requested shade against detail variants.
+  const familyQuery=query.replace(/\b[a-d]\d(?:[.,]\d)?\b/gi,"").trim()||query;
   const defaultRecords:OrtolanSearchRecord[]=[];
   const seen=new Set<string>();
   for(const match of html.matchAll(/"item_id":"([^"]+)","item_name":"([^"]+)"[^{}]{0,700}?"price":([0-9]+(?:\.[0-9]+)?)[^{}]{0,700}?"item_variant":"([^"]*)"/g)){
@@ -334,7 +337,7 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
     const variant=decodeHtmlJson(match[4]??"")||undefined;
     if(!Number.isFinite(price)||price<=0)continue;
     const hay=[name,variant,supplierSku].filter(Boolean).join(" ");
-    if(scoreLink(hay,hay,query)<2)continue;
+    if(scoreLink(hay,hay,familyQuery)<2)continue;
     const baseId=supplierSku?.split("-")[0];
     const key=[supplierSku,name,variant].join("|");
     if(seen.has(key))continue;
@@ -350,7 +353,7 @@ export async function searchOrtolanRecords(query:string,fetchImpl:typeof fetch=f
       if(expanded.length)return expanded;
     }catch{ /* fall back to lightweight search result */ }
   }
-  return defaultRecords.slice(0,maxResults);
+  return defaultRecords.filter(record=>scoreLink([record.name,record.variant,record.supplierSku].filter(Boolean).join(" "),"",query)>=2).slice(0,maxResults);
 }
 
 async function searchDvdKlevu(query:string,fetchImpl:typeof fetch,maxResults:number){
