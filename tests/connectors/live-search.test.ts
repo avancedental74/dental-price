@@ -123,7 +123,7 @@ describe("live search result scoring",()=>{
     const fetchImpl=(async(input:string|URL|Request)=>{
       const url=String(input);seen.push(url);
       const page=new URL(url).searchParams.get("page");
-      const next=page==="3"?"":'<a rel="next" href="?q=composite&page='+Number(page??1+1)+'">Next</a>';
+      const next=page==="3"?"":'<a rel="next" href="?q=composite&page='+(Number(page??"1")+1)+'">Next</a>';
       const num=page==="2"?2:page==="3"?3:1;
       const html='<html><body><article class="product-miniature"><a href="https://www.dentaltix.com/es/composite-'+num+'">Composite Universal '+num+'</a></article>'+next+'</body></html>';
       return new Response(html,{status:200});
