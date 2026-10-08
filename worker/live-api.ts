@@ -122,7 +122,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>relevantToQuery(o,query))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:offers.length?null:"Sin coincidencias verificables",discoveredFrom:"ortolan-structured-search"};
+    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"ortolan-structured-search"};
   }
   if(supplierId==="dvd-dental"){
     const records=await searchDvdKlevuRecords(query,fetchImpl,5);
@@ -157,11 +157,15 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
       .filter(o=>relevantToQuery(o,query))
       .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
       .filter(o=>supplierOfferSchema.safeParse(o).success);
-    return {offers,error:offers.length?null:"Sin coincidencias verificables",discoveredFrom:"klevu"};
+    return {offers,error:null,noMatch:offers.length===0,discoveredFrom:"klevu"};
   }
   const candidateLimit=(supplierId==="dentaltix"||supplierId==="dentalcost")?1:3;
   const discovered=await discoverSupplierProductUrls(supplierId,query,fetchImpl,candidateLimit);
-  if(!discovered.urls.length)return {offers:[] as SupplierOffer[],error:discovered.error??"Sin resultados",discoveredFrom:discovered.searchUrl};
+  if(!discovered.urls.length){
+    const message=discovered.error??"Sin resultados";
+    const noMatch=/^Sin\b/i.test(message);
+    return {offers:[] as SupplierOffer[],error:noMatch?null:message,noMatch,discoveredFrom:discovered.searchUrl};
+  }
   const pages=await Promise.all(discovered.urls.map(async productUrl=>{
     try{return await fetchSupplierUrl(supplierId,productUrl,fetchImpl);}
     catch{return [] as SupplierOffer[];}
@@ -172,7 +176,7 @@ async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessio
     .map(o=>applySupplierPolicy(o,policy))
     .map(o=>({...o,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
     .filter(o=>supplierOfferSchema.safeParse(o).success);
-  return {offers,error:offers.length?null:"Sin coincidencias verificables",discoveredFrom:discovered.searchUrl};
+  return {offers,error:null,noMatch:offers.length===0,discoveredFrom:discovered.searchUrl};
 }
 
 export default {
@@ -195,7 +199,7 @@ export default {
       if(!suppliers.includes(supplierId))return Response.json({error:"UNKNOWN_SUPPLIER"},{status:400,headers});
       try{
         const result=await searchOneSupplier(supplierId,query,sessionId);
-        return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error,discoveredFrom:result.discoveredFrom},{headers});
+        return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error??null,noMatch:result.noMatch??false,discoveredFrom:result.discoveredFrom},{headers});
       }catch(error){
         return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:[],error:error instanceof Error?error.message:"SEARCH_ERROR"},{headers});
       }
