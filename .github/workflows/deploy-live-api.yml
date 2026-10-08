@@ -87,6 +87,10 @@ jobs:
               return hay.includes("tetric")&&hay.includes("evoceram");
             })) process.exit(1);
           }
+          const dtx=JSON.parse(fs.readFileSync("/tmp/dentaltix.json"));
+          if(!dtx.offers.some(o=>o.manufacturerReference==="4910A3B"&&o.vatStatus==="excluded"&&o.vatRate===10)) process.exit(1);
+          const dtxName=JSON.parse(fs.readFileSync("/tmp/dentaltix_name.json"));
+          if(!dtxName.offers.every(o=>o.vatStatus==="excluded"&&o.vatRate===10)) process.exit(1);
           const od=JSON.parse(fs.readFileSync("/tmp/ortolan_dentin.json"));
           console.log("ortolan_dentin",JSON.stringify({offers:od.offers?.length,error:od.error,noMatch:od.noMatch}));
           if(od.sessionId!=="smoke-search"||!Array.isArray(od.offers)||od.error) process.exit(1);
