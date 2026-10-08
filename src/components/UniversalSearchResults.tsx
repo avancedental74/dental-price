@@ -1,6 +1,8 @@
 import {useMemo,useState} from "react";
 import type {LiveSearchGroup,SearchDepth} from "../services/live-prices";
 import {classifyPurchaseIntent} from "../features/search/purchase-intent";
+import {collectPublishedPrices} from "../features/search/published-prices";
+import {AllSupplierPrices} from "./AllSupplierPrices";
 import {
   assessProducts,assessAlternatives,filterProducts,getAvailableFacets,
   profileForSearch,profileLabel,facetLabels,
@@ -19,7 +21,7 @@ function SupplierRows({offers}: {offers:UniversalOffer[]}){
     <th>Depósito</th><th>Precio publicado</th><th>Coste efectivo</th><th>Estado</th><th>Ficha</th>
   </tr></thead><tbody>{offers.map(o=><tr key={o.id}>
     <td><strong>{supplierNames[o.supplierId]??o.supplierId}</strong></td>
-    <td>{o.priceVerification==="search_index"?"Pendiente de comprobar":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"—"}{o.priceVerification!=="search_index"&&<small className="source-note">{o.vatStatus==="excluded"?"Sin IVA":o.vatStatus==="included"?"IVA incluido":"IVA por confirmar"}</small>}</td>
+    <td>{Number.isFinite(o.publishedPrice)&&o.publishedPrice>0?money(o.publishedPrice):"—"}{<small className="source-note">{o.vatStatus==="excluded"?"Sin IVA":o.vatStatus==="included"?"IVA incluido":"IVA por confirmar"}</small>}</td>
     <td>{o.effectiveTotal===undefined?"—":money(o.effectiveTotal)}</td>
     <td>{o.eligible?<span className="pill good">Verificado</span>:<small>{o.issues.join("; ")||"Pendiente de verificación"}</small>}</td>
     <td>{o.productUrl?<a href={o.productUrl} target="_blank" rel="noopener noreferrer">Abrir ↗</a>:<span>Sin enlace verificado</span>}</td>
@@ -49,6 +51,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
   const scoped=useMemo(()=>filterProducts(requestedProducts,category&&groupFacet?{[groupFacet.key]:category}:{}),[requestedProducts,category,groupFacet]);
   const facetOptions=useMemo(()=>getAvailableFacets(scoped),[scoped]);
   const visible=useMemo(()=>filterProducts(scoped,filters),[scoped,filters]);
+  const publishedPriceRows=useMemo(()=>collectPublishedPrices(visible,filters),[visible,filters]);
   const alternatives=useMemo(()=>assessAlternatives(visible,filters,profile),[visible,filters,profile]);
   const sorted=useMemo(()=>[...visible].sort((a,b)=>
     (a.best?.effectiveTotal??Infinity)-(b.best?.effectiveTotal??Infinity)),[visible]);
@@ -61,7 +64,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
         <h3>{profileLabel(profile)}: opciones encontradas</h3></div>
       <span>{visible.length} productos principales · {relatedProducts.length} relacionados</span>
     </div>
-    <p className="universal-intro">Consulta cualquier referencia o nombre. Cada producto se compara con sus propios proveedores; otras marcas aparecen por separado. Un precio del buscador que no coincida con una variante verificada en su ficha se identifica como pendiente, no como precio de compra.</p>
+    <p className="universal-intro">Todos los importes recuperados aparecen a continuación, incluso cuando todavía no pueden considerarse un precio de compra confirmado. La comparación de referencias exactas y alternativas se mantiene por separado.</p>
     <div className="universal-coverage">
       <div><strong>Alcance real de la búsqueda</strong>
         <small>{coverage.filter(c=>c.offers>0).length} de {coverage.length} proveedores automáticos devolvieron productos · {coverage.filter(c=>c.candidateLimitReached).length} alcanzaron su límite de revisión de candidatos.</small>
@@ -86,6 +89,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
         <a href={"https://www.brokerdental.es/catalogsearch/result/?q="+encodeURIComponent(query)} target="_blank" rel="noopener noreferrer">Buscar en Broker Dental ↗</a>
       </div>
     </details>
+    <AllSupplierPrices rows={publishedPriceRows}/>
     <div className="smart-mode-toggle" role="group" aria-label="Tipo de comparación">
       <button type="button" aria-pressed={mode==="offers"} className={mode==="offers"?"active":""} onClick={()=>setMode("offers")}>Ofertas por producto</button>
       <button type="button" aria-pressed={mode==="alternatives"} className={mode==="alternatives"?"active":""} onClick={()=>setMode("alternatives")}>Explorar alternativas</button>
@@ -159,7 +163,7 @@ export function UniversalSearchResults({items,query,onSelect,sessionId,searchDep
         <summary>{alternatives.unverified.length} opciones sin ranking de equivalencia</summary>
         <div className="alternatives-pending-list">
           {alternatives.unverified.map(o=><div key={o.id}><strong>{o.name}</strong>
-            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {o.priceVerification==="search_index"?"No confirmado en ficha":Number.isFinite(o.publishedPrice)?money(o.publishedPrice):"No disponible"} {o.priceVerification!=="search_index"&&(o.vatStatus==="excluded"?"(sin IVA)":o.vatStatus==="included"?"(IVA incluido)":"(IVA sin confirmar)")} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
+            <small>{supplierNames[o.supplierId]??o.supplierId} · Precio publicado: {Number.isFinite(o.publishedPrice)&&o.publishedPrice>0?money(o.publishedPrice):"No disponible"} {o.vatStatus==="excluded"?"(sin IVA)":o.vatStatus==="included"?"(IVA incluido)":"(IVA sin confirmar)"} {o.priceVerification==="search_index"?"· precio orientativo del índice":""} · Coste verificable de su envase: {o.effectiveTotal===undefined?"Pendiente":money(o.effectiveTotal)}</small>
             {o.normalizedCost!==undefined&&<small>Coste orientativo por {o.normalizedBasis}: {money(o.normalizedCost)} (no acredita equivalencia con otros productos)</small>}
             <small>{[
               ...o.issues,
