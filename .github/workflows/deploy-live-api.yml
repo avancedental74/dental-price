@@ -71,7 +71,11 @@ jobs:
           if(!h.ok||h.searchMode!=="dynamic-per-supplier") process.exit(1);
           for(const name of ["dentaltix","dentalcost","dentalexpress","ortolan","dvd"]){
             const x=JSON.parse(fs.readFileSync("/tmp/"+name+".json"));
-            console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
-            if(x.sessionId!=="smoke-search"||!Array.isArray(x.offers)||x.offers.length<1) process.exit(1);
+            console.log(name,JSON.stringify({offers:x.offers?.length,error:x.error,noMatch:x.noMatch,source:x.discoveredFrom,refs:x.offers?.map(o=>o.manufacturerReference)}));
+            if(x.sessionId!=="smoke-search"||!Array.isArray(x.offers)||x.error) process.exit(1);
+            // Dental Express is queryable but may deliberately return noMatch when the
+            // product page exposes no product-scoped price. Never make the smoke test
+            // reward the old unsafe whole-page price fallback.
+            if(name!=="dentalexpress"&&x.offers.length<1) process.exit(1);
           }
           NODE
