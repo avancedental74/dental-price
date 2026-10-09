@@ -262,3 +262,110 @@ Causa probable:
 Pendiente:
 
 - Mejorar discovery de Ortolan sin relajar atributos tecnicos como dentina/esmalte, talla, tono o formato.
+
+## Fase 5 - staging Cloudflare real
+
+Fecha: 2026-10-09
+
+### Despliegue staging
+
+Se autentico Wrangler por OAuth interactivo y se desplego un Worker independiente de produccion:
+
+```bash
+npx --yes wrangler@4.45.0 deploy --name dental-price-live-staging
+```
+
+URL:
+
+```text
+https://dental-price-live-staging.avance-dental74.workers.dev
+```
+
+Version final validada:
+
+- `99297a80-867d-41dc-9386-2d9a03a67226`
+
+No se modifico `dental-price-live` de produccion ni GitHub Pages.
+
+### Hallazgo en Cloudflare remoto
+
+La primera matriz staging con el codigo optimizado localmente seguia reproduciendo HTTP 503 / Cloudflare 1102 en proveedores HTML.
+
+Evidencia puntual:
+
+- `Dentaltix`, consulta por nombre `Filtek Supreme XTE A3 Body 3 g`, devolvio `HTTP/1.1 503` con body `error code: 1102`.
+- La misma familia puede recuperarse localmente y algunas consultas puntuales pueden funcionar en staging.
+
+Causa confirmada:
+
+- El problema ya no es de acceso remoto al proveedor ni de ausencia de producto.
+- Es presupuesto de CPU del Worker remoto al procesar busquedas HTML amplias y/o paginas de ficha pesadas.
+- El fallo se produce antes de que el `catch` de la aplicacion pueda devolver JSON, por eso aparece como 503/1102.
+
+### Cambio cloud-safe
+
+Se activo `LIVE_CLOUD_SAFE = "1"` en `wrangler.toml`.
+
+Comportamiento:
+
+- En Cloudflare, proveedores HTML automaticos (`dentaltix`, `dentalcost`, `dentalexpress`, `ortolan`, `dentipak`) solo verifican fichas cuando la consulta parece una referencia/codigo.
+- Las busquedas por nombre, marca o descripcion en esos proveedores se clasifican como `partial` con motivo `CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API`.
+- DVD Dental y DentalBoom siguen usando vias ligeras/API para busquedas por nombre.
+- No se inventan precios ni se promueven precios orientativos como confirmados.
+
+Ejemplo controlado:
+
+```text
+/search-supplier?q=Filtek%20Supreme%20XTE%20A3%20Body%203%20g&supplier=dentaltix&debug=1
+```
+
+Resultado final staging:
+
+- HTTP 200
+- `partial: true`
+- `error: CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API`
+- Evento diagnostico: `cloud-safe-skip-html-search`
+
+### Comparacion final de escenarios
+
+Worker antiguo publicado (`docs/live-search-matrix.latest.json`):
+
+- Ofertas: 22
+- Celdas con resultados: 7
+- Celdas sin coincidencia: 77
+- Celdas con error: 126
+- Limites de candidatos: 0
+
+Worker local optimizado (`docs/live-search-matrix.worker-local.json`):
+
+- Ofertas: 290
+- Candidatos detectados: 379
+- Candidatos verificados: 305
+- Celdas con resultados: 52
+- Celdas con error tecnico: 0
+- Limites de candidatos: 74
+
+Worker staging Cloudflare cloud-safe (`docs/live-search-matrix.staging.json`):
+
+- Ofertas: 24
+- Candidatos detectados: 25
+- Candidatos verificados: 25
+- Minimo de candidatos no verificados por limite: 0
+- Celdas con resultados: 9
+- Celdas sin coincidencia: 55
+- Celdas con error tecnico: 0
+- Limites de candidatos: 0
+
+Lectura:
+
+- Staging elimina los 503/1102 causados por nuestra aplicacion.
+- La cobertura remota en plan gratuito queda limitada para busquedas por nombre en proveedores HTML.
+- La cobertura completa local demuestra que el motor y conectores pueden recuperar mas resultados, pero no cabe en el presupuesto remoto actual sin una fuente ligera adicional o backend con mas CPU.
+- No se confunden esos limites con productos inexistentes: quedan como `partial`.
+
+### Limitaciones abiertas tras staging
+
+- Para busqueda universal remota por nombre en todos los proveedores HTML hace falta una via ligera adicional: API publica autorizada, indice propio precalculado, cache corta/cola externa o backend con mas CPU.
+- DentalCost por nombre sigue siendo ruidoso aunque el acceso por referencia funciona.
+- Ortolan requiere discovery mas rico, sin relajar variantes tecnicas.
+- Produccion sigue sin actualizarse.

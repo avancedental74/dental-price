@@ -18,7 +18,7 @@ import { normalizeName, normalizeReference } from "../src/domain/matching/normal
 import { applyAnomalyStatus } from "../src/domain/anomaly";
 import type { PriceObservation } from "../src/domain/history";
 
-type Env={ALLOWED_ORIGIN?:string};
+type Env={ALLOWED_ORIGIN?:string;LIVE_CLOUD_SAFE?:string};
 export interface DiagnosticEvent {
   stage:string;
   supplierId?:string;
@@ -158,12 +158,27 @@ export function relevantToQuery(offer:SupplierOffer,query:string){
   return matched.length>=Math.max(1,Math.ceil(tokens.length*0.6));
 }
 
-export async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string,depth:"standard"|"extended"="standard",diagnostics?:SearchDiagnostics){
+interface SearchRuntimeOptions { cloudSafe?:boolean; }
+
+export async function searchOneSupplier(supplierId:SearchSupplierId,query:string,sessionId:string,depth:"standard"|"extended"="standard",diagnostics?:SearchDiagnostics,options:SearchRuntimeOptions={}){
   const extended=depth==="extended";
   diagnostics?.events.push({stage:"start",supplierId});
   // Bounded per-supplier expansion; never use unbounded crawling.
   const limitFor=(standard:number,more:number)=>extended?more:standard;
   const fetchImpl=withTimeout(8500,diagnostics,supplierId);
+  if(options.cloudSafe&&!looksLikeReference(query)&&supplierId!=="dvd-dental"&&supplierId!=="dentalboom"){
+    diagnostics?.events.push({stage:"cloud-safe-skip-html-search",supplierId});
+    return {
+      offers:[] as SupplierOffer[],
+      error:"CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+      partial:true,
+      noMatch:false,
+      discoveredFrom:"cloud-safe-html-skipped",
+      candidateCount:0,
+      verifiedCandidateCount:0,
+      candidateLimitReached:false
+    };
+  }
   if(supplierId==="dentalboom"){
     const records=await searchDentalBoomRecords(query,fetchImpl,limitFor(5,10));
     const policy=policyList.find(p=>p.supplierId===supplierId);
@@ -316,6 +331,19 @@ export async function searchOneSupplier(supplierId:SearchSupplierId,query:string
     return {offers:[] as SupplierOffer[],error:noMatch?null:message,noMatch,discoveredFrom:discovered.searchUrl,
       candidateCount:discovered.candidateCount,candidateLimitReached:discovered.candidateLimitReached,verifiedCandidateCount:0};
   }
+  if(options.cloudSafe&&!looksLikeReference(query)){
+    diagnostics?.events.push({stage:"cloud-safe-skip-detail",supplierId,status:discovered.urls.length});
+    return {
+      offers:[] as SupplierOffer[],
+      error:"CANDIDATE_PRODUCT_PAGES_NOT_VERIFIED",
+      partial:true,
+      noMatch:false,
+      discoveredFrom:discovered.searchUrl,
+      candidateCount:discovered.candidateCount,
+      candidateLimitReached:discovered.candidateLimitReached,
+      verifiedCandidateCount:0
+    };
+  }
   const policy=policyList.find(p=>p.supplierId===supplierId);
   const verified:SupplierOffer[]=[];
   // Evaluate more than the first successful product (especially DentalCost).
@@ -358,6 +386,7 @@ export default {
       const depth=url.searchParams.get("depth")==="extended"?"extended" as const:"standard" as const;
       const debug=url.searchParams.get("debug")==="1";
       const diagnostics:SearchDiagnostics|undefined=debug?{startedAt:requestedAt,events:[]}:undefined;
+      const runtime={cloudSafe:env.LIVE_CLOUD_SAFE==="1"||Boolean((request as Request&{cf?:unknown}).cf)};
       if(query.length<2)return Response.json({error:"QUERY_TOO_SHORT"},{status:400,headers});
       if(!suppliers.includes(supplierId))return Response.json({error:"UNKNOWN_SUPPLIER"},{status:400,headers});
       if(protectedSuppliers.includes(supplierId))return Response.json({
@@ -365,7 +394,7 @@ export default {
         error:"BROWSER_VERIFICATION_REQUIRED",noMatch:false
       },{status:409,headers});
       try{
-        const result=await searchOneSupplier(supplierId,query,sessionId,depth,diagnostics);
+        const result=await searchOneSupplier(supplierId,query,sessionId,depth,diagnostics,runtime);
         return Response.json({query,supplierId,sessionId,requestedAt,completedAt:new Date().toISOString(),offers:result.offers,error:result.error??null,partial:result.partial??false,noMatch:result.noMatch??false,discoveredFrom:result.discoveredFrom,candidateCount:result.candidateCount??result.offers.length,verifiedCandidateCount:result.verifiedCandidateCount??result.offers.length,candidateLimitReached:result.candidateLimitReached??false,depth,diagnostics},{headers});
       }catch(error){
         diagnostics?.events.push({stage:"exception",supplierId,error:error instanceof Error?error.message:"SEARCH_ERROR"});

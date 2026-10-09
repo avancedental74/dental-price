@@ -5,3 +5,4 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ALLOWED_ORIGIN = "https://avancedental74.github.io"
+LIVE_CLOUD_SAFE = "1"

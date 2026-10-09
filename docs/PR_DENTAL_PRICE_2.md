@@ -25,6 +25,7 @@
 - Recupera Dental Express como Nivel C cuando el precio solo aparece en datos no visibles de analitica/B2B.
 - Anade exploracion progresiva acotada y metricas de candidatos vistos/verificados.
 - Prepara el procedimiento de staging Cloudflare, bloqueado hasta autenticar Wrangler.
+- Despliega y valida un Worker staging independiente con modo `LIVE_CLOUD_SAFE=1`.
 
 ## Commits incluidos
 
@@ -32,6 +33,7 @@
 - `35ae7ef feat: add sortable supplier comparison`
 - `1569827 feat: validate live coverage and simplify results`
 - `5122d40 fix: stabilize live supplier diagnostics`
+- `57089ed feat: add progressive live candidate validation`
 
 ## Verificacion local
 
@@ -55,6 +57,7 @@ Resultado:
 - Build Vite: OK
 - Diagnostico live local: 6 de 7 proveedores con oferta representativa; Ortolan sin coincidencia en la consulta elegida, sin error tecnico.
 - Matriz Worker local optimizada: 290 ofertas, 52 celdas con resultados, 0 errores tecnicos, 74 celdas con limite de candidatos.
+- Matriz Worker staging Cloudflare cloud-safe: 24 ofertas, 9 celdas con resultados, 0 errores tecnicos, 0 limites de candidatos.
 
 ## Metricas de datos validadas
 
@@ -70,7 +73,8 @@ Resultado:
 - No se migra historico a D1 ni a otro almacenamiento central.
 - No se despliega Worker ni GitHub Pages desde esta rama.
 - No se pudo desplegar staging remoto porque falta `CLOUDFLARE_API_TOKEN`; se valido con Wrangler local.
-- `wrangler whoami` confirma ausencia de sesion; ejecutar `npx --yes wrangler@4.45.0 login` antes de crear `dental-price-live-staging`.
+- Staging existe en `https://dental-price-live-staging.avance-dental74.workers.dev`; produccion no se ha modificado.
+- En Cloudflare gratuito, las busquedas por nombre en proveedores HTML quedan como `partial` para evitar 1102; las referencias/codigos y APIs ligeras siguen funcionando.
 - Los precios de indice permanecen como Nivel C y no compiten como ganadores.
 - La cobertura real depende de las respuestas publicas de cada proveedor consultado.
 
