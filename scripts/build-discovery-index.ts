@@ -3,6 +3,7 @@ import {dirname} from "node:path";
 import {normalizeName} from "../src/domain/matching/normalization";
 import type {CanonicalProduct,SupplierOffer} from "../src/types/domain";
 import type {SearchSupplierId} from "../src/connectors/live-supplier-registry";
+import {readDiscoveryState} from "./discovery-lib";
 
 interface Seed {productId:string;supplierId:SearchSupplierId;url:string;}
 interface History {productId?:string;supplierId:string;supplierSku?:string;sourceUrl?:string;presentation?:string;quantity?:number;unit?:string;packCount?:number;}
@@ -21,7 +22,11 @@ interface DiscoveryIndexEntry {
   quantity?:number;
   unit?:string;
   packCount?:number;
-  source:"current-price"|"history"|"seed";
+  source:"current-price"|"history"|"seed"|"offline-discovery";
+  sourceUrl?:string;
+  firstSeenAt?:string;
+  lastSeenAt?:string;
+  discoveryStatus?:string;
   observedAt?:string;
 }
 
@@ -30,6 +35,7 @@ const products=JSON.parse(readFileSync("data/products.json","utf8")) as Canonica
 const current=JSON.parse(readFileSync("data/current-prices.json","utf8")) as SupplierOffer[];
 const history=JSON.parse(readFileSync("data/price-history.json","utf8")) as History[];
 const seeds=JSON.parse(readFileSync("data/supplier-seeds.json","utf8")) as Seed[];
+const offlineState=readDiscoveryState("data/discovery-source-state.json");
 const productsById=new Map(products.map(product=>[product.id,product]));
 
 function productName(product?:CanonicalProduct){
@@ -134,14 +140,41 @@ for(const seed of seeds){
   });
 }
 
+for(const discovered of offlineState.products){
+  if(discovered.discoveryStatus==="retired")continue;
+  add({
+    supplierId:discovered.supplierId,
+    productUrl:discovered.productUrl,
+    rawName:discovered.rawName,
+    normalizedName:discovered.normalizedName,
+    supplierSku:discovered.supplierSku,
+    manufacturer:discovered.manufacturer,
+    manufacturerReference:discovered.manufacturerReference,
+    eanGtin:discovered.eanGtin,
+    variant:discovered.variant,
+    shade:discovered.shade,
+    presentation:discovered.presentation,
+    quantity:discovered.quantity,
+    unit:discovered.unit,
+    packCount:discovered.packCount,
+    source:"offline-discovery",
+    sourceUrl:discovered.sourceUrl,
+    firstSeenAt:discovered.firstSeenAt,
+    lastSeenAt:discovered.lastSeenAt,
+    discoveryStatus:discovered.discoveryStatus
+  });
+}
+
 const entries=[...byKey.values()].sort((a,b)=>a.supplierId.localeCompare(b.supplierId)||a.rawName.localeCompare(b.rawName));
 const report={
   generatedAt:new Date().toISOString(),
   sourceCounts:{
     currentPrices:current.length,
     history:history.length,
-    seeds:seeds.length
+    seeds:seeds.length,
+    offlineDiscovery:offlineState.products.filter(product=>product.discoveryStatus!=="retired").length
   },
+  sourceReports:offlineState.sources,
   entries
 };
 

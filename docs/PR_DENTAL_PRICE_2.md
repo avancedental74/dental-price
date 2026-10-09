@@ -27,6 +27,8 @@
 - Prepara el procedimiento de staging Cloudflare, bloqueado hasta autenticar Wrangler.
 - Despliega y valida un Worker staging independiente con modo `LIVE_CLOUD_SAFE=1`.
 - Introduce indice incremental de discovery sin precios y verificacion live puntual desde staging.
+- Anade discovery offline abierto desde fuentes publicas con estado incremental, deduplicacion y procedencia.
+- Documenta automatizacion pendiente en `docs/INDEX_AUTOMATION_WORKFLOW.md` por falta de scope GitHub `workflow`.
 
 ## Commits incluidos
 
@@ -36,6 +38,8 @@
 - `5122d40 fix: stabilize live supplier diagnostics`
 - `57089ed feat: add progressive live candidate validation`
 - `528665c fix: add cloud-safe staging live search`
+- `e43761e feat: add hybrid discovery index for staging`
+- Nuevo en esta fase: discovery offline abierto y automatizacion documentada.
 
 ## Verificacion local
 
@@ -55,18 +59,22 @@ Resultado:
 - Typecheck: OK
 - Lint: OK
 - Tests: 51 archivos, 223 tests, OK
+- Tests tras discovery offline: 52 archivos, 226 tests, OK
 - Validacion de datos: OK
 - Build Vite: OK
 - Diagnostico live local: 6 de 7 proveedores con oferta representativa; Ortolan sin coincidencia en la consulta elegida, sin error tecnico.
 - Matriz Worker local optimizada: 290 ofertas, 52 celdas con resultados, 0 errores tecnicos, 74 celdas con limite de candidatos.
 - Matriz Worker staging Cloudflare cloud-safe: 24 ofertas, 9 celdas con resultados, 0 errores tecnicos, 0 limites de candidatos.
 - Matriz Worker staging hibrida: 50 ofertas, 20 celdas con resultados, 0 errores tecnicos, 0 limites de candidatos.
+- Matriz Worker staging con discovery offline: 50 ofertas, 20 celdas con resultados, 0 errores tecnicos, 0 limites de candidatos.
+- Prueba nueva referencia DentalCost descubierta por sitemap: `Fórceps de Incisivos y Caninos Superiores Figura 1 Masters`, encontrada por `incremental-discovery-index` y verificada en ficha con HTTP 200.
 
 ## Metricas de datos validadas
 
 - Productos: 74
 - Ofertas actuales: 98
 - Historico: 373 observaciones
+- Discovery offline: 75 productos, 434 entradas en indice empaquetado.
 - Ground truth: 36 casos
 - False exact: 0
 
@@ -75,12 +83,13 @@ Resultado:
 - No se eluden WAF/CAPTCHA de Proclinic, Dental Iberica ni Broker Dental.
 - No se migra historico a D1 ni a otro almacenamiento central.
 - No se despliega Worker ni GitHub Pages desde esta rama.
-- No se pudo desplegar staging remoto porque falta `CLOUDFLARE_API_TOKEN`; se valido con Wrangler local.
 - Staging existe en `https://dental-price-live-staging.avance-dental74.workers.dev`; produccion no se ha modificado.
+- Staging actual validado: `a59fd0cc-bf9a-450c-abfc-cc72e437e3e1`.
 - En Cloudflare gratuito, las busquedas por nombre en proveedores HTML quedan como `partial` para evitar 1102; las referencias/codigos y APIs ligeras siguen funcionando.
 - El indice incremental no contiene precios; solo reduce discovery HTML y sigue exigiendo verificacion de ficha/API para precios actuales.
 - Los precios de indice permanecen como Nivel C y no compiten como ganadores.
 - La cobertura real depende de las respuestas publicas de cada proveedor consultado.
+- Los workflows de GitHub no se modificaron en el commit subible porque el token remoto no tiene permiso `workflow`.
 
 ## Instrucciones de revision
 

@@ -485,3 +485,130 @@ Lectura:
 - Investigar endpoints publicos especificos de Dentaltix/DentalCost/Dentipak que no requieran DOM completo.
 - Incorporar cache corta por candidato verificado si se confirma que Cloudflare Cache API no compromete frescura ni exactitud.
 - Mantener produccion sin cambios hasta revisar PR.
+
+## Fase 7 - discovery offline abierto e incremental
+
+Fecha: 2026-10-09
+
+### Implementacion
+
+Se anadio un proceso offline independiente del Worker:
+
+```bash
+npm.cmd run discover:index
+```
+
+Archivos:
+
+- `scripts/discover-products.ts`: consulta fuentes publicas con limites por proveedor.
+- `scripts/discovery-lib.ts`: merge incremental, deduplicacion, procedencia y estados.
+- `data/discovery-source-state.json`: estado incremental con `firstSeenAt`, `lastSeenAt`, `sourceUrl`, `detailStatus` y `discoveryStatus`.
+- `data/live-discovery-index.json`: indice empaquetado para el Worker.
+- `tests/scripts/discovery-lib.test.ts`: regresiones de altas, stale y retirados.
+
+Reglas aplicadas:
+
+- No se guardan precios en el indice offline.
+- Un producto no visto en una pasada parcial se marca `stale`, no `retired`.
+- Solo una fuente completa y correcta puede marcar retirados.
+- Se deduplica por proveedor y URL canonica.
+- Las referencias de fabricante extraidas de texto deben ser codigos fuertes con digitos; no se aceptan palabras sueltas.
+
+### Fuentes revisadas
+
+- DentalBoom: WooCommerce Store API publica. Resultado valido para discovery de productos y referencias.
+- DentalCost: sitemap publico con URLs de producto y titulos en metadatos de imagen/video. Resultado valido para discovery; la verificacion de precio queda en ficha.
+- Ortolan: sitemap publico por idioma; discovery valido por URL/nombre, pero verificacion remota por nombre sigue limitada en Worker.
+- Dentaltix: sitemap publico, pero la muestra inicial mezcla categorias, marcas y paginas no inequívocamente de producto; se mantiene como `partial` para no inflar cobertura artificial.
+- Dental Express: sitemap publico, pero la muestra mezcla blog, marcas y categorias; no se incorporan candidatos hasta aislar fichas reales.
+- Dentipak: `sitemap.xml` publica solo `/lander`; sin productos nuevos por esta via.
+
+### Resultado de discovery real
+
+Ejecucion con limites conservadores:
+
+```text
+DISCOVERY_MAX_PER_PROVIDER=25
+DISCOVERY_MAX_PAGES=2
+```
+
+Resultado:
+
+- Productos offline acumulados: 75
+- Nuevos productos validos respecto al indice anterior: 75 en la primera pasada; 50 adicionales tras corregir CDATA y sitemaps.
+- Proveedores con nuevos candidatos: DentalBoom 25, DentalCost 25, Ortolan 25.
+- Proveedores sin candidatos fiables en esta fase: Dentaltix, Dental Express, Dentipak.
+- Indice empaquetado: 434 entradas.
+
+### Prueba de integracion staging
+
+Se demostro que una referencia/nombre no presente en el indice anterior puede incorporarse por discovery offline y encontrarse desde Cloudflare staging.
+
+Producto de prueba:
+
+```text
+DentalCost
+Fórceps de Incisivos y Caninos Superiores Figura 1 Masters
+https://www.dentalcost.es/forceps-dentales-extraccion/17-forceps-incisivos-caninos-superiores-figura-1-masters.html
+```
+
+Evidencia staging:
+
+- Worker staging: `https://dental-price-live-staging.avance-dental74.workers.dev`
+- Version: `a59fd0cc-bf9a-450c-abfc-cc72e437e3e1`
+- `discoveredFrom`: `incremental-discovery-index`
+- `candidateCount`: 1
+- `verifiedCandidateCount`: 1
+- HTTP ficha proveedor: 200
+- Oferta recuperada: `supplierSku=0017MS`, `manufacturerReference=101`
+- Precio ficha: 16,92 EUR sin IVA, IVA 21, `priceVerification=detail`
+
+Esto valida discovery abierto + verificacion live. No es precio checkout Nivel A.
+
+### Matriz staging tras discovery
+
+Matriz de 30 consultas y 7 proveedores:
+
+- Ofertas: 50
+- Candidatos detectados: 36
+- Candidatos verificados: 35
+- Minimo de candidatos no verificados por limite: 1
+- Celdas con resultados: 20
+- Celdas sin coincidencia: 53
+- Celdas con error tecnico: 0
+- Limites de candidatos: 0
+
+No reaparecen 503/1102 causados por nuestra aplicacion.
+
+### JSON versionado vs D1
+
+Opcion A, JSON versionado y empaquetado en Worker:
+
+- Mas simple para uso privado.
+- Reversion trivial con Git.
+- Sin nueva superficie operativa ni migracion.
+- Coste cero y suficiente con 434 entradas; upload staging: 1436,73 KiB sin comprimir, 243,09 KiB gzip.
+- Limitacion: cada cambio de indice requiere nuevo despliegue del Worker.
+
+Opcion B, Cloudflare D1:
+
+- Permite actualizar indice sin redeploy y consultar mas volumen.
+- Anade migraciones, queries, backup, seeds, control de limites y observabilidad de base de datos.
+- Requiere disenar sincronizacion y rollback antes de mover datos.
+- No mejora por si misma la verificacion de precios; solo discovery.
+
+Decision:
+
+Mantener Opcion A por ahora. D1 queda como evolucion futura si el indice empaquetado crece hasta afectar arranque, tamano del Worker o frecuencia de despliegue.
+
+### Automatizacion
+
+Se preparo documentacion operativa en `docs/INDEX_AUTOMATION_WORKFLOW.md`.
+
+Bloqueo confirmado:
+
+- `gh` no esta instalado.
+- GitHub rechazo cambios en workflows por falta de scope `workflow` del token actual.
+- Wrangler si esta autenticado para Workers/D1 con OAuth.
+
+No se afirma automatizacion completa en GitHub Actions hasta poder subir y verificar los workflows con permisos adecuados.

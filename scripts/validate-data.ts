@@ -25,6 +25,28 @@ const metricsSchema=z.object({
   supplierOfferCounts:z.record(z.string(),z.number().int().nonnegative())
 });
 const seedSchema=z.array(z.object({productId:z.string(),supplierId:z.enum(["dentaltix","proclinic","dental-iberica","dentalcost","dvd-dental","dentalexpress","brokerdental","ortolan"]),url:z.string().url(),acquisitionMode:z.enum(["direct","manual_verification"]).optional()}));
+const discoveryStateSchema=z.object({
+  generatedAt:z.string(),
+  sources:z.array(z.object({
+    supplierId:z.string(),source:z.string(),sourceUrl:z.string().url(),fetchedAt:z.string(),
+    status:z.enum(["ok","partial","error"]),scope:z.enum(["full","partial"]),discovered:z.number().int().nonnegative(),error:z.string().optional()
+  })),
+  products:z.array(z.object({
+    supplierId:z.string(),productUrl:z.string().url(),rawName:z.string().min(3),normalizedName:z.string().min(1),
+    firstSeenAt:z.string(),lastSeenAt:z.string(),source:z.enum(["sitemap","store-api","manual-source"]),sourceUrl:z.string().url(),
+    discoveryStatus:z.enum(["active","stale","retired"]),detailStatus:z.enum(["not_fetched","fetched","failed"])
+  }).passthrough())
+});
+const discoveryIndexSchema=z.object({
+  generatedAt:z.string(),
+  sourceCounts:z.object({
+    currentPrices:z.number().int().nonnegative(),history:z.number().int().nonnegative(),seeds:z.number().int().nonnegative(),offlineDiscovery:z.number().int().nonnegative().optional()
+  }),
+  entries:z.array(z.object({
+    supplierId:z.string(),productUrl:z.string().url(),rawName:z.string().min(3),normalizedName:z.string().min(1),
+    source:z.enum(["current-price","history","seed","offline-discovery"])
+  }).passthrough())
+});
 
 const products=z.array(canonicalProductSchema).parse(await readJson("data/products.json"));
 const current=z.array(supplierOfferSchema).parse(await readJson("data/current-prices.json"));
@@ -32,6 +54,8 @@ const history=historySchema.parse(await readJson("data/price-history.json"));
 const status=statusSchema.parse(await readJson("data/connector-status.json"));
 const seeds=seedSchema.parse(await readJson("data/supplier-seeds.json"));
 const policies=policySchema.parse(await readJson("data/supplier-policies.json"));
+const discoveryState=discoveryStateSchema.parse(await readJson("data/discovery-source-state.json").catch(()=>({generatedAt:new Date(0).toISOString(),sources:[],products:[]})));
+const discoveryIndex=discoveryIndexSchema.parse(await readJson("data/live-discovery-index.json").catch(()=>({generatedAt:new Date(0).toISOString(),sourceCounts:{currentPrices:0,history:0,seeds:0},entries:[]})));
 const metrics=metricsSchema.parse(await readJson("data/metrics.json").catch(()=>({
   generatedAt:new Date(0).toISOString(),verifiedOffers:current.length,purchasableOffers:0,unavailableOffers:0,lowStockOffers:0,productsWithTwoOrMoreVerifiedSuppliers:0,productsWithTwoOrMorePurchasableSuppliers:0,automaticSuppliers:0,supplierOfferCounts:{}
 })));
@@ -43,6 +67,19 @@ for(const product of products){
 }
 for(const seed of seeds){
   if(!ids.has(seed.productId)) throw new Error("Supplier seed references unknown product: "+seed.productId);
+}
+
+const discoveryKeys=new Set<string>();
+for(const product of discoveryState.products){
+  const key=product.supplierId+"|"+product.productUrl;
+  if(discoveryKeys.has(key))throw new Error("Duplicate offline discovery product: "+key);
+  discoveryKeys.add(key);
+}
+const indexKeys=new Set<string>();
+for(const entry of discoveryIndex.entries){
+  const key=entry.supplierId+"|"+entry.productUrl+"|"+String(entry.supplierSku??"")+"|"+String(entry.manufacturerReference??"")+"|"+entry.rawName;
+  if(indexKeys.has(key))throw new Error("Duplicate discovery index entry: "+key);
+  indexKeys.add(key);
 }
 
 
@@ -97,5 +134,5 @@ if(falseExact>0) throw new Error("Ground truth contains "+falseExact+" false-pos
 if(mismatches>0) throw new Error("Ground truth mismatches: "+mismatches);
 
 console.log(JSON.stringify({
-  products:products.length,currentOffers:current.length,history:history.length,connectors:status.length,seeds:seeds.length,policies:policies.length,metrics,groundTruth:gt.cases.length,falseExact
+  products:products.length,currentOffers:current.length,history:history.length,connectors:status.length,seeds:seeds.length,policies:policies.length,discoveryState:discoveryState.products.length,discoveryIndex:discoveryIndex.entries.length,metrics,groundTruth:gt.cases.length,falseExact
 },null,2));

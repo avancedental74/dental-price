@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "validate:data": "tsx scripts/validate-data.ts",
+    "discover:index": "tsx scripts/discover-products.ts && npm run refresh:index",
     "refresh:index": "tsx scripts/build-discovery-index.ts",
     "validate:live": "tsx scripts/live-search-matrix.ts",
     "diagnose:live": "tsx scripts/live-provider-diagnostics.ts",
