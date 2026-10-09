@@ -1,4 +1,4 @@
-import { parseDentalCostProductHtml } from "./parser";
+import { parseDentalCostProductHtml, parseDentalCostProductHtmlFast } from "./parser";
 import { normalizeDentalCost } from "./normalizer";
 import type { DentalCostConnectorResult, DentalCostHealth } from "./types";
 
@@ -6,7 +6,8 @@ const USER_AGENT="DentalPrice/0.1 (+https://github.com/avancedental74/dental-pri
 export async function fetchDentalCostProduct(productUrl:string,fetchImpl:typeof fetch=fetch):Promise<DentalCostConnectorResult>{
   const response=await fetchImpl(productUrl,{headers:{"user-agent":USER_AGENT,accept:"text/html,application/xhtml+xml"}});
   if(!response.ok) throw new Error("DentalCost HTTP "+response.status);
-  const raw=parseDentalCostProductHtml(await response.text(),productUrl);
+  const html=await response.text();
+  const raw=parseDentalCostProductHtmlFast(html,productUrl)??parseDentalCostProductHtml(html,productUrl);
   return {raw,offers:normalizeDentalCost(raw)};
 }
 export async function healthCheckDentalCost(url="https://www.dentalcost.es/composites-universales/687-filtek-supreme-xte-composite-universal-body-3gr.html",fetchImpl:typeof fetch=fetch):Promise<DentalCostHealth>{

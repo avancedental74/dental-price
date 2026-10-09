@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-09T09:11:40.484Z",
-  "startedAt": "2026-10-09T09:09:35.907Z",
+  "generatedAt": "2026-10-09T09:30:24.588Z",
+  "startedAt": "2026-10-09T09:28:10.855Z",
   "endpoint": "https://dental-price-live-staging.avance-dental74.workers.dev",
   "depth": "standard",
   "queryCount": 30,
@@ -8,7 +8,7 @@
   "rows": [
     {
       "query": "4910A3B",
-      "sessionId": "matrix-1791536975908-0",
+      "sessionId": "matrix-1791538090856-0",
       "totals": {
         "suppliersWithResults": 3,
         "suppliersNoMatch": 3,
@@ -27,7 +27,7 @@
           "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 1656,
+          "elapsedMs": 1502,
           "sample": [
             {
               "name": "Filtek Supreme XTE: Nanocomposite Universal (Jeringa 3 gr) - A3 BODY - 1 Jer. de 3 gr - Color: A3 Body",
@@ -47,7 +47,7 @@
           "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 2725,
+          "elapsedMs": 2971,
           "sample": [
             {
               "name": "− + ComprarFiltek Supreme XTE Composite Universal Opacidad Body 3gr 3M Espe: A3",
@@ -67,7 +67,7 @@
           "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 45,
+          "elapsedMs": 52,
           "sample": [
             {
               "name": "Composite Filtek supreme XTE jeringas (3g)",
@@ -87,7 +87,7 @@
           "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
           "error": "CANDIDATE_PRODUCT_PAGES_NOT_VERIFIED",
-          "elapsedMs": 1407,
+          "elapsedMs": 1417,
           "sample": []
         },
         {
@@ -98,7 +98,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 638,
+          "elapsedMs": 776,
           "sample": []
         },
         {
@@ -109,7 +109,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 2742,
+          "elapsedMs": 2668,
           "sample": []
         },
         {
@@ -120,45 +120,63 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 586,
+          "elapsedMs": 766,
           "sample": []
         }
       ]
     },
     {
       "query": "Filtek Supreme XTE A3 Body 3 g",
-      "sessionId": "matrix-1791536988930-1",
+      "sessionId": "matrix-1791538104243-1",
       "totals": {
-        "suppliersWithResults": 0,
+        "suppliersWithResults": 2,
         "suppliersNoMatch": 2,
         "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
+        "totalOffers": 2,
+        "totalCandidates": 2,
+        "verifiedCandidates": 2,
         "candidateLimits": 0
       },
       "suppliers": [
         {
           "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 1,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
-          "sample": []
+          "error": null,
+          "elapsedMs": 698,
+          "sample": [
+            {
+              "name": "Filtek Supreme XTE: Nanocomposite Universal (Jeringa 3 gr) - A3 BODY - 1 Jer. de 3 gr - Color: A3 Body",
+              "reference": "4910A3B",
+              "sku": "053M4910A3B",
+              "price": 44.9,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 1,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 26,
-          "sample": []
+          "error": null,
+          "elapsedMs": 430,
+          "sample": [
+            {
+              "name": "− + ComprarFiltek Supreme XTE Composite Universal Opacidad Body 3gr 3M Espe: A3",
+              "reference": "4910A3B",
+              "sku": "06873M3",
+              "price": 47.86,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dvd-dental",
@@ -168,7 +186,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 52,
+          "elapsedMs": 43,
           "sample": []
         },
         {
@@ -179,7 +197,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 31,
           "sample": []
         },
         {
@@ -190,7 +208,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 27,
           "sample": []
         },
         {
@@ -201,7 +219,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 11,
+          "elapsedMs": 25,
           "sample": []
         },
         {
@@ -212,45 +230,63 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 484,
+          "elapsedMs": 471,
           "sample": []
         }
       ]
     },
     {
       "query": "Filtek Z250 A3 4 g",
-      "sessionId": "matrix-1791536992797-2",
+      "sessionId": "matrix-1791538109182-2",
       "totals": {
-        "suppliersWithResults": 0,
+        "suppliersWithResults": 2,
         "suppliersNoMatch": 2,
         "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
+        "totalOffers": 2,
+        "totalCandidates": 2,
+        "verifiedCandidates": 2,
         "candidateLimits": 0
       },
       "suppliers": [
         {
           "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 1,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
+          "error": null,
+          "elapsedMs": 551,
+          "sample": [
+            {
+              "name": "Filtek Z250: Composite Universal (4 gr) - A3 UNIVERSAL - 1 Jer. de 4 gr - Color: A3",
+              "reference": "6020A3",
+              "sku": "053M6020A3",
+              "price": 61.9,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 1,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
-          "sample": []
+          "error": null,
+          "elapsedMs": 507,
+          "sample": [
+            {
+              "name": "− + ComprarFiltek Z250 Composite Universal Jeringa Reposición 4g. 3M Espe: A3",
+              "reference": "6020A3",
+              "sku": "02653M2",
+              "price": 63.43,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dvd-dental",
@@ -260,7 +296,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 36,
+          "elapsedMs": 44,
           "sample": []
         },
         {
@@ -271,59 +307,11 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 26,
+          "elapsedMs": 97,
           "sample": []
         },
         {
           "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalboom",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 542,
-          "sample": []
-        }
-      ]
-    },
-    {
-      "query": "Scotchbond Universal Plus 41294",
-      "sessionId": "matrix-1791536996696-3",
-      "totals": {
-        "suppliersWithResults": 0,
-        "suppliersNoMatch": 2,
-        "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
-        "candidateLimits": 0
-      },
-      "suppliers": [
-        {
-          "supplierId": "dentaltix",
           "status": "partial",
           "offers": 0,
           "candidateCount": 0,
@@ -334,272 +322,7 @@
           "sample": []
         },
         {
-          "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 26,
-          "sample": []
-        },
-        {
-          "supplierId": "dvd-dental",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 37,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalexpress",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 9,
-          "sample": []
-        },
-        {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
           "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalboom",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 419,
-          "sample": []
-        }
-      ]
-    },
-    {
-      "query": "RelyX Universal A1 56972",
-      "sessionId": "matrix-1791537000480-4",
-      "totals": {
-        "suppliersWithResults": 0,
-        "suppliersNoMatch": 2,
-        "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
-        "candidateLimits": 0
-      },
-      "suppliers": [
-        {
-          "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 11,
-          "sample": []
-        },
-        {
-          "supplierId": "dvd-dental",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalexpress",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
-          "sample": []
-        },
-        {
-          "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalboom",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 666,
-          "sample": []
-        }
-      ]
-    },
-    {
-      "query": "Tetric EvoCeram A3,5 Dentina jeringa",
-      "sessionId": "matrix-1791537004470-5",
-      "totals": {
-        "suppliersWithResults": 0,
-        "suppliersNoMatch": 2,
-        "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
-        "candidateLimits": 0
-      },
-      "suppliers": [
-        {
-          "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "dvd-dental",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalexpress",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 36,
-          "sample": []
-        },
-        {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 38,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalboom",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 502,
-          "sample": []
-        }
-      ]
-    },
-    {
-      "query": "composite fluido A2",
-      "sessionId": "matrix-1791537008347-6",
-      "totals": {
-        "suppliersWithResults": 0,
-        "suppliersNoMatch": 2,
-        "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
-        "candidateLimits": 0
-      },
-      "suppliers": [
-        {
-          "supplierId": "dentaltix",
           "status": "partial",
           "offers": 0,
           "candidateCount": 0,
@@ -610,61 +333,6 @@
           "sample": []
         },
         {
-          "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dvd-dental",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 39,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalexpress",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 21,
-          "sample": []
-        },
-        {
-          "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 9,
-          "sample": []
-        },
-        {
           "supplierId": "dentalboom",
           "status": "no_match",
           "offers": 0,
@@ -672,413 +340,79 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 462,
+          "elapsedMs": 527,
           "sample": []
         }
       ]
     },
     {
-      "query": "adhesivo universal dental",
-      "sessionId": "matrix-1791537012164-7",
+      "query": "Scotchbond Universal Plus 41294",
+      "sessionId": "matrix-1791538114181-3",
       "totals": {
-        "suppliersWithResults": 0,
+        "suppliersWithResults": 2,
         "suppliersNoMatch": 2,
         "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
+        "totalOffers": 8,
+        "totalCandidates": 3,
+        "verifiedCandidates": 2,
         "candidateLimits": 0
       },
       "suppliers": [
         {
           "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 7,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
+          "error": null,
+          "elapsedMs": 654,
+          "sample": [
+            {
+              "name": "Scotchbond Universal Plus: Adhesivo Universal Radiopaco (Bote) - Bote 5 ml (Reposición) - 1 Bote de 5 ml",
+              "reference": "41294",
+              "sku": "41294",
+              "price": 79.9,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "Scotchbond Universal Plus: Adhesivo Universal Radiopaco (Bote) - 3 Botes de 5 ml (Reposición Triple Bote) - 3 Botes de 5 ml",
+              "reference": "41295",
+              "sku": "41295",
+              "price": 229.9,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "Scotchbond Universal Plus: Kit Intro Adhesivo Universal (Bote) - Kit Introducción - KIT",
+              "reference": "41293",
+              "sku": "41293",
+              "price": 99.9,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dvd-dental",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 1,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalexpress",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 9,
-          "sample": []
-        },
-        {
-          "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 17,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalboom",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 408,
-          "sample": []
-        }
-      ]
-    },
-    {
-      "query": "cemento resina dual",
-      "sessionId": "matrix-1791537015891-8",
-      "totals": {
-        "suppliersWithResults": 0,
-        "suppliersNoMatch": 2,
-        "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
-        "candidateLimits": 0
-      },
-      "suppliers": [
-        {
-          "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 8,
-          "sample": []
-        },
-        {
-          "supplierId": "dvd-dental",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 38,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalexpress",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
-          "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalboom",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 499,
-          "sample": []
-        }
-      ]
-    },
-    {
-      "query": "articaina 1:100000",
-      "sessionId": "matrix-1791537019734-9",
-      "totals": {
-        "suppliersWithResults": 0,
-        "suppliersNoMatch": 2,
-        "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
-        "candidateLimits": 0
-      },
-      "suppliers": [
-        {
-          "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
-          "supplierId": "dvd-dental",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 37,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalexpress",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalboom",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 484,
-          "sample": []
-        }
-      ]
-    },
-    {
-      "query": "lidocaina dental carpules",
-      "sessionId": "matrix-1791537023593-10",
-      "totals": {
-        "suppliersWithResults": 0,
-        "suppliersNoMatch": 2,
-        "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
-        "candidateLimits": 0
-      },
-      "suppliers": [
-        {
-          "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
-          "supplierId": "dvd-dental",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 31,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalexpress",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
-          "sample": []
-        },
-        {
-          "supplierId": "dentipak",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalboom",
-          "status": "no_match",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": null,
-          "elapsedMs": 464,
-          "sample": []
-        }
-      ]
-    },
-    {
-      "query": "agujas dentales 30G cortas",
-      "sessionId": "matrix-1791537027438-11",
-      "totals": {
-        "suppliersWithResults": 0,
-        "suppliersNoMatch": 2,
-        "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
-        "candidateLimits": 0
-      },
-      "suppliers": [
-        {
-          "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
-          "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 26,
-          "sample": []
+          "elapsedMs": 667,
+          "sample": [
+            {
+              "name": "Scotchbond Adhesivo Universal Plus Reposición 5ml 3M Espe",
+              "reference": "41294",
+              "sku": "81003M",
+              "price": 88.55,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dvd-dental",
@@ -1095,6 +429,500 @@
           "supplierId": "dentalexpress",
           "status": "partial",
           "offers": 0,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "HYBRID_INDEX_CANDIDATES_NOT_VERIFIED",
+          "elapsedMs": 25,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 31,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 26,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 536,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "RelyX Universal A1 56972",
+      "sessionId": "matrix-1791538119338-4",
+      "totals": {
+        "suppliersWithResults": 2,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 0,
+        "totalOffers": 4,
+        "totalCandidates": 2,
+        "verifiedCandidates": 2,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "results",
+          "offers": 3,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 543,
+          "sample": [
+            {
+              "name": "RelyX Universal: Cemento de Resina Universal (Reposición) - A1 - Jeringa - 3,4 gr - A1",
+              "reference": "56972",
+              "sku": "56972",
+              "price": 133.9,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "RelyX Universal: Cemento de Resina Universal - Kit de Prueba - A1 - Kit Prueba - A1",
+              "reference": "56970",
+              "sku": "56970",
+              "price": 169.9,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "RelyX Universal: Cemento de Resina Universal (Pack Ahorro) - A1 - Pack Ahorro - A1",
+              "reference": "56978",
+              "sku": "56978",
+              "price": 399,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "results",
+          "offers": 1,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 543,
+          "sample": [
+            {
+              "name": "ducto. Te asesoramos sin compromiso. Llamar a un experto 960002399 Escribir por WhatsApp 644745898 Todas referenciasRelyx Universal Cemento de Resina Reposición Jeringa 3,4g 3M: A1",
+              "reference": "56972",
+              "sku": "89553M1",
+              "price": 136.99,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 42,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 38,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 28,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 27,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 467,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "Tetric EvoCeram A3,5 Dentina jeringa",
+      "sessionId": "matrix-1791538124227-5",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 0,
+        "totalOffers": 0,
+        "totalCandidates": 0,
+        "verifiedCandidates": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 36,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 47,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 43,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 26,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 28,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 26,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 487,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "composite fluido A2",
+      "sessionId": "matrix-1791538128119-6",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 0,
+        "totalOffers": 0,
+        "totalCandidates": 0,
+        "verifiedCandidates": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 39,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 36,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 42,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 28,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 28,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 27,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 455,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "adhesivo universal dental",
+      "sessionId": "matrix-1791538131994-7",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 0,
+        "totalOffers": 0,
+        "totalCandidates": 0,
+        "verifiedCandidates": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 36,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 34,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 40,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 28,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 26,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 28,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 535,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "cemento resina dual",
+      "sessionId": "matrix-1791538135930-8",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 0,
+        "totalOffers": 0,
+        "totalCandidates": 0,
+        "verifiedCandidates": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 34,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 54,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 43,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
           "candidateCount": 0,
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
@@ -1110,7 +938,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 27,
           "sample": []
         },
         {
@@ -1121,7 +949,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 28,
           "sample": []
         },
         {
@@ -1132,45 +960,363 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 445,
+          "elapsedMs": 712,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "articaina 1:100000",
+      "sessionId": "matrix-1791538140057-9",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 0,
+        "totalOffers": 0,
+        "totalCandidates": 0,
+        "verifiedCandidates": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 38,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 33,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 48,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 27,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 27,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 27,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 535,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "lidocaina dental carpules",
+      "sessionId": "matrix-1791538143979-10",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 0,
+        "totalOffers": 0,
+        "totalCandidates": 0,
+        "verifiedCandidates": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 34,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 34,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 47,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 32,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 27,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 26,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 461,
+          "sample": []
+        }
+      ]
+    },
+    {
+      "query": "agujas dentales 30G cortas",
+      "sessionId": "matrix-1791538147869-11",
+      "totals": {
+        "suppliersWithResults": 0,
+        "suppliersNoMatch": 2,
+        "suppliersWithErrors": 0,
+        "totalOffers": 0,
+        "totalCandidates": 0,
+        "verifiedCandidates": 0,
+        "candidateLimits": 0
+      },
+      "suppliers": [
+        {
+          "supplierId": "dentaltix",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 31,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalcost",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 38,
+          "sample": []
+        },
+        {
+          "supplierId": "dvd-dental",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 55,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 26,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 27,
+          "sample": []
+        },
+        {
+          "supplierId": "dentipak",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 26,
+          "sample": []
+        },
+        {
+          "supplierId": "dentalboom",
+          "status": "no_match",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": null,
+          "elapsedMs": 453,
           "sample": []
         }
       ]
     },
     {
       "query": "Peeso 28 mm n 1",
-      "sessionId": "matrix-1791537031249-12",
+      "sessionId": "matrix-1791538151698-12",
       "totals": {
-        "suppliersWithResults": 0,
+        "suppliersWithResults": 2,
         "suppliersNoMatch": 2,
         "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
+        "totalOffers": 6,
+        "totalCandidates": 2,
+        "verifiedCandidates": 2,
         "candidateLimits": 0
       },
       "suppliers": [
         {
           "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 2,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 9,
-          "sample": []
+          "error": null,
+          "elapsedMs": 588,
+          "sample": [
+            {
+              "name": "Fresas endodoncia largo PEESO 28mm (6 uds.) - Nº1 28mm 6 unidades - Nº1 28mm 6 unidades",
+              "reference": "A000923000100",
+              "sku": "A1908112",
+              "price": 22.7,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "Fresas endodoncia largo PEESO 28mm (6 uds.) - Nº2 28mm 6 unidades - Nº2 28mm 6 unidades",
+              "reference": "A000923000200",
+              "sku": "A1908113",
+              "price": 22.83,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dentalcost",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 4,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
+          "error": null,
+          "elapsedMs": 537,
+          "sample": [
+            {
+              "name": " en producto. Te asesoramos sin compromiso. Llamar a un experto 960002399 Escribir por WhatsApp 644745898 Todas referenciasFresa Ensanchadora Peeso Largo 28mm 6 uds. Maillefer: Nº1",
+              "reference": "A000923000100",
+              "sku": "5513MA1",
+              "price": 17.52,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "− + ComprarFresa Ensanchadora Peeso Largo 28mm 6 uds. Maillefer: Nº2",
+              "reference": "A000923000200",
+              "sku": "5513MA2",
+              "price": 17.52,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "− + ComprarFresa Ensanchadora Peeso Largo 28mm 6 uds. Maillefer: Nº3",
+              "reference": "A000923000300",
+              "sku": "5513MA3",
+              "price": 17.52,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dvd-dental",
@@ -1180,7 +1326,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 37,
+          "elapsedMs": 46,
           "sample": []
         },
         {
@@ -1191,7 +1337,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -1202,7 +1348,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 28,
           "sample": []
         },
         {
@@ -1213,7 +1359,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -1224,14 +1370,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 492,
+          "elapsedMs": 440,
           "sample": []
         }
       ]
     },
     {
       "query": "limas K 25 mm nº 15",
-      "sessionId": "matrix-1791537035094-13",
+      "sessionId": "matrix-1791538156590-13",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -1250,7 +1396,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 33,
           "sample": []
         },
         {
@@ -1261,7 +1407,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 42,
           "sample": []
         },
         {
@@ -1272,7 +1418,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 20,
+          "elapsedMs": 42,
           "sample": []
         },
         {
@@ -1283,7 +1429,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 16,
+          "elapsedMs": 27,
           "sample": []
         },
         {
@@ -1294,7 +1440,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -1305,7 +1451,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -1316,14 +1462,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 545,
+          "elapsedMs": 537,
           "sample": []
         }
       ]
     },
     {
       "query": "fresas diamantadas grano fino",
-      "sessionId": "matrix-1791537038985-14",
+      "sessionId": "matrix-1791538160542-14",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -1342,7 +1488,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 33,
           "sample": []
         },
         {
@@ -1353,7 +1499,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
+          "elapsedMs": 22,
           "sample": []
         },
         {
@@ -1364,11 +1510,22 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 20,
+          "elapsedMs": 43,
           "sample": []
         },
         {
           "supplierId": "dentalexpress",
+          "status": "partial",
+          "offers": 0,
+          "candidateCount": 0,
+          "verifiedCandidateCount": 0,
+          "candidateLimitReached": false,
+          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+          "elapsedMs": 28,
+          "sample": []
+        },
+        {
+          "supplierId": "ortolan",
           "status": "partial",
           "offers": 0,
           "candidateCount": 0,
@@ -1379,17 +1536,6 @@
           "sample": []
         },
         {
-          "supplierId": "ortolan",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
-          "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
-          "sample": []
-        },
-        {
           "supplierId": "dentipak",
           "status": "partial",
           "offers": 0,
@@ -1397,7 +1543,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 16,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -1408,14 +1554,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 424,
+          "elapsedMs": 455,
           "sample": []
         }
       ]
     },
     {
       "query": "fresa tungsteno cirugía",
-      "sessionId": "matrix-1791537042727-15",
+      "sessionId": "matrix-1791538164374-15",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -1434,7 +1580,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 35,
           "sample": []
         },
         {
@@ -1445,7 +1591,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 37,
           "sample": []
         },
         {
@@ -1456,7 +1602,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 34,
+          "elapsedMs": 35,
           "sample": []
         },
         {
@@ -1467,7 +1613,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 9,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -1478,7 +1624,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 27,
           "sample": []
         },
         {
@@ -1489,7 +1635,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 31,
           "sample": []
         },
         {
@@ -1500,14 +1646,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 451,
+          "elapsedMs": 457,
           "sample": []
         }
       ]
     },
     {
       "query": "alginato 500 g",
-      "sessionId": "matrix-1791537046535-16",
+      "sessionId": "matrix-1791538168220-16",
       "totals": {
         "suppliersWithResults": 2,
         "suppliersNoMatch": 0,
@@ -1526,7 +1672,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 21,
+          "elapsedMs": 36,
           "sample": []
         },
         {
@@ -1537,7 +1683,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 20,
           "sample": []
         },
         {
@@ -1548,7 +1694,7 @@
           "verifiedCandidateCount": 9,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 25,
+          "elapsedMs": 48,
           "sample": [
             {
               "name": "Alginato Turboprint Chroma (500g)",
@@ -1581,7 +1727,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 14,
+          "elapsedMs": 29,
           "sample": []
         },
         {
@@ -1592,7 +1738,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 11,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -1603,7 +1749,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 27,
           "sample": []
         },
         {
@@ -1614,7 +1760,7 @@
           "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 501,
+          "elapsedMs": 576,
           "sample": [
             {
               "name": "Cavex Impressional Alginato 500 g",
@@ -1629,7 +1775,7 @@
     },
     {
       "query": "silicona adicion pesada",
-      "sessionId": "matrix-1791537050347-17",
+      "sessionId": "matrix-1791538172190-17",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -1648,7 +1794,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 41,
           "sample": []
         },
         {
@@ -1659,7 +1805,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
+          "elapsedMs": 35,
           "sample": []
         },
         {
@@ -1670,7 +1816,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 33,
+          "elapsedMs": 29,
           "sample": []
         },
         {
@@ -1681,7 +1827,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 26,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -1692,7 +1838,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 23,
           "sample": []
         },
         {
@@ -1703,7 +1849,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 29,
           "sample": []
         },
         {
@@ -1714,14 +1860,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 412,
+          "elapsedMs": 551,
           "sample": []
         }
       ]
     },
     {
       "query": "cubetas impresion perforadas",
-      "sessionId": "matrix-1791537054104-18",
+      "sessionId": "matrix-1791538176140-18",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -1740,7 +1886,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 19,
+          "elapsedMs": 38,
           "sample": []
         },
         {
@@ -1751,7 +1897,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 41,
           "sample": []
         },
         {
@@ -1762,7 +1908,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 34,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -1773,7 +1919,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 9,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -1784,7 +1930,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 31,
           "sample": []
         },
         {
@@ -1795,7 +1941,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 31,
           "sample": []
         },
         {
@@ -1806,14 +1952,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 445,
+          "elapsedMs": 762,
           "sample": []
         }
       ]
     },
     {
       "query": "sutura seda 3/0",
-      "sessionId": "matrix-1791537057898-19",
+      "sessionId": "matrix-1791538180290-19",
       "totals": {
         "suppliersWithResults": 1,
         "suppliersNoMatch": 1,
@@ -1832,7 +1978,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 37,
           "sample": []
         },
         {
@@ -1843,7 +1989,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 36,
           "sample": []
         },
         {
@@ -1854,7 +2000,7 @@
           "verifiedCandidateCount": 3,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 37,
+          "elapsedMs": 32,
           "sample": [
             {
               "name": "Sutura Seda",
@@ -1890,7 +2036,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 16,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -1901,7 +2047,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
+          "elapsedMs": 27,
           "sample": []
         },
         {
@@ -1912,7 +2058,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 27,
           "sample": []
         },
         {
@@ -1923,14 +2069,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 468,
+          "elapsedMs": 613,
           "sample": []
         }
       ]
     },
     {
       "query": "hojas bisturi 15C",
-      "sessionId": "matrix-1791537061692-20",
+      "sessionId": "matrix-1791538184288-20",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -1949,7 +2095,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -1960,7 +2106,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 14,
+          "elapsedMs": 38,
           "sample": []
         },
         {
@@ -1971,7 +2117,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 33,
+          "elapsedMs": 45,
           "sample": []
         },
         {
@@ -1982,7 +2128,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 28,
           "sample": []
         },
         {
@@ -1993,7 +2139,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 28,
           "sample": []
         },
         {
@@ -2004,7 +2150,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -2015,14 +2161,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 605,
+          "elapsedMs": 520,
           "sample": []
         }
       ]
     },
     {
       "query": "implante titanio 4.0 10 mm",
-      "sessionId": "matrix-1791537065673-21",
+      "sessionId": "matrix-1791538188206-21",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -2041,7 +2187,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 36,
           "sample": []
         },
         {
@@ -2052,7 +2198,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 38,
           "sample": []
         },
         {
@@ -2063,7 +2209,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 33,
+          "elapsedMs": 38,
           "sample": []
         },
         {
@@ -2074,7 +2220,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 22,
+          "elapsedMs": 13,
           "sample": []
         },
         {
@@ -2085,7 +2231,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
+          "elapsedMs": 33,
           "sample": []
         },
         {
@@ -2096,7 +2242,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -2107,14 +2253,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 521,
+          "elapsedMs": 558,
           "sample": []
         }
       ]
     },
     {
       "query": "tornillo cicatrizacion implante",
-      "sessionId": "matrix-1791537069578-22",
+      "sessionId": "matrix-1791538192167-22",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -2133,7 +2279,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 26,
+          "elapsedMs": 33,
           "sample": []
         },
         {
@@ -2144,7 +2290,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 36,
           "sample": []
         },
         {
@@ -2155,7 +2301,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 33,
+          "elapsedMs": 38,
           "sample": []
         },
         {
@@ -2177,7 +2323,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 11,
           "sample": []
         },
         {
@@ -2199,34 +2345,59 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 601,
+          "elapsedMs": 447,
           "sample": []
         }
       ]
     },
     {
       "query": "guantes nitrilo talla M sin polvo",
-      "sessionId": "matrix-1791537073547-23",
+      "sessionId": "matrix-1791538195990-23",
       "totals": {
-        "suppliersWithResults": 0,
+        "suppliersWithResults": 1,
         "suppliersNoMatch": 2,
         "suppliersWithErrors": 0,
-        "totalOffers": 0,
-        "totalCandidates": 0,
-        "verifiedCandidates": 0,
+        "totalOffers": 4,
+        "totalCandidates": 1,
+        "verifiedCandidates": 1,
         "candidateLimits": 0
       },
       "suppliers": [
         {
           "supplierId": "dentaltix",
-          "status": "partial",
-          "offers": 0,
-          "candidateCount": 0,
-          "verifiedCandidateCount": 0,
+          "status": "results",
+          "offers": 4,
+          "candidateCount": 1,
+          "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
-          "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
-          "sample": []
+          "error": null,
+          "elapsedMs": 631,
+          "sample": [
+            {
+              "name": "Guantes de Nitrilo Negro Sin Polvo para Examen Dental - XS - Caja de 100 uds. Negro - Talla: XS",
+              "reference": "003642",
+              "sku": "DTX-A003642",
+              "price": 3.5,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "Guantes de Nitrilo Negro Sin Polvo para Examen Dental - S - Caja de 100 uds. Negro - Talla: S",
+              "reference": "003659",
+              "sku": "DTX-A003659",
+              "price": 3.5,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            },
+            {
+              "name": "Guantes de Nitrilo Negro Sin Polvo para Examen Dental - M - Caja de 100 uds. Negro - Talla: M",
+              "reference": "003666",
+              "sku": "DTX-A003666",
+              "price": 3.5,
+              "verification": "detail",
+              "sourceStatus": "normal"
+            }
+          ]
         },
         {
           "supplierId": "dentalcost",
@@ -2236,7 +2407,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 37,
           "sample": []
         },
         {
@@ -2247,7 +2418,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 34,
+          "elapsedMs": 37,
           "sample": []
         },
         {
@@ -2258,7 +2429,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 28,
           "sample": []
         },
         {
@@ -2269,7 +2440,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 26,
           "sample": []
         },
         {
@@ -2280,7 +2451,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
+          "elapsedMs": 11,
           "sample": []
         },
         {
@@ -2291,14 +2462,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 498,
+          "elapsedMs": 539,
           "sample": []
         }
       ]
     },
     {
       "query": "mascarillas quirurgicas tipo IIR",
-      "sessionId": "matrix-1791537077391-24",
+      "sessionId": "matrix-1791538200507-24",
       "totals": {
         "suppliersWithResults": 1,
         "suppliersNoMatch": 1,
@@ -2317,7 +2488,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 34,
           "sample": []
         },
         {
@@ -2328,7 +2499,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 34,
           "sample": []
         },
         {
@@ -2339,7 +2510,7 @@
           "verifiedCandidateCount": 6,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 35,
+          "elapsedMs": 41,
           "sample": [
             {
               "name": "Mascarillas quirúrgicas Tipo IIR (50 uds.)",
@@ -2374,7 +2545,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 32,
           "sample": []
         },
         {
@@ -2385,7 +2556,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 28,
           "sample": []
         },
         {
@@ -2407,14 +2578,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 545,
+          "elapsedMs": 1173,
           "sample": []
         }
       ]
     },
     {
       "query": "desinfectante instrumental dental",
-      "sessionId": "matrix-1791537081314-25",
+      "sessionId": "matrix-1791538205081-25",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -2433,7 +2604,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 32,
           "sample": []
         },
         {
@@ -2444,7 +2615,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 27,
           "sample": []
         },
         {
@@ -2455,7 +2626,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 30,
+          "elapsedMs": 43,
           "sample": []
         },
         {
@@ -2466,7 +2637,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 33,
+          "elapsedMs": 18,
           "sample": []
         },
         {
@@ -2477,7 +2648,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 26,
+          "elapsedMs": 29,
           "sample": []
         },
         {
@@ -2488,7 +2659,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 29,
           "sample": []
         },
         {
@@ -2499,14 +2670,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 569,
+          "elapsedMs": 440,
           "sample": []
         }
       ]
     },
     {
       "query": "hipoclorito sodico endodoncia",
-      "sessionId": "matrix-1791537085248-26",
+      "sessionId": "matrix-1791538208907-26",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -2525,7 +2696,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 37,
           "sample": []
         },
         {
@@ -2536,7 +2707,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
+          "elapsedMs": 43,
           "sample": []
         },
         {
@@ -2547,7 +2718,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 23,
+          "elapsedMs": 43,
           "sample": []
         },
         {
@@ -2558,7 +2729,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 19,
+          "elapsedMs": 34,
           "sample": []
         },
         {
@@ -2569,7 +2740,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 28,
           "sample": []
         },
         {
@@ -2580,7 +2751,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 15,
           "sample": []
         },
         {
@@ -2591,14 +2762,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 473,
+          "elapsedMs": 459,
           "sample": []
         }
       ]
     },
     {
       "query": "clorhexidina gel",
-      "sessionId": "matrix-1791537089037-27",
+      "sessionId": "matrix-1791538212774-27",
       "totals": {
         "suppliersWithResults": 1,
         "suppliersNoMatch": 1,
@@ -2617,7 +2788,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 10,
+          "elapsedMs": 38,
           "sample": []
         },
         {
@@ -2628,7 +2799,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 38,
           "sample": []
         },
         {
@@ -2639,7 +2810,7 @@
           "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 35,
+          "elapsedMs": 46,
           "sample": [
             {
               "name": "Bucomed Pro Curasept Clorhexidina Gel Bucal",
@@ -2659,7 +2830,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 33,
+          "elapsedMs": 31,
           "sample": []
         },
         {
@@ -2670,7 +2841,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 14,
           "sample": []
         },
         {
@@ -2681,7 +2852,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 33,
           "sample": []
         },
         {
@@ -2692,14 +2863,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 499,
+          "elapsedMs": 462,
           "sample": []
         }
       ]
     },
     {
       "query": "lampara polimerizar",
-      "sessionId": "matrix-1791537092879-28",
+      "sessionId": "matrix-1791538216633-28",
       "totals": {
         "suppliersWithResults": 1,
         "suppliersNoMatch": 1,
@@ -2718,7 +2889,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 28,
           "sample": []
         },
         {
@@ -2729,7 +2900,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 11,
+          "elapsedMs": 40,
           "sample": []
         },
         {
@@ -2740,7 +2911,7 @@
           "verifiedCandidateCount": 1,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 34,
+          "elapsedMs": 41,
           "sample": [
             {
               "name": "Lámpara de polimerizar Mestra",
@@ -2759,7 +2930,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 14,
           "sample": []
         },
         {
@@ -2770,7 +2941,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 27,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -2781,7 +2952,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 24,
+          "elapsedMs": 16,
           "sample": []
         },
         {
@@ -2792,14 +2963,14 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 417,
+          "elapsedMs": 525,
           "sample": []
         }
       ]
     },
     {
       "query": "contraangulo 1:1",
-      "sessionId": "matrix-1791537096647-29",
+      "sessionId": "matrix-1791538220524-29",
       "totals": {
         "suppliersWithResults": 0,
         "suppliersNoMatch": 2,
@@ -2818,7 +2989,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 34,
+          "elapsedMs": 44,
           "sample": []
         },
         {
@@ -2829,7 +3000,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 25,
+          "elapsedMs": 39,
           "sample": []
         },
         {
@@ -2840,7 +3011,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 50,
+          "elapsedMs": 44,
           "sample": []
         },
         {
@@ -2851,7 +3022,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 37,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -2862,7 +3033,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 12,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -2873,7 +3044,7 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": "CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
-          "elapsedMs": 23,
+          "elapsedMs": 30,
           "sample": []
         },
         {
@@ -2884,18 +3055,18 @@
           "verifiedCandidateCount": 0,
           "candidateLimitReached": false,
           "error": null,
-          "elapsedMs": 451,
+          "elapsedMs": 652,
           "sample": []
         }
       ]
     }
   ],
   "summary": {
-    "totalOffers": 24,
-    "totalCandidates": 25,
-    "verifiedCandidates": 25,
-    "unverifiedCandidateLowerBound": 0,
-    "resultCells": 9,
+    "totalOffers": 50,
+    "totalCandidates": 37,
+    "verifiedCandidates": 36,
+    "unverifiedCandidateLowerBound": 1,
+    "resultCells": 20,
     "noMatchCells": 55,
     "errorCells": 0,
     "candidateLimitCells": 0

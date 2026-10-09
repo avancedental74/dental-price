@@ -1,5 +1,6 @@
 import policies from "../data/supplier-policies.json";
 import priceHistory from "../data/price-history.json";
+import discoveryIndexData from "../data/live-discovery-index.json";
 import type { SupplierOffer } from "../src/types/domain";
 import type { SupplierPolicy } from "../src/domain/supplier-policies";
 import { applySupplierPolicy } from "../src/domain/supplier-policies";
@@ -12,7 +13,7 @@ import { fetchDentalExpressProduct } from "../src/connectors/dentalexpress";
 import { fetchOrtolanProduct } from "../src/connectors/ortolan";
 import { fetchDentipakProduct } from "../src/connectors/dentipak";
 import { fetchDentalBoomProduct } from "../src/connectors/dentalboom";
-import { discoverSupplierProductUrls, searchDvdKlevuRecords, searchOrtolanRecords, searchDentalBoomRecords } from "../src/connectors/live-search";
+import { discoverSupplierProductUrls, scoreLink, searchDvdKlevuRecords, searchOrtolanRecords, searchDentalBoomRecords } from "../src/connectors/live-search";
 import { allSearchSupplierIds, browserProtectedSupplierIds, liveAutomaticSupplierIds, type SearchSupplierId } from "../src/connectors/live-supplier-registry";
 import { normalizeName, normalizeReference } from "../src/domain/matching/normalization";
 import { applyAnomalyStatus } from "../src/domain/anomaly";
@@ -36,6 +37,24 @@ const policyList=policies as SupplierPolicy[];
 const automaticSuppliers:readonly SearchSupplierId[]=liveAutomaticSupplierIds;
 const protectedSuppliers:readonly SearchSupplierId[]=browserProtectedSupplierIds;
 const suppliers:readonly SearchSupplierId[]=allSearchSupplierIds;
+
+interface DiscoveryIndexEntry {
+  supplierId:string;
+  productUrl:string;
+  rawName:string;
+  normalizedName:string;
+  supplierSku?:string;
+  manufacturer?:string;
+  manufacturerReference?:string;
+  eanGtin?:string;
+  variant?:string;
+  shade?:string;
+  presentation?:string;
+  quantity?:number;
+  unit?:string;
+  packCount?:number;
+}
+const discoveryEntries=(discoveryIndexData as {entries?:DiscoveryIndexEntry[]}).entries??[];
 
 function cors(origin:string|null,env:Env){
   const allowed=env.ALLOWED_ORIGIN??"*";
@@ -139,6 +158,33 @@ function genericCandidateBudget(supplierId:SearchSupplierId,query:string,extende
   return supplierId==="dentalcost"?4:3;
 }
 
+function indexedCandidates(supplierId:SearchSupplierId,query:string,limit:number){
+  const compact=normalizeReference(query)??"";
+  const isReference=looksLikeReference(query);
+  const scored=discoveryEntries
+    .filter(entry=>entry.supplierId===supplierId)
+    .map(entry=>{
+      const ref=normalizeReference(entry.manufacturerReference)??"";
+      const sku=normalizeReference(entry.supplierSku)??"";
+      const exact=isReference&&Boolean(compact&&(ref===compact||sku===compact));
+      const text=[entry.rawName,entry.normalizedName,entry.manufacturer,entry.manufacturerReference,entry.supplierSku,entry.variant,entry.shade,entry.presentation,entry.quantity,entry.unit].filter(Boolean).join(" ");
+      const score=exact?100:scoreLink(text,entry.productUrl,query);
+      return {entry,score,exact};
+    })
+    .filter(item=>item.score>=2||item.exact)
+    .sort((a,b)=>Number(b.exact)-Number(a.exact)||b.score-a.score);
+  const seen=new Set<string>();
+  const output:DiscoveryIndexEntry[]=[];
+  for(const item of scored){
+    const key=item.entry.productUrl.split("#")[0];
+    if(seen.has(key))continue;
+    seen.add(key);
+    output.push(item.entry);
+    if(output.length>=limit)break;
+  }
+  return output;
+}
+
 export function relevantToQuery(offer:SupplierOffer,query:string){
   const compact=normalizeReference(query)??"";
   if(looksLikeReference(query)){
@@ -150,9 +196,25 @@ export function relevantToQuery(offer:SupplierOffer,query:string){
   const tokens=searchable(query).split(" ").filter(t=>t.length>=2);
   // Never use normalizedName: connectors may prefix a parent name to unrelated variants.
   const hay=searchable([offer.rawName,offer.manufacturer,offer.manufacturerReference,offer.supplierSku].filter(Boolean).join(" "));
+  const hasWord=(value:string)=>new RegExp("(^|[^a-z0-9.])"+value.replaceAll(".","\\.")+"(?=$|[^a-z0-9.])","i").test(hay);
+  const variantTokens=["body","dentin","dentine","dentina","enamel","esmalte"].filter(t=>tokens.includes(t));
+  const variantAliases:Record<string,string[]>={
+    body:["body"],
+    dentin:["dentin","dentine","dentina"],
+    dentine:["dentin","dentine","dentina"],
+    dentina:["dentin","dentine","dentina"],
+    enamel:["enamel","esmalte"],
+    esmalte:["enamel","esmalte"]
+  };
+  if(variantTokens.some(token=>!variantAliases[token].some(alias=>hasWord(alias))))return false;
+  for(const match of searchable(query).matchAll(/\b(\d+(?:[.,]\d+)?) (g|gr|ml)\b/g)){
+    const amount=match[1].replace(",",".");
+    const unit=match[2]==="gr"?"g":match[2];
+    if(!new RegExp("(^|[^0-9])"+amount.replace(".","[.,]")+"\\s*(?:"+unit+"|"+(unit==="g"?"gr":"ml")+")(?=$|[^a-z0-9])","i").test(hay))return false;
+  }
   // Model codes and shades require entire identifiers, including decimal precision.
   const codeTokens=tokens.filter(t=>/^(?:[a-d]\d(?:\.\d)?|[a-z]+\d+[a-z0-9]*|\d+[a-z][a-z0-9]*)$/.test(t));
-  const exactCode=(value:string)=>new RegExp("(^|[^a-z0-9.])"+value.replaceAll(".","\\.")+"(?=$|[^a-z0-9.])","i").test(hay);
+  const exactCode=hasWord;
   if(codeTokens.some(t=>!exactCode(t)))return false;
   const matched=tokens.filter(t=>codeTokens.includes(t)?exactCode(t):hay.includes(t));
   return matched.length>=Math.max(1,Math.ceil(tokens.length*0.6));
@@ -166,15 +228,47 @@ export async function searchOneSupplier(supplierId:SearchSupplierId,query:string
   // Bounded per-supplier expansion; never use unbounded crawling.
   const limitFor=(standard:number,more:number)=>extended?more:standard;
   const fetchImpl=withTimeout(8500,diagnostics,supplierId);
-  if(options.cloudSafe&&!looksLikeReference(query)&&supplierId!=="dvd-dental"&&supplierId!=="dentalboom"){
+  if(options.cloudSafe&&supplierId!=="dvd-dental"&&supplierId!=="dentalboom"){
+    const referenceQuery=looksLikeReference(query);
+    const candidates=indexedCandidates(supplierId,query,referenceQuery?1:extended?2:1);
+    diagnostics?.events.push({stage:"hybrid-index-discovery",supplierId,status:candidates.length});
+    const canVerifyIndexed=referenceQuery||supplierId==="dentaltix"||supplierId==="dentalcost";
+    if(candidates.length&&canVerifyIndexed){
+      const policy=policyList.find(p=>p.supplierId===supplierId);
+      const verified:SupplierOffer[]=[];
+      for(const candidate of candidates){
+        try{
+          verified.push(...(await fetchSupplierUrl(supplierId,candidate.productUrl,fetchImpl)).filter(o=>relevantToQuery(o,query)));
+        }catch{ /* candidate stays visible as partial, never as verified price */ }
+      }
+      const offers=verified
+        .map(o=>applyLiveSafety(applySupplierPolicy(o,policy)))
+        .map(o=>({...o,priceVerification:o.priceVerification??"detail" as const,verificationKind:"live" as const,verificationSessionId:sessionId,verifiedAt:new Date().toISOString()}))
+        .filter(o=>supplierOfferSchema.safeParse(o).success);
+      diagnostics?.events.push({stage:"hybrid-index-verified",supplierId,status:offers.length});
+      if(offers.length)return {
+        offers,error:null,partial:false,noMatch:false,discoveredFrom:"incremental-discovery-index",
+        candidateCount:candidates.length,candidateLimitReached:false,verifiedCandidateCount:candidates.length
+      };
+      return {
+        offers:[] as SupplierOffer[],
+        error:"HYBRID_INDEX_CANDIDATES_NOT_VERIFIED",
+        partial:true,
+        noMatch:false,
+        discoveredFrom:"incremental-discovery-index",
+        candidateCount:candidates.length,
+        verifiedCandidateCount:candidates.length,
+        candidateLimitReached:false
+      };
+    }
     diagnostics?.events.push({stage:"cloud-safe-skip-html-search",supplierId});
     return {
       offers:[] as SupplierOffer[],
-      error:"CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
+      error:candidates.length?"HYBRID_INDEX_CANDIDATES_NOT_VERIFIED":"CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API",
       partial:true,
       noMatch:false,
-      discoveredFrom:"cloud-safe-html-skipped",
-      candidateCount:0,
+      discoveredFrom:candidates.length?"incremental-discovery-index":"cloud-safe-html-skipped",
+      candidateCount:candidates.length,
       verifiedCandidateCount:0,
       candidateLimitReached:false
     };

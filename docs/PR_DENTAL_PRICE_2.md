@@ -26,6 +26,7 @@
 - Anade exploracion progresiva acotada y metricas de candidatos vistos/verificados.
 - Prepara el procedimiento de staging Cloudflare, bloqueado hasta autenticar Wrangler.
 - Despliega y valida un Worker staging independiente con modo `LIVE_CLOUD_SAFE=1`.
+- Introduce indice incremental de discovery sin precios y verificacion live puntual desde staging.
 
 ## Commits incluidos
 
@@ -34,6 +35,7 @@
 - `1569827 feat: validate live coverage and simplify results`
 - `5122d40 fix: stabilize live supplier diagnostics`
 - `57089ed feat: add progressive live candidate validation`
+- `528665c fix: add cloud-safe staging live search`
 
 ## Verificacion local
 
@@ -52,12 +54,13 @@ Resultado:
 
 - Typecheck: OK
 - Lint: OK
-- Tests: 50 archivos, 220 tests, OK
+- Tests: 51 archivos, 223 tests, OK
 - Validacion de datos: OK
 - Build Vite: OK
 - Diagnostico live local: 6 de 7 proveedores con oferta representativa; Ortolan sin coincidencia en la consulta elegida, sin error tecnico.
 - Matriz Worker local optimizada: 290 ofertas, 52 celdas con resultados, 0 errores tecnicos, 74 celdas con limite de candidatos.
 - Matriz Worker staging Cloudflare cloud-safe: 24 ofertas, 9 celdas con resultados, 0 errores tecnicos, 0 limites de candidatos.
+- Matriz Worker staging hibrida: 50 ofertas, 20 celdas con resultados, 0 errores tecnicos, 0 limites de candidatos.
 
 ## Metricas de datos validadas
 
@@ -75,6 +78,7 @@ Resultado:
 - No se pudo desplegar staging remoto porque falta `CLOUDFLARE_API_TOKEN`; se valido con Wrangler local.
 - Staging existe en `https://dental-price-live-staging.avance-dental74.workers.dev`; produccion no se ha modificado.
 - En Cloudflare gratuito, las busquedas por nombre en proveedores HTML quedan como `partial` para evitar 1102; las referencias/codigos y APIs ligeras siguen funcionando.
+- El indice incremental no contiene precios; solo reduce discovery HTML y sigue exigiendo verificacion de ficha/API para precios actuales.
 - Los precios de indice permanecen como Nivel C y no compiten como ganadores.
 - La cobertura real depende de las respuestas publicas de cada proveedor consultado.
 

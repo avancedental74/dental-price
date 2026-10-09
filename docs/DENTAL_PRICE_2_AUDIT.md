@@ -369,3 +369,119 @@ Lectura:
 - DentalCost por nombre sigue siendo ruidoso aunque el acceso por referencia funciona.
 - Ortolan requiere discovery mas rico, sin relajar variantes tecnicas.
 - Produccion sigue sin actualizarse.
+
+## Fase 6 - arquitectura hibrida de indice incremental
+
+Fecha: 2026-10-09
+
+### Decision de arquitectura
+
+Se separa discovery de verificacion:
+
+- Discovery offline/incremental: `data/live-discovery-index.json`.
+- Verificacion live: `/search-supplier` sigue consultando ficha/API concreta para precio actual cuando el presupuesto lo permite.
+- El indice no contiene precios y no sustituye la evidencia economica; solo aporta proveedor, URL, referencia, SKU, nombre y atributos tecnicos.
+- Si el indice no tiene candidato, el Worker devuelve `partial`, no `no_match`, para no cerrar el catalogo.
+
+### Fuentes del indice
+
+Script:
+
+```bash
+npm.cmd run refresh:index
+```
+
+Genera el indice desde:
+
+- `data/current-prices.json`: ofertas verificadas previamente.
+- `data/price-history.json`: URLs historicas enlazadas a producto canonico.
+- `data/supplier-seeds.json`: semillas directas mantenidas.
+
+Resultado inicial:
+
+- Entradas: 359
+- Archivo: `data/live-discovery-index.json`
+
+No se incorporan servicios de pago ni credenciales. No se cachean precios como actuales.
+
+### Uso en Worker
+
+Con `LIVE_CLOUD_SAFE=1`:
+
+- DVD Dental y DentalBoom siguen usando APIs/indices ligeros publicos ya existentes.
+- Proveedores HTML usan el indice para encontrar URL candidata.
+- El Worker verifica una ficha concreta del indice cuando el proveedor y la consulta tienen presupuesto seguro.
+- Si hay candidato pero no se puede verificar, responde `partial` con `HYBRID_INDEX_CANDIDATES_NOT_VERIFIED`.
+- Si no hay candidato, responde `partial` con `CLOUD_SAFE_REQUIRES_REFERENCE_OR_LIGHTWEIGHT_API`.
+
+Se endurecio `relevantToQuery()`:
+
+- `Body`, `Dentin/Dentina` y `Enamel/Esmalte` son filtros estrictos.
+- Cantidades como `3 g` no pueden coincidir con packs `0.2 g`.
+- Esto evita que una ficha familiar de Dentaltix mezcle variantes al verificar desde indice.
+
+### GitHub Actions
+
+Implementacion preparada en codigo:
+
+- `package.json` incorpora `npm run refresh:index`.
+- El script genera `data/live-discovery-index.json` de forma reproducible.
+- Cambio pendiente en workflows: ejecutar `npm run refresh:index` despues de refrescar precios y commitear `data/live-discovery-index.json` junto con datos generados.
+- No se subieron cambios en `.github/workflows/*` porque el token remoto actual rechazo el push por falta de scope `workflow`.
+- Frecuencia recomendada: diaria (`17 5 * * *`) y manual.
+
+Coste operativo:
+
+- Gratuito dentro de GitHub Actions si se mantiene la frecuencia diaria y el numero de seeds actual.
+- Respeta carga razonable: no se anade crawling masivo; el indice deriva de observaciones/semillas ya mantenidas.
+- Para ampliar cobertura futura, se debe aumentar semillas o conectores ligeros por lotes pequenos, con pausas y limites por proveedor.
+
+### Matriz staging hibrida
+
+Staging desplegado:
+
+```text
+https://dental-price-live-staging.avance-dental74.workers.dev
+```
+
+Version validada:
+
+- `7d25b00f-e98c-4090-873a-a22dc7965772`
+
+Matriz final (`docs/live-search-matrix.staging.json`):
+
+- Ofertas: 50
+- Candidatos detectados: 37
+- Candidatos verificados: 36
+- Minimo de candidatos no verificados por limite: 1
+- Celdas con resultados: 20
+- Celdas sin coincidencia: 55
+- Celdas con error tecnico: 0
+- Limites de candidatos: 0
+
+Comparacion:
+
+- Produccion antigua: 22 ofertas, 126 errores.
+- Staging cloud-safe estricto: 24 ofertas, 0 errores.
+- Staging hibrido con indice: 50 ofertas, 0 errores.
+- Local optimizado: 290 ofertas, 0 errores, pero con 74 limites de candidatos y coste no apto para Worker gratuito.
+
+Lectura:
+
+- La arquitectura hibrida recupera significativamente mas ofertas que `LIVE_CLOUD_SAFE` estricto sin volver a 503/1102.
+- La cobertura sigue por debajo del local porque el indice inicial solo cubre productos observados/semillas.
+- La exactitud prima sobre recall: variantes no acreditadas y precios no verificados quedan fuera del ranking.
+
+### APIs e indices publicos observados
+
+- DVD Dental: Klevu publico, util para discovery ligero; precios como Nivel C salvo verificacion de ficha.
+- DentalBoom: WooCommerce Store API publica, util para discovery ligero; precios de indice como Nivel C.
+- Dentaltix, DentalCost, Dental Express, Dentipak: no se encontro una via ligera suficientemente estable en esta fase; se usa indice incremental y verificacion puntual.
+- Ortolan: expone datos estructurados en HTML, pero el discovery por nombre/variante sigue incompleto y costoso en Worker.
+
+### Pendiente
+
+- Ampliar el indice incremental con trabajos offline por lotes pequenos y revisables.
+- Investigar endpoints publicos especificos de Dentaltix/DentalCost/Dentipak que no requieran DOM completo.
+- Incorporar cache corta por candidato verificado si se confirma que Cloudflare Cache API no compromete frescura ni exactitud.
+- Mantener produccion sin cambios hasta revisar PR.
