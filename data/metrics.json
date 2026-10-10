@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-09T11:55:45.263Z",
+  "generatedAt": "2026-10-10T11:12:49.749Z",
   "verifiedOffers": 102,
-  "purchasableOffers": 71,
+  "purchasableOffers": 70,
   "unavailableOffers": 17,
-  "lowStockOffers": 18,
+  "lowStockOffers": 16,
   "productsWithTwoOrMoreVerifiedSuppliers": 39,
   "productsWithTwoOrMorePurchasableSuppliers": 21,
   "automaticSuppliers": 3,
