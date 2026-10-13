@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-10-12T13:11:24.149Z",
+  "generatedAt": "2026-10-13T12:44:16.678Z",
   "verifiedOffers": 102,
-  "purchasableOffers": 70,
+  "purchasableOffers": 69,
   "unavailableOffers": 18,
-  "lowStockOffers": 15,
+  "lowStockOffers": 14,
   "productsWithTwoOrMoreVerifiedSuppliers": 39,
-  "productsWithTwoOrMorePurchasableSuppliers": 21,
+  "productsWithTwoOrMorePurchasableSuppliers": 20,
   "automaticSuppliers": 3,
   "supplierOfferCounts": {
     "dentalcost": 52,
