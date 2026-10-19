@@ -7,7 +7,7 @@
     "shippingVatRate": 21,
     "freeShippingThreshold": 100,
     "freeShippingThresholdBasis": "net",
-    "observedAt": "2026-10-12T12:21:59.829Z",
+    "observedAt": "2026-10-19T10:12:22.045Z",
     "sourceUrl": "https://www.dentaltix.com/es/envios"
   },
   {
@@ -18,7 +18,7 @@
     "shippingVatRate": 21,
     "freeShippingThreshold": 120,
     "freeShippingThresholdBasis": "gross",
-    "observedAt": "2026-10-12T12:21:59.829Z",
+    "observedAt": "2026-10-19T10:12:22.045Z",
     "sourceUrl": "https://www.dentalcost.es/content/1-entrega-devolucion"
   },
   {
@@ -29,7 +29,7 @@
     "shippingVatRate": 21,
     "freeShippingThreshold": 110,
     "freeShippingThresholdBasis": "net",
-    "observedAt": "2026-10-12T12:21:59.829Z",
+    "observedAt": "2026-10-19T10:12:22.045Z",
     "sourceUrl": "https://www.dvd-dental.com/guia-compra/"
   },
   {
@@ -53,7 +53,7 @@
     "freeShippingThresholdBasis": "net",
     "smallOrderThreshold": 30,
     "smallOrderSurcharge": 3,
-    "observedAt": "2026-10-12T12:21:59.829Z",
+    "observedAt": "2026-10-19T10:12:22.045Z",
     "sourceUrl": "https://dentalexpress.es/condiciones-de-venta/"
   }
 ]
