@@ -1,15 +1,14 @@
 {
-  "generatedAt": "2026-10-20T10:04:47.162Z",
-  "verifiedOffers": 102,
-  "purchasableOffers": 72,
-  "unavailableOffers": 18,
-  "lowStockOffers": 17,
-  "productsWithTwoOrMoreVerifiedSuppliers": 39,
-  "productsWithTwoOrMorePurchasableSuppliers": 23,
-  "automaticSuppliers": 3,
+  "generatedAt": "2026-10-21T10:08:09.460Z",
+  "verifiedOffers": 53,
+  "purchasableOffers": 43,
+  "unavailableOffers": 10,
+  "lowStockOffers": 8,
+  "productsWithTwoOrMoreVerifiedSuppliers": 1,
+  "productsWithTwoOrMorePurchasableSuppliers": 1,
+  "automaticSuppliers": 2,
   "supplierOfferCounts": {
     "dentalcost": 52,
-    "dentaltix": 49,
     "dvd-dental": 1
   }
 }
